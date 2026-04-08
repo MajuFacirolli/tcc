@@ -1,0 +1,11 @@
+{
+  "name": "tcc",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "workspaces": [
+    "api",
+    "web"
+  ],
+  "packageManager": "pnpm@10.11.0"
+}
