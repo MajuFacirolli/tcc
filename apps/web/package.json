@@ -1,0 +1,30 @@
+{
+	"name": "web",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "tsc -b && vite build",
+		"lint": "biome check .",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"@tailwindcss/vite": "^4.3.0",
+		"@tanstack/react-router": "^1.170.5",
+		"@tanstack/react-router-devtools": "^1.167.0",
+		"react": "^19.2.6",
+		"react-dom": "^19.2.6",
+		"tailwindcss": "^4.3.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"@tanstack/router-plugin": "^1.168.7",
+		"@types/node": "^24.12.3",
+		"@types/react": "^19.2.14",
+		"@types/react-dom": "^19.2.3",
+		"@vitejs/plugin-react": "^6.0.1",
+		"typescript": "~6.0.2",
+		"vite": "^8.0.12"
+	}
+}
