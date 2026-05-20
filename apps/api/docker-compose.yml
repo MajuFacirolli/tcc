@@ -1,0 +1,10 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: hemoconnect_db
+    environment:
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: hemoconnect
+    ports:
+      - "5432:5432"
