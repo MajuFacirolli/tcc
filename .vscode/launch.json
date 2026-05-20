@@ -1,0 +1,31 @@
+{
+	"configurations": [
+		{
+			"name": "Run API",
+			"request": "launch",
+			"runtimeArgs": ["run", "dev"],
+			"runtimeExecutable": "pnpm",
+			"skipFiles": ["<node_internals>/**"],
+			"type": "node",
+			"console": "integratedTerminal",
+			"cwd": "${workspaceFolder}/apps/api"
+		},
+		{
+			"name": "Run Web",
+			"request": "launch",
+			"runtimeArgs": ["run", "dev"],
+			"runtimeExecutable": "pnpm",
+			"skipFiles": ["<node_internals>/**"],
+			"type": "node",
+			"console": "integratedTerminal",
+			"cwd": "${workspaceFolder}/apps/web"
+		}
+	],
+	"compounds": [
+		{
+			"name": "Full Stack",
+			"configurations": ["Run API", "Run Web"],
+			"stopAll": true
+		}
+	]
+}
