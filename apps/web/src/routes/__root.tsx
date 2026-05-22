@@ -4,7 +4,7 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools"
 const MainLayout = () => (
 	<main className="flex items-center justify-center w-full h-dvh">
 		<Outlet />
-		<TanStackRouterDevtools />
+		{/* <TanStackRouterDevtools /> */}
 	</main>
 )
 

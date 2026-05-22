@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DashboardRouteImport } from './routes/_dashboard'
 import { Route as DashboardIndexRouteImport } from './routes/_dashboard/index'
+import { Route as DashboardAjudaRouteImport } from './routes/_dashboard/ajuda'
 
 const DashboardRoute = DashboardRouteImport.update({
   id: '/_dashboard',
@@ -21,24 +22,32 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   path: '/',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardAjudaRoute = DashboardAjudaRouteImport.update({
+  id: '/ajuda',
+  path: '/ajuda',
+  getParentRoute: () => DashboardRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof DashboardIndexRoute
+  '/ajuda': typeof DashboardAjudaRoute
 }
 export interface FileRoutesByTo {
+  '/ajuda': typeof DashboardAjudaRoute
   '/': typeof DashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_dashboard': typeof DashboardRouteWithChildren
+  '/_dashboard/ajuda': typeof DashboardAjudaRoute
   '/_dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/ajuda'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/_dashboard' | '/_dashboard/'
+  to: '/ajuda' | '/'
+  id: '__root__' | '/_dashboard' | '/_dashboard/ajuda' | '/_dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -61,14 +70,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/_dashboard/ajuda': {
+      id: '/_dashboard/ajuda'
+      path: '/ajuda'
+      fullPath: '/ajuda'
+      preLoaderRoute: typeof DashboardAjudaRouteImport
+      parentRoute: typeof DashboardRoute
+    }
   }
 }
 
 interface DashboardRouteChildren {
+  DashboardAjudaRoute: typeof DashboardAjudaRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardAjudaRoute: DashboardAjudaRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }
 
