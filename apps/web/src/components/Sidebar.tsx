@@ -1,9 +1,9 @@
 import { Link } from "@tanstack/react-router"
 import clsx from "clsx"
 import { CircleQuestionMark, LogOut } from "lucide-react"
-import { SHORTCUT_LINKS } from "../data/shortcutLinks"
-import { PagesEnum } from "../enums/PagesEnum"
-import { Tooltip } from "./Tooltip"
+import { Tooltip } from "@/components/Tooltip"
+import { SHORTCUT_LINKS } from "@/data/shortcutLinks"
+import { PagesEnum } from "@/enums/PagesEnum"
 
 export const Sidebar = () => {
 	return (
