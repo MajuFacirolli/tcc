@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router"
-import classNames from "classnames"
-import { LogOut } from "lucide-react"
+import clsx from "clsx"
 import { SHORTCUT_LINKS } from "../data/shortcutLinks"
 import { Tooltip } from "./Tooltip"
 
@@ -12,7 +11,7 @@ export const Sidebar = () => {
 					<Link
 						key={item.path}
 						to={item.path}
-						className={classNames(
+						className={clsx(
 							"group flex items-center justify-center gap-3 p-2.5 rounded-lg text-sm font-medium text-zinc-500",
 							"hover:text-red-800 hover:bg-red-50 transition-colors duration-150",
 							"[&.active]:bg-red-800 [&.active]:text-white",
@@ -32,7 +31,7 @@ export const Sidebar = () => {
 
 				<button
 					type="button"
-					className={classNames(
+					className={clsx(
 						"group flex items-center justify-center gap-3 p-2.5 rounded-lg text-sm font-medium text-zinc-500",
 						"hover:text-red-800 hover:bg-red-50 transition-colors duration-150",
 					)}
