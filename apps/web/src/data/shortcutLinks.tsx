@@ -1,6 +1,5 @@
 import {
 	ChartSpline,
-	CircleQuestionMark,
 	Droplets,
 	House,
 	type LucideProps,
@@ -22,11 +21,6 @@ export const SHORTCUT_LINKS: ShortcutLink[] = [
 		path: PagesEnum.HOME,
 	},
 	{
-		label: "Campanhas",
-		icon: Megaphone,
-		path: PagesEnum.CAMPAIGNS,
-	},
-	{
 		label: "Banco de sangue",
 		icon: Droplets,
 		path: PagesEnum.BLOOD_BANK,
@@ -37,13 +31,13 @@ export const SHORTCUT_LINKS: ShortcutLink[] = [
 		path: PagesEnum.DONORS,
 	},
 	{
+		label: "Campanhas",
+		icon: Megaphone,
+		path: PagesEnum.CAMPAIGNS,
+	},
+	{
 		label: "Métricas",
 		icon: ChartSpline,
 		path: PagesEnum.METRICS,
-	},
-	{
-		label: "Ajuda",
-		icon: CircleQuestionMark,
-		path: PagesEnum.HELP,
 	},
 ]
