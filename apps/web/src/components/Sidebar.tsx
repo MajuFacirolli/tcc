@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router"
-import clsx from "clsx"
 import { CircleQuestionMark, LogOut } from "lucide-react"
+import { twMerge } from "tailwind-merge"
 import { Tooltip } from "@/components/Tooltip"
 import { SHORTCUT_LINKS } from "@/data/shortcutLinks"
 import { PagesEnum } from "@/enums/PagesEnum"
@@ -8,7 +8,7 @@ import { PagesEnum } from "@/enums/PagesEnum"
 export const Sidebar = () => {
 	return (
 		<aside
-			className={clsx(
+			className={twMerge(
 				"fixed z-50 bg-white shadow-sm",
 				"bottom-0 left-0 right-0 rounded-t-lg py-2 px-4 flex flex-row items-center justify-center",
 				"lg:bottom-auto lg:left-4 lg:right-auto lg:top-1/2 lg:-translate-y-1/2 lg:rounded-lg lg:py-4 lg:px-2 lg:flex-col",
@@ -19,7 +19,7 @@ export const Sidebar = () => {
 					<Link
 						key={item.path}
 						to={item.path}
-						className={clsx(
+						className={twMerge(
 							"group flex items-center justify-center gap-3 p-2.5 rounded-lg text-sm font-medium text-zinc-500",
 							"hover:text-red-800 hover:bg-red-50 transition-colors duration-150",
 							"[&.active]:bg-red-800 [&.active]:text-white",
@@ -33,7 +33,7 @@ export const Sidebar = () => {
 			<div className="border-l border-zinc-200 ml-3 pl-3 flex flex-row items-center gap-1 lg:border-l-0 lg:border-t lg:ml-0 lg:pl-0 lg:mt-3 lg:pt-3 lg:flex-col lg:gap-2">
 				<Link
 					to={PagesEnum.HELP}
-					className={clsx(
+					className={twMerge(
 						"group flex items-center justify-center gap-3 p-2.5 rounded-lg text-sm font-medium text-zinc-500",
 						"hover:text-red-800 hover:bg-red-50 transition-colors duration-150",
 						"[&.active]:bg-red-800 [&.active]:text-white",
@@ -49,7 +49,7 @@ export const Sidebar = () => {
 
 				<button
 					type="button"
-					className={clsx(
+					className={twMerge(
 						"group flex items-center justify-center gap-3 p-2.5 rounded-lg text-sm font-medium text-zinc-500",
 						"hover:text-red-800 hover:bg-red-50 transition-colors duration-150",
 					)}
