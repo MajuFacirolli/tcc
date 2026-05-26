@@ -31,7 +31,7 @@ const HeadingTitle = ({
 	className,
 	...props
 }: IHeadingTitleProps) => (
-	<Tag className={twMerge("text-2xl font-semibold", className)} {...props}>
+	<Tag className={twMerge("text-2xl font-bold", className)} {...props}>
 		{children}
 	</Tag>
 )
