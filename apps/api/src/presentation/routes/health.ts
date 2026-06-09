@@ -1,4 +1,4 @@
-import { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
+import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
 import { z } from "zod"
 
 export const health: FastifyPluginAsyncZod = async (app) => {
@@ -15,7 +15,7 @@ export const health: FastifyPluginAsyncZod = async (app) => {
 				},
 			},
 		},
-		async (request, reply) => {
+		async () => {
 			return {
 				status: "healthy",
 				timestamp: new Date().toISOString(),

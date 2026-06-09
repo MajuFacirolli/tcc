@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import fastifyCors from "@fastify/cors"
 import fastifySwagger from "@fastify/swagger"
 import ScalarApiReference from "@scalar/fastify-api-reference"
@@ -9,7 +10,7 @@ import {
 	type ZodTypeProvider,
 } from "fastify-type-provider-zod"
 import { env } from "@/env"
-import { health } from "./routes/health"
+import { registerRoutes } from "./presentation/routes"
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -38,7 +39,7 @@ app.register(ScalarApiReference, {
 	routePrefix: "/docs",
 })
 
-app.register(health)
+app.register(registerRoutes)
 
 app.listen({ port: env.PORT, host: "0.0.0.0" }).then(() => {
 	console.log(`🚀 HTTP server running on http://localhost:${env.PORT}`)

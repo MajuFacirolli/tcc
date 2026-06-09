@@ -1,6 +1,6 @@
-import type { BloodType } from "@/@types/BloodType"
-import type { Sex } from "@/@types/Sex"
-import { MS_PER_DAY } from "@/utils/dateUtils"
+import type { BloodType } from "@domain/value_objects/BloodType"
+import type { Sex } from "@domain/value_objects/Sex"
+import { MS_PER_DAY } from "@domain/utils/dateUtils"
 
 const ELIGIBILITY_DAYS: Record<Sex, number> = {
 	male: 60,

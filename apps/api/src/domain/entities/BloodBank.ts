@@ -1,5 +1,5 @@
-import type { BloodBankStatus } from "@/@types/BloodBankStatus"
-import type { BloodType } from "@/@types/BloodType"
+import type { BloodBankStatus } from "@domain/value_objects/BloodBankStatus"
+import type { BloodType } from "@domain/value_objects/BloodType"
 
 export class BloodBank {
 	constructor(
