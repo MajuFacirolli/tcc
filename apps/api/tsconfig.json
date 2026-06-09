@@ -14,13 +14,20 @@
 		"module": "nodenext",
 		"target": "es2024",
 
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+
 		"strict": true,
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"moduleResolution": "node16",
 
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*":               ["./src/*"],
+			"@domain/*":         ["./src/domain/*"],
+			"@application/*":    ["./src/application/*"],
+			"@infrastructure/*": ["./src/infrastructure/*"],
+			"@presentation/*":   ["./src/presentation/*"]
 		}
 	}
 }

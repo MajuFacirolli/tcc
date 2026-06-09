@@ -23,5 +23,5 @@
 			"tailwindDirectives": true
 		}
 	},
-	"assist": { "actions": { "source": { "organizeImports": "on" } } }
+	"assist": { "actions": { "source": { "organizeImports": "off" } } }
 }
