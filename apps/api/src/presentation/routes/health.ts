@@ -1,5 +1,6 @@
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
 import { z } from "zod"
+import { apiResponseSchema } from "@presentation/schemas/apiResponse"
 
 export const health: FastifyPluginAsyncZod = async (app) => {
 	app.get(
@@ -8,18 +9,18 @@ export const health: FastifyPluginAsyncZod = async (app) => {
 			schema: {
 				summary: "API health check",
 				response: {
-					200: z.object({
-						status: z.string(),
-						timestamp: z.string(),
-					}),
+					200: apiResponseSchema(z.object({ timestamp: z.string() })),
 				},
 			},
 		},
-		async () => {
-			return {
-				status: "healthy",
-				timestamp: new Date().toISOString(),
-			}
+		async (_request, reply) => {
+			return reply.status(200).send({
+				data: {
+					timestamp: new Date().toISOString(),
+				},
+				status: 200,
+				message: "Healthy",
+			})
 		},
 	)
 }

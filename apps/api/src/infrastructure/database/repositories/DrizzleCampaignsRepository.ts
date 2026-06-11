@@ -3,7 +3,7 @@ import { db } from "@infrastructure/database/drizzle/client"
 import { campaigns } from "@infrastructure/database/drizzle/schema/index"
 import { Campaign, type CampaignSummary } from "@domain/entities/Campaign"
 import { CampaignMetrics } from "@domain/entities/CampaignMetrics"
-import { CampaignNotFoundError } from "@domain/exceptions/CampaignNotFoundError"
+import { NotFoundError } from "@/core/errors/NotFoundError"
 import type {
 	ICampaignsRepository,
 	IGetCampaignsParams,
@@ -87,7 +87,10 @@ export class DrizzleCampaignsRepository implements ICampaignsRepository {
 			.where(eq(campaigns.id, id))
 			.limit(1)
 
-		if (!row) throw new CampaignNotFoundError(id)
+		if (!row)
+			throw new NotFoundError(
+				new Error(`Campaign with id "${id}" was not found`),
+			)
 
 		return new Campaign(
 			row.id,

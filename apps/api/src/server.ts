@@ -10,6 +10,7 @@ import {
 	type ZodTypeProvider,
 } from "fastify-type-provider-zod"
 import { env } from "@/env"
+import { errorHandler } from "./presentation/middlewares/errorHandler"
 import { registerRoutes } from "./presentation/routes"
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
@@ -39,6 +40,7 @@ app.register(ScalarApiReference, {
 	routePrefix: "/docs",
 })
 
+app.register(errorHandler)
 app.register(registerRoutes)
 
 app.listen({ port: env.PORT, host: "0.0.0.0" }).then(() => {
