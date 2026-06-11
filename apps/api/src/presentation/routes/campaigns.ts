@@ -4,6 +4,10 @@ import { BLOOD_TYPES } from "@domain/value_objects/BloodType"
 import { CAMPAIGN_STATUSES } from "@domain/value_objects/CampaignStatus"
 import { container } from "@/container/Ioc.config"
 import { TYPES } from "@/container/types"
+import {
+	apiErrorSchema,
+	apiResponseSchema,
+} from "@presentation/schemas/apiResponse"
 import type { GetCampaignsController } from "@presentation/controllers/GetCampaignsController"
 
 const bloodTypeSchema = z.enum(BLOOD_TYPES)
@@ -29,11 +33,6 @@ const campaignSummarySchema = z.object({
 	conversionRate: z.number(),
 })
 
-const notFoundSchema = z.object({
-	status: z.number(),
-	message: z.string(),
-})
-
 export const campaigns: FastifyPluginAsyncZod = async (app) => {
 	const controller = container.get<GetCampaignsController>(
 		TYPES.GetCampaignsController,
@@ -50,12 +49,12 @@ export const campaigns: FastifyPluginAsyncZod = async (app) => {
 					bloodType: bloodTypeSchema.optional(),
 				}),
 				response: {
-					200: z.array(campaignSchema),
-					404: notFoundSchema,
+					200: apiResponseSchema(z.array(campaignSchema)),
+					404: apiErrorSchema,
 				},
 			},
 		},
-		controller.handle.bind(controller),
+		(req, rep) => controller.handle(req, rep),
 	)
 
 	app.get(
@@ -65,8 +64,8 @@ export const campaigns: FastifyPluginAsyncZod = async (app) => {
 				summary: "List recent campaigns",
 				tags: ["Campaigns"],
 				response: {
-					200: z.array(campaignSummarySchema),
-					404: notFoundSchema,
+					200: apiResponseSchema(z.array(campaignSummarySchema)),
+					404: apiErrorSchema,
 				},
 			},
 		},
@@ -80,8 +79,8 @@ export const campaigns: FastifyPluginAsyncZod = async (app) => {
 				summary: "Get campaign",
 				tags: ["Campaigns"],
 				response: {
-					200: campaignSchema,
-					404: notFoundSchema,
+					200: apiResponseSchema(campaignSchema),
+					404: apiErrorSchema,
 				},
 			},
 		},
@@ -100,8 +99,8 @@ export const campaigns: FastifyPluginAsyncZod = async (app) => {
 					bloodType: bloodTypeSchema,
 				}),
 				response: {
-					201: z.void(),
-					404: notFoundSchema,
+					201: apiResponseSchema(z.string()),
+					404: apiErrorSchema,
 				},
 			},
 		},
