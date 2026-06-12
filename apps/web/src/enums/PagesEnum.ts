@@ -5,6 +5,7 @@ export const PagesEnum = {
 	DONORS: "/doadores",
 	METRICS: "/metricas",
 	HELP: "/ajuda",
+	LOGIN: "/login",
 } as const
 
 export type PagesEnum = (typeof PagesEnum)[keyof typeof PagesEnum]

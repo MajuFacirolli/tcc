@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router"
+import { Link, useRouter } from "@tanstack/react-router"
 import { CircleQuestionMark, LogOut } from "lucide-react"
 import { twMerge } from "tailwind-merge"
 import { Tooltip } from "@/components/Tooltip"
@@ -6,6 +6,13 @@ import { SHORTCUT_LINKS } from "@/data/shortcutLinks"
 import { PagesEnum } from "@/enums/PagesEnum"
 
 export const Sidebar = () => {
+	const router = useRouter()
+
+	function handleLogout() {
+		localStorage.removeItem("isAuthenticated")
+		router.navigate({ to: "/login" })
+	}
+
 	return (
 		<aside
 			className={twMerge(
@@ -49,6 +56,7 @@ export const Sidebar = () => {
 
 				<button
 					type="button"
+					onClick={handleLogout}
 					className={twMerge(
 						"group flex items-center justify-center gap-3 p-2.5 rounded-lg text-sm font-medium text-zinc-500",
 						"hover:text-red-800 hover:bg-red-50 transition-colors duration-150",
