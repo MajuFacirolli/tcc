@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router"
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router"
 import { Sidebar } from "../components/Sidebar"
 
 const DashboardLayout = () => (
@@ -11,5 +11,10 @@ const DashboardLayout = () => (
 )
 
 export const Route = createFileRoute("/_dashboard")({
+	beforeLoad: () => {
+		if (!localStorage.getItem("isAuthenticated")) {
+			throw redirect({ to: "/login" })
+		}
+	},
 	component: DashboardLayout,
 })
