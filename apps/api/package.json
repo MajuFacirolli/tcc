@@ -6,6 +6,8 @@
 	"scripts": {
 		"dev": "tsx watch --env-file=.env src/server.ts",
 		"start": "node dist/server.js",
+		"test": "vitest run",
+		"test:watch": "vitest",
 		"db:generate": "drizzle-kit generate",
 		"db:migrate": "drizzle-kit migrate",
 		"db:studio": "drizzle-kit studio"
@@ -19,7 +21,9 @@
 		"@types/pg": "^8.20.0",
 		"drizzle-kit": "^0.31.10",
 		"tsx": "^4.21.0",
-		"typescript": "~5.9.3"
+		"typescript": "~5.9.3",
+		"vite-tsconfig-paths": "^6.1.1",
+		"vitest": "^4.1.9"
 	},
 	"dependencies": {
 		"@fastify/cors": "^11.2.0",
