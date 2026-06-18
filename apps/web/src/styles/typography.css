@@ -1,0 +1,3 @@
+.typography-overline {
+	@apply text-xs font-semibold uppercase tracking-widest text-zinc-500 flex items-center gap-1;
+}
