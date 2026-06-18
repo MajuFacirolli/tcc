@@ -1,3 +1,6 @@
 packages:
-  - 'api'
-  - 'web'
+  - apps/*
+  - packages/*
+onlyBuiltDependencies:
+  - '@biomejs/biome'
+  - esbuild

@@ -1,11 +1,16 @@
 {
-  "name": "tcc",
-  "version": "1.0.0",
-  "description": "",
-  "private": true,
-  "workspaces": [
-    "api",
-    "web"
-  ],
-  "packageManager": "pnpm@10.11.0"
+	"name": "tcc",
+	"version": "1.0.0",
+	"private": true,
+	"packageManager": "pnpm@10.11.0",
+	"scripts": {
+		"dev": "turbo dev",
+		"build": "turbo build",
+		"lint": "turbo lint",
+		"format": "biome format --write ."
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.4.15",
+		"turbo": "latest"
+	}
 }
