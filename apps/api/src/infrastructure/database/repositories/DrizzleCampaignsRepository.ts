@@ -6,6 +6,7 @@ import { CampaignMetrics } from "@domain/entities/CampaignMetrics"
 import { NotFoundError } from "@/core/errors/NotFoundError"
 import type {
 	ICampaignsRepository,
+	ICreateCampaignParams,
 	IGetCampaignsParams,
 } from "@application/interfaces/ICampaignsRepository"
 
@@ -103,7 +104,11 @@ export class DrizzleCampaignsRepository implements ICampaignsRepository {
 		)
 	}
 
-	async create(): Promise<string> {
-		return ""
+	async create(params: ICreateCampaignParams): Promise<string> {
+		const [row] = await db
+			.insert(campaigns)
+			.values(params)
+			.returning({ id: campaigns.id })
+		return row.id
 	}
 }

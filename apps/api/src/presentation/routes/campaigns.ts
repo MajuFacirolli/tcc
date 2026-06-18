@@ -1,7 +1,5 @@
 import type { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
 import { z } from "zod"
-import { BLOOD_TYPES } from "@domain/value_objects/BloodType"
-import { CAMPAIGN_STATUSES } from "@domain/value_objects/CampaignStatus"
 import { container } from "@/container/Ioc.config"
 import { TYPES } from "@/container/types"
 import {
@@ -9,33 +7,29 @@ import {
 	apiResponseSchema,
 } from "@presentation/schemas/apiResponse"
 import type { GetCampaignsController } from "@presentation/controllers/GetCampaignsController"
-
-const bloodTypeSchema = z.enum(BLOOD_TYPES)
-const campaignStatusSchema = z.enum(CAMPAIGN_STATUSES)
-
-const campaignSchema = z.object({
-	id: z.string(),
-	title: z.string(),
-	message: z.string(),
-	bloodType: bloodTypeSchema,
-	status: campaignStatusSchema,
-	notifiedCount: z.number(),
-	confirmationsCount: z.number(),
-	conversionRate: z.number(),
-	createdAt: z.iso.datetime(),
-})
-
-const campaignSummarySchema = z.object({
-	id: z.string(),
-	title: z.string(),
-	bloodType: bloodTypeSchema,
-	notifiedCount: z.number(),
-	conversionRate: z.number(),
-})
+import type { GetCampaignsSummaryController } from "@presentation/controllers/GetCampaignsSummaryController"
+import type { GetCampaignController } from "@presentation/controllers/GetCampaignController"
+import type { CreateCampaignController } from "@presentation/controllers/CreateCampaignController"
+import {
+	campaignSchema,
+	campaignStatusSchema,
+	campaignSummarySchema,
+} from "../schemas/campaigns"
+import { bloodTypeSchema } from "../schemas/bloodType"
 
 export const campaigns: FastifyPluginAsyncZod = async (app) => {
-	const controller = container.get<GetCampaignsController>(
+	const getCampaignsController = container.get<GetCampaignsController>(
 		TYPES.GetCampaignsController,
+	)
+	const getCampaignsSummaryController =
+		container.get<GetCampaignsSummaryController>(
+			TYPES.GetCampaignsSummaryController,
+		)
+	const getCampaignController = container.get<GetCampaignController>(
+		TYPES.GetCampaignController,
+	)
+	const createCampaignController = container.get<CreateCampaignController>(
+		TYPES.CreateCampaignController,
 	)
 
 	app.get(
@@ -54,7 +48,7 @@ export const campaigns: FastifyPluginAsyncZod = async (app) => {
 				},
 			},
 		},
-		(req, rep) => controller.handle(req, rep),
+		(req, rep) => getCampaignsController.handle(req, rep),
 	)
 
 	app.get(
@@ -69,7 +63,7 @@ export const campaigns: FastifyPluginAsyncZod = async (app) => {
 				},
 			},
 		},
-		() => {},
+		(req, rep) => getCampaignsSummaryController.handle(req, rep),
 	)
 
 	app.get(
@@ -78,13 +72,14 @@ export const campaigns: FastifyPluginAsyncZod = async (app) => {
 			schema: {
 				summary: "Get campaign",
 				tags: ["Campaigns"],
+				params: z.object({ id: z.string() }),
 				response: {
 					200: apiResponseSchema(campaignSchema),
 					404: apiErrorSchema,
 				},
 			},
 		},
-		() => {},
+		(req, rep) => getCampaignController.handle(req, rep),
 	)
 
 	app.post(
@@ -104,6 +99,6 @@ export const campaigns: FastifyPluginAsyncZod = async (app) => {
 				},
 			},
 		},
-		() => {},
+		(req, rep) => createCampaignController.handle(req, rep),
 	)
 }

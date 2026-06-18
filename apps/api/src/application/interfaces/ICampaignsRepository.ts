@@ -7,9 +7,15 @@ export type IGetCampaignsParams = {
 	bloodType?: BloodType
 }
 
+export type ICreateCampaignParams = {
+	title: string
+	message: string
+	bloodType: BloodType
+}
+
 export interface ICampaignsRepository {
 	list(params?: IGetCampaignsParams): Promise<Array<Campaign>>
 	listSummary(): Promise<Array<CampaignSummary>>
 	get(id: string): Promise<Campaign>
-	create(): Promise<string>
+	create(data: ICreateCampaignParams): Promise<string>
 }
