@@ -18,6 +18,8 @@ import {
 import { bloodTypeSchema } from "../schemas/bloodType"
 
 export const campaigns: FastifyPluginAsyncZod = async (app) => {
+	app.addHook("onRequest", app.authenticate)
+
 	const getCampaignsController = container.get<GetCampaignsController>(
 		TYPES.GetCampaignsController,
 	)
@@ -38,12 +40,14 @@ export const campaigns: FastifyPluginAsyncZod = async (app) => {
 			schema: {
 				summary: "List campaigns",
 				tags: ["Campaigns"],
+				security: [{ cookieAuth: [] }],
 				querystring: z.object({
 					status: campaignStatusSchema.optional(),
 					bloodType: bloodTypeSchema.optional(),
 				}),
 				response: {
 					200: apiResponseSchema(z.array(campaignSchema)),
+					401: apiErrorSchema,
 					404: apiErrorSchema,
 				},
 			},
@@ -57,8 +61,10 @@ export const campaigns: FastifyPluginAsyncZod = async (app) => {
 			schema: {
 				summary: "List recent campaigns",
 				tags: ["Campaigns"],
+				security: [{ cookieAuth: [] }],
 				response: {
 					200: apiResponseSchema(z.array(campaignSummarySchema)),
+					401: apiErrorSchema,
 					404: apiErrorSchema,
 				},
 			},
@@ -72,9 +78,11 @@ export const campaigns: FastifyPluginAsyncZod = async (app) => {
 			schema: {
 				summary: "Get campaign",
 				tags: ["Campaigns"],
+				security: [{ cookieAuth: [] }],
 				params: z.object({ id: z.string() }),
 				response: {
 					200: apiResponseSchema(campaignSchema),
+					401: apiErrorSchema,
 					404: apiErrorSchema,
 				},
 			},
@@ -88,13 +96,15 @@ export const campaigns: FastifyPluginAsyncZod = async (app) => {
 			schema: {
 				summary: "Create campaign",
 				tags: ["Campaigns"],
+				security: [{ cookieAuth: [] }],
 				body: z.object({
 					title: z.string(),
-					message: z.string(),
+					message: z.string("Message is required"),
 					bloodType: bloodTypeSchema,
 				}),
 				response: {
 					201: apiResponseSchema(z.string()),
+					401: apiErrorSchema,
 					404: apiErrorSchema,
 				},
 			},
