@@ -7,16 +7,11 @@ import { NotFoundError } from "@/core/errors/NotFoundError"
 import type {
 	ICampaignsRepository,
 	ICreateCampaignParams,
-	IGetCampaignsParams,
 } from "@application/interfaces/ICampaignsRepository"
+import type { GetCampaignsInputDTO } from "@application/dtos/campaigns/GetCampaignsInputDTO"
 
 export class DrizzleCampaignsRepository implements ICampaignsRepository {
-	private rowToMetrics(row: {
-		totalEligibleDonors: number
-		notifiedCount: number
-		intentionConfirmationsCount: number
-		averageResponseTime: number
-	}): CampaignMetrics {
+	private rowToMetrics(row: typeof campaigns.$inferSelect): CampaignMetrics {
 		return new CampaignMetrics(
 			row.totalEligibleDonors,
 			row.notifiedCount,
@@ -25,7 +20,7 @@ export class DrizzleCampaignsRepository implements ICampaignsRepository {
 		)
 	}
 
-	async list(params?: IGetCampaignsParams): Promise<Array<Campaign>> {
+	async list(params?: GetCampaignsInputDTO): Promise<Array<Campaign>> {
 		const rows = await db
 			.select()
 			.from(campaigns)
@@ -65,20 +60,16 @@ export class DrizzleCampaignsRepository implements ICampaignsRepository {
 			.orderBy(desc(campaigns.createdAt))
 			.limit(5)
 
-		return rows.map((row) => {
-			const conversionRate =
-				row.notifiedCount === 0
-					? 0
-					: row.intentionConfirmationsCount / row.notifiedCount
-
-			return {
-				id: row.id,
-				title: row.title,
-				bloodType: row.bloodType,
-				notifiedCount: row.notifiedCount,
-				conversionRate,
-			}
-		})
+		return rows.map((row) => ({
+			id: row.id,
+			title: row.title,
+			bloodType: row.bloodType,
+			notifiedCount: row.notifiedCount,
+			conversionRate: CampaignMetrics.calculateConversionRate(
+				row.notifiedCount,
+				row.intentionConfirmationsCount,
+			),
+		}))
 	}
 
 	async get(id: string): Promise<Campaign> {
