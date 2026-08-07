@@ -10,6 +10,7 @@
 		"test:watch": "vitest",
 		"db:generate": "drizzle-kit generate",
 		"db:migrate": "drizzle-kit migrate",
+		"db:seed": "tsx --env-file=.env src/infrastructure/database/drizzle/seed.ts",
 		"db:studio": "drizzle-kit studio"
 	},
 	"keywords": [],

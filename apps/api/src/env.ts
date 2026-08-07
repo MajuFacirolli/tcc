@@ -35,6 +35,9 @@ const envSchema = z.object({
 	JWT_SECRET: z.string().min(32),
 	SESSION_DURATION: durationInSeconds,
 	WEB_ORIGIN: z.url().default("http://localhost:5173"),
+	SEED_ADMIN_NAME: z.string().min(1).optional(),
+	SEED_ADMIN_EMAIL: z.email().optional(),
+	SEED_ADMIN_PASSWORD: z.string().min(8).optional(),
 })
 
 export const env = envSchema.parse(process.env)
