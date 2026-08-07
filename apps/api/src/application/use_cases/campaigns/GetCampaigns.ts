@@ -1,13 +1,17 @@
-import type { Campaign } from "@domain/entities/Campaign"
-import type {
-	ICampaignsRepository,
-	IGetCampaignsParams,
-} from "@application/interfaces/ICampaignsRepository"
+import type { ICampaignsRepository } from "@application/interfaces/ICampaignsRepository"
+import type { GetCampaignsInputDTO } from "@application/dtos/campaigns/GetCampaignsInputDTO"
+import {
+	type GetCampaignOutputDTO,
+	toGetCampaignOutputDTO,
+} from "@application/dtos/campaigns/GetCampaignOutputDTO"
 
 export class GetCampaignsUseCase {
 	constructor(private readonly campaignsRepository: ICampaignsRepository) {}
 
-	async execute(filters?: IGetCampaignsParams): Promise<Campaign[]> {
-		return this.campaignsRepository.list(filters)
+	async execute(
+		filters?: GetCampaignsInputDTO,
+	): Promise<GetCampaignOutputDTO[]> {
+		const campaigns = await this.campaignsRepository.list(filters)
+		return campaigns.map(toGetCampaignOutputDTO)
 	}
 }
