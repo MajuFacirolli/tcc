@@ -14,6 +14,7 @@ import {
 } from "fastify-type-provider-zod"
 import { env } from "@/env"
 import { AUTH_COOKIE_NAME } from "@presentation/middlewares/authCookie"
+import { authenticate } from "@presentation/middlewares/authenticate"
 import { errorHandler } from "@presentation/middlewares/errorHandler"
 import { registerRoutes } from "@presentation/routes"
 
@@ -69,6 +70,8 @@ export function buildApp() {
 	})
 
 	app.register(ScalarApiReference, { routePrefix: "/docs" })
+
+	app.register(authenticate)
 
 	errorHandler(app)
 
