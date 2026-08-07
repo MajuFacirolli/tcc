@@ -5,6 +5,8 @@ import { GetCampaignsSummaryController } from "@presentation/controllers/GetCamp
 import { GetCampaignController } from "@presentation/controllers/GetCampaignController"
 import { CreateCampaignController } from "@presentation/controllers/CreateCampaignController"
 import { DrizzleCampaignsRepository } from "@infrastructure/database/repositories/DrizzleCampaignsRepository"
+import { Argon2PasswordHasher } from "@infrastructure/identity/Argon2PasswordHasher"
+import type { IPasswordHasher } from "@application/interfaces/IPasswordHasher"
 import type { ICampaignsRepository } from "@application/interfaces/ICampaignsRepository"
 import { GetCampaignsUseCase } from "@application/use_cases/campaigns/GetCampaigns"
 import { GetCampaignsSummaryUseCase } from "@application/use_cases/campaigns/GetCampaignsSummary"
@@ -38,6 +40,8 @@ decorate(inject(TYPES.GetCampaignUseCase), GetCampaignController, 0)
 
 decorate(injectable(), CreateCampaignController)
 decorate(inject(TYPES.CreateCampaignUseCase), CreateCampaignController, 0)
+
+decorate(injectable(), Argon2PasswordHasher)
 
 const container = new IoCContainer()
 
@@ -76,6 +80,11 @@ container.bindController<GetCampaignController>(
 container.bindController<CreateCampaignController>(
 	TYPES.CreateCampaignController,
 	CreateCampaignController,
+)
+
+container.bindService<IPasswordHasher>(
+	TYPES.IPasswordHasher,
+	Argon2PasswordHasher,
 )
 
 export { container }
