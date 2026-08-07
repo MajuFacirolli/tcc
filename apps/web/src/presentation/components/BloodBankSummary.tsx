@@ -2,10 +2,10 @@ import { Link } from "@tanstack/react-router"
 import { ArrowRight, Megaphone } from "lucide-react"
 import type { ComponentProps } from "react"
 import { twMerge } from "tailwind-merge"
-import { Badge } from "@/components/Badge"
-import { BLOOD_BANK_STATUS_LABELS } from "@/data/bloodBankStatusLabels"
-import { BloodBankStatusEnum } from "@/enums/BloodBankStatusEnum"
-import { PagesEnum } from "@/enums/PagesEnum"
+import { Badge } from "@/presentation/components/Badge"
+import { BLOOD_BANK_STATUS_LABELS } from "@/presentation/data/bloodBankStatusLabels"
+import { BloodBankStatusEnum } from "@/presentation/enums/BloodBankStatusEnum"
+import { PagesEnum } from "@/presentation/enums/PagesEnum"
 import {
 	Table,
 	TableBody,

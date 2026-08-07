@@ -1,7 +1,7 @@
 import type { LucideProps } from "lucide-react"
 import { twMerge } from "tailwind-merge"
 import { tv } from "tailwind-variants"
-import type { TTitleLevel } from "@/@types/TTitleLevel"
+import type { TTitleLevel } from "@/presentation/@types/TTitleLevel"
 
 interface ICardProps extends React.HTMLAttributes<HTMLDivElement> {}
 

@@ -1,5 +1,5 @@
 import { twMerge } from "tailwind-merge"
-import type { TTitleLevel } from "@/@types/TTitleLevel"
+import type { TTitleLevel } from "@/presentation/@types/TTitleLevel"
 
 interface IHeadingProps extends React.HTMLAttributes<HTMLDivElement> {}
 

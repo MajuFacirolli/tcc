@@ -6,12 +6,12 @@ import {
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
-} from "@/components/Accordion"
-import { Card } from "@/components/Card"
-import { Heading } from "@/components/Heading"
-import { SupportSection } from "@/components/SupportSection"
-import { faqs } from "@/data/faqs"
-import { guides } from "@/data/guides"
+} from "@/presentation/components/Accordion"
+import { Card } from "@/presentation/components/Card"
+import { Heading } from "@/presentation/components/Heading"
+import { SupportSection } from "@/presentation/components/SupportSection"
+import { faqs } from "@/presentation/data/faqs"
+import { guides } from "@/presentation/data/guides"
 
 export const Route = createFileRoute("/_dashboard/ajuda")({
 	component: RouteComponent,
