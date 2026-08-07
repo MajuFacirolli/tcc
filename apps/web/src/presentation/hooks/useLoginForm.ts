@@ -1,4 +1,4 @@
-import { PagesEnum } from "@/enums/PagesEnum"
+import { PagesEnum } from "@/presentation/enums/PagesEnum"
 import { useRouter } from "@tanstack/react-router"
 import { useForm } from "react-hook-form"
 

@@ -1,9 +1,9 @@
 import { Link, useRouter } from "@tanstack/react-router"
 import { CircleQuestionMark, LogOut } from "lucide-react"
 import { twMerge } from "tailwind-merge"
-import { Tooltip } from "@/components/Tooltip"
-import { SHORTCUT_LINKS } from "@/data/shortcutLinks"
-import { PagesEnum } from "@/enums/PagesEnum"
+import { Tooltip } from "@/presentation/components/Tooltip"
+import { SHORTCUT_LINKS } from "@/presentation/data/shortcutLinks"
+import { PagesEnum } from "@/presentation/enums/PagesEnum"
 
 export const Sidebar = () => {
 	const router = useRouter()

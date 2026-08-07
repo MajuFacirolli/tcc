@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router"
 import { ArrowLeft } from "lucide-react"
-import { Heading } from "@/components/Heading"
-import { PagesEnum } from "@/enums/PagesEnum"
+import { Heading } from "@/presentation/components/Heading"
+import { PagesEnum } from "@/presentation/enums/PagesEnum"
 
 export const NotFound = () => (
 	<div className="flex flex-col gap-2 items-center justify-center">

@@ -6,7 +6,7 @@ import {
 	Megaphone,
 	Users,
 } from "lucide-react"
-import { PagesEnum } from "@/enums/PagesEnum"
+import { PagesEnum } from "@/presentation/enums/PagesEnum"
 
 type ShortcutLink = {
 	label: string

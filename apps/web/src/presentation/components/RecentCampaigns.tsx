@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router"
 import { ArrowRight, TrendingDown, TrendingUp } from "lucide-react"
 import { twMerge } from "tailwind-merge"
-import { PagesEnum } from "@/enums/PagesEnum"
+import { PagesEnum } from "@/presentation/enums/PagesEnum"
 
 const mockCampaigns = [
 	{
