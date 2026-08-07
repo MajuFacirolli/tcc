@@ -1,4 +1,7 @@
-import type { ICampaignsRepository, ICreateCampaignParams } from "@application/interfaces/ICampaignsRepository"
+import type {
+	ICampaignsRepository,
+	ICreateCampaignParams,
+} from "@application/interfaces/ICampaignsRepository"
 
 export class CreateCampaignUseCase {
 	constructor(private readonly campaignsRepository: ICampaignsRepository) {}
