@@ -30,9 +30,9 @@ function forgeUrl(path: string, baseUrl?: string): string {
 	return `${BASE_URL}${path}`
 }
 
-function mountHeader(customHeader: TCustomHeaders = {}) {
+function mountHeader(customHeader: TCustomHeaders = {}, hasBody = true) {
 	const headers = new Headers(
-		Object.entries({ ...DEFAULT_HEADERS, ...customHeader }),
+		Object.entries({ ...(hasBody ? DEFAULT_HEADERS : {}), ...customHeader }),
 	)
 
 	if (headers.get("Content-Type") === "multipart/form-data") {
@@ -76,7 +76,10 @@ export async function client<T>(
 ): Promise<THTTPClientExecutionReturn<T>> {
 	const { parseJSON, ...mergedOptions } = { ...DEFAULT_OPTIONS, ...options }
 
-	const headers = mountHeader(mergedOptions.headers)
+	const headers = mountHeader(
+		mergedOptions.headers,
+		mergedOptions.body !== undefined && mergedOptions.body !== null,
+	)
 
 	const response = await fetch(forgeUrl(url, mergedOptions?.baseUrl), {
 		credentials: "include",

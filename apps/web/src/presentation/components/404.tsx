@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router"
 import { ArrowLeft } from "lucide-react"
-import { Heading } from "@/presentation/components/Heading"
+import { Heading } from "@/presentation/components/ui/Heading"
 import { PagesEnum } from "@/presentation/enums/PagesEnum"
 
 export const NotFound = () => (

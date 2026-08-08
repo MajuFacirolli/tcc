@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router"
 import { ArrowRight, Megaphone } from "lucide-react"
 import type { ComponentProps } from "react"
 import { twMerge } from "tailwind-merge"
-import { Badge } from "@/presentation/components/Badge"
+import { Badge } from "@/presentation/components/ui/Badge"
 import { BLOOD_BANK_STATUS_LABELS } from "@/presentation/data/bloodBankStatusLabels"
 import { BloodBankStatusEnum } from "@/presentation/enums/BloodBankStatusEnum"
 import { PagesEnum } from "@/presentation/enums/PagesEnum"
@@ -13,7 +13,7 @@ import {
 	TableHead,
 	TableHeader,
 	TableRow,
-} from "./Table"
+} from "./ui/Table"
 
 const mockBloodBankSummary = [
 	{ type: "A+", status: BloodBankStatusEnum.STABLE },

@@ -13,8 +13,8 @@
 	"iconLibrary": "lucide",
 	"rtl": false,
 	"aliases": {
-		"components": "@/presentation/components",
-		"utils": "@/presentation/lib/utils",
+		"components": "@/presentation/components/ui",
+		"utils": "@/presentation/utils",
 		"ui": "@/presentation/components/ui",
 		"lib": "@/presentation/lib",
 		"hooks": "@/presentation/hooks"

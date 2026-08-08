@@ -6,9 +6,9 @@ import {
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
-} from "@/presentation/components/Accordion"
-import { Card } from "@/presentation/components/Card"
-import { Heading } from "@/presentation/components/Heading"
+} from "@/presentation/components/ui/Accordion"
+import { Card } from "@/presentation/components/ui/Card"
+import { Heading } from "@/presentation/components/ui/Heading"
 import { SupportSection } from "@/presentation/components/SupportSection"
 import { faqs } from "@/presentation/data/faqs"
 import { guides } from "@/presentation/data/guides"

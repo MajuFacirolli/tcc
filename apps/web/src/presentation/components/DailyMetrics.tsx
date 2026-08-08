@@ -1,6 +1,6 @@
 import { Mails, Megaphone, TrendingUp, UserCheck, Users } from "lucide-react"
-import { Card } from "@/presentation/components/Card"
-import { Badge } from "./Badge"
+import { Card } from "@/presentation/components/ui/Card"
+import { Badge } from "./ui/Badge"
 
 export const DailyMetrics = () => {
 	return (

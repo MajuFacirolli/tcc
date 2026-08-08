@@ -1,5 +1,5 @@
 import { Mail, Phone } from "lucide-react"
-import { Card } from "@/presentation/components/Card"
+import { Card } from "@/presentation/components/ui/Card"
 
 export const SupportSection = () => {
 	return (

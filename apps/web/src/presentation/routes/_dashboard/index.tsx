@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { BloodBankSummary } from "@/presentation/components/BloodBankSummary"
 import { DailyMetrics } from "@/presentation/components/DailyMetrics"
-import { Heading } from "@/presentation/components/Heading"
+import { Heading } from "@/presentation/components/ui/Heading"
 import { RecentCampaigns } from "@/presentation/components/RecentCampaigns"
 
 export const Route = createFileRoute("/_dashboard/")({
