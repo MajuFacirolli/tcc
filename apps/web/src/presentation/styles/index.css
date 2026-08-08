@@ -1,0 +1,74 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "./_imports.css";
+
+/*
+ * Design tokens consumed by the shadcn components in `presentation/components/ui`.
+ * They are mapped onto Tailwind's own palette so the generated components stay in
+ * step with the hand-written ones, which use `zinc-*` and `red-800` directly.
+ */
+:root {
+	--background: var(--color-white);
+	--foreground: var(--color-zinc-950);
+
+	--card: var(--color-white);
+	--card-foreground: var(--color-zinc-950);
+
+	--popover: var(--color-white);
+	--popover-foreground: var(--color-zinc-950);
+
+	--primary: var(--color-red-800);
+	--primary-foreground: var(--color-white);
+
+	--secondary: var(--color-zinc-100);
+	--secondary-foreground: var(--color-zinc-900);
+
+	--muted: var(--color-zinc-100);
+	--muted-foreground: var(--color-zinc-500);
+
+	--accent: var(--color-zinc-100);
+	--accent-foreground: var(--color-zinc-900);
+
+	--destructive: var(--color-red-600);
+	--destructive-foreground: var(--color-white);
+
+	--border: var(--color-zinc-200);
+	--input: var(--color-zinc-200);
+	--ring: var(--color-zinc-400);
+}
+
+/* `inline` so the utilities reference the variables above instead of copying
+   their values, which keeps a future dark theme a matter of redefining :root. */
+@theme inline {
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+
+	--color-card: var(--card);
+	--color-card-foreground: var(--card-foreground);
+
+	--color-popover: var(--popover);
+	--color-popover-foreground: var(--popover-foreground);
+
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+
+	--color-destructive: var(--destructive);
+	--color-destructive-foreground: var(--destructive-foreground);
+
+	--color-border: var(--border);
+	--color-input: var(--input);
+	--color-ring: var(--ring);
+}
+
+body {
+	color: var(--color-zinc-900);
+}

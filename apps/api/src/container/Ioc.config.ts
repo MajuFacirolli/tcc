@@ -1,50 +1,99 @@
 import "reflect-metadata"
 import { decorate, inject, injectable } from "inversify"
-import { GetCampaignsController } from "@presentation/controllers/GetCampaignsController"
-import { GetCampaignsSummaryController } from "@presentation/controllers/GetCampaignsSummaryController"
-import { GetCampaignController } from "@presentation/controllers/GetCampaignController"
-import { CreateCampaignController } from "@presentation/controllers/CreateCampaignController"
-import { DrizzleCampaignsRepository } from "@infrastructure/database/repositories/DrizzleCampaignsRepository"
+// interfaces
 import type { ICampaignsRepository } from "@application/interfaces/ICampaignsRepository"
+import type { IPasswordHasher } from "@application/interfaces/IPasswordHasher"
+import type { IUsersRepository } from "@application/interfaces/IUsersRepository"
+
+// repositories
+import { DrizzleCampaignsRepository } from "@infrastructure/database/repositories/DrizzleCampaignsRepository"
+import { DrizzleUsersRepository } from "@infrastructure/database/repositories/DrizzleUsersRepository"
+
+// use cases
 import { GetCampaignsUseCase } from "@application/use_cases/campaigns/GetCampaigns"
 import { GetCampaignsSummaryUseCase } from "@application/use_cases/campaigns/GetCampaignsSummary"
 import { GetCampaignUseCase } from "@application/use_cases/campaigns/GetCampaign"
 import { CreateCampaignUseCase } from "@application/use_cases/campaigns/CreateCampaign"
+import { SignInUseCase } from "@application/use_cases/auth/SignIn"
+import { GetProfileUseCase } from "@application/use_cases/auth/GetProfile"
+
+// controllers
+import { GetCampaignsController } from "@/presentation/controllers/campaigns/GetCampaignsController"
+import { GetCampaignsSummaryController } from "@/presentation/controllers/campaigns/GetCampaignsSummaryController"
+import { GetCampaignController } from "@/presentation/controllers/campaigns/GetCampaignController"
+import { CreateCampaignController } from "@/presentation/controllers/campaigns/CreateCampaignController"
+import { SignInController } from "@/presentation/controllers/auth/SignIn"
+import { SignOutController } from "@/presentation/controllers/auth/SignOut"
+import { GetProfileController } from "@/presentation/controllers/auth/GetProfile"
+
+//services
+import { Argon2PasswordHasher } from "@infrastructure/identity/Argon2PasswordHasher"
+
 import { IoCContainer } from "./IoCContainer"
 import { TYPES } from "./types"
 
+// injectable
+// repositories
 decorate(injectable(), DrizzleCampaignsRepository)
+decorate(injectable(), DrizzleUsersRepository)
 
+// use cases
 decorate(injectable(), GetCampaignsUseCase)
-decorate(inject(TYPES.ICampaignsRepository), GetCampaignsUseCase, 0)
-
 decorate(injectable(), GetCampaignsSummaryUseCase)
-decorate(inject(TYPES.ICampaignsRepository), GetCampaignsSummaryUseCase, 0)
-
 decorate(injectable(), GetCampaignUseCase)
-decorate(inject(TYPES.ICampaignsRepository), GetCampaignUseCase, 0)
-
 decorate(injectable(), CreateCampaignUseCase)
-decorate(inject(TYPES.ICampaignsRepository), CreateCampaignUseCase, 0)
+decorate(injectable(), SignInUseCase)
+decorate(injectable(), GetProfileUseCase)
 
+// controllers
 decorate(injectable(), GetCampaignsController)
-decorate(inject(TYPES.GetCampaignsUseCase), GetCampaignsController, 0)
-
 decorate(injectable(), GetCampaignsSummaryController)
-decorate(inject(TYPES.GetCampaignsSummaryUseCase), GetCampaignsSummaryController, 0)
-
 decorate(injectable(), GetCampaignController)
-decorate(inject(TYPES.GetCampaignUseCase), GetCampaignController, 0)
-
 decorate(injectable(), CreateCampaignController)
+decorate(injectable(), SignInController)
+decorate(injectable(), SignOutController)
+decorate(injectable(), GetProfileController)
+
+//services
+decorate(injectable(), Argon2PasswordHasher)
+
+// inject
+// repositories
+decorate(inject(TYPES.ICampaignsRepository), GetCampaignsUseCase, 0)
+decorate(inject(TYPES.ICampaignsRepository), GetCampaignsSummaryUseCase, 0)
+decorate(inject(TYPES.ICampaignsRepository), GetCampaignUseCase, 0)
+decorate(inject(TYPES.ICampaignsRepository), CreateCampaignUseCase, 0)
+decorate(inject(TYPES.IUsersRepository), SignInUseCase, 0)
+decorate(inject(TYPES.IUsersRepository), GetProfileUseCase, 0)
+
+// use cases
+decorate(inject(TYPES.GetCampaignsUseCase), GetCampaignsController, 0)
+decorate(
+	inject(TYPES.GetCampaignsSummaryUseCase),
+	GetCampaignsSummaryController,
+	0,
+)
+decorate(inject(TYPES.GetCampaignUseCase), GetCampaignController, 0)
 decorate(inject(TYPES.CreateCampaignUseCase), CreateCampaignController, 0)
+decorate(inject(TYPES.SignInUseCase), SignInController, 0)
+decorate(inject(TYPES.GetProfileUseCase), GetProfileController, 0)
+
+//services
+decorate(inject(TYPES.IPasswordHasher), SignInUseCase, 1)
 
 const container = new IoCContainer()
 
+// repositories
 container.bindRepository<ICampaignsRepository>(
 	TYPES.ICampaignsRepository,
 	DrizzleCampaignsRepository,
 )
+container.bindRepository<IUsersRepository>(
+	TYPES.IUsersRepository,
+	DrizzleUsersRepository,
+)
+
+// use cases
 container.bindUseCase<GetCampaignsUseCase>(
 	TYPES.GetCampaignsUseCase,
 	GetCampaignsUseCase,
@@ -61,6 +110,13 @@ container.bindUseCase<CreateCampaignUseCase>(
 	TYPES.CreateCampaignUseCase,
 	CreateCampaignUseCase,
 )
+container.bindUseCase<SignInUseCase>(TYPES.SignInUseCase, SignInUseCase)
+container.bindUseCase<GetProfileUseCase>(
+	TYPES.GetProfileUseCase,
+	GetProfileUseCase,
+)
+
+// controllers
 container.bindController<GetCampaignsController>(
 	TYPES.GetCampaignsController,
 	GetCampaignsController,
@@ -76,6 +132,24 @@ container.bindController<GetCampaignController>(
 container.bindController<CreateCampaignController>(
 	TYPES.CreateCampaignController,
 	CreateCampaignController,
+)
+container.bindController<SignInController>(
+	TYPES.SignInController,
+	SignInController,
+)
+container.bindController<SignOutController>(
+	TYPES.SignOutController,
+	SignOutController,
+)
+container.bindController<GetProfileController>(
+	TYPES.GetProfileController,
+	GetProfileController,
+)
+
+//services
+container.bindService<IPasswordHasher>(
+	TYPES.IPasswordHasher,
+	Argon2PasswordHasher,
 )
 
 export { container }
