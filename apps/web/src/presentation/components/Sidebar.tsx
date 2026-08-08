@@ -1,18 +1,18 @@
-import { Link, useRouter } from "@tanstack/react-router"
-import { CircleQuestionMark, LogOut } from "lucide-react"
+import { Link } from "@tanstack/react-router"
+import { CircleQuestionMark } from "lucide-react"
 import { twMerge } from "tailwind-merge"
-import { Tooltip } from "@/presentation/components/Tooltip"
+import { Tooltip } from "@/presentation/components/ui/Tooltip"
 import { SHORTCUT_LINKS } from "@/presentation/data/shortcutLinks"
 import { PagesEnum } from "@/presentation/enums/PagesEnum"
+import { getInitials } from "@/presentation/utils/getInitials"
+import type { ProfileResponse } from "@/data/models/responses/ProfileResponse"
+import { SignOut } from "./SignOut"
 
-export const Sidebar = () => {
-	const router = useRouter()
+interface ISidebarProps {
+	profile: ProfileResponse
+}
 
-	function handleLogout() {
-		localStorage.removeItem("isAuthenticated")
-		router.navigate({ to: "/login" })
-	}
-
+export const Sidebar = ({ profile }: ISidebarProps) => {
 	return (
 		<aside
 			className={twMerge(
@@ -50,21 +50,13 @@ export const Sidebar = () => {
 					<Tooltip label="Ajuda" />
 				</Link>
 
-				<div className="hidden lg:flex bg-zinc-100 text-zinc-950 border border-zinc-200 rounded-full size-8 items-center justify-center">
-					<span className="text-center text-xs font-bold leading-none">AD</span>
+				<div className="group relative hidden lg:flex bg-zinc-100 text-zinc-950 border border-zinc-200 rounded-full size-8 items-center justify-center">
+					<span className="text-center text-xs font-bold leading-none">
+						{getInitials(profile.name)}
+					</span>
 				</div>
 
-				<button
-					type="button"
-					onClick={handleLogout}
-					className={twMerge(
-						"group flex items-center justify-center gap-3 p-2.5 rounded-lg text-sm font-medium text-zinc-500",
-						"hover:text-red-800 hover:bg-red-50 transition-colors duration-150",
-					)}
-				>
-					<LogOut className="size-4.5" />
-					<Tooltip label="Sair" />
-				</button>
+				<SignOut />
 			</div>
 		</aside>
 	)

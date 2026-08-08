@@ -15,7 +15,7 @@ export class SignInUseCase {
 		const user = await this.usersRepository.findByEmail(email)
 
 		if (!user) {
-			throw new UnauthorizedError("Invalid credentials")
+			throw new UnauthorizedError("Credenciais inválidas")
 		}
 
 		const isValid = await this.passwordHasher.verify(
@@ -23,7 +23,7 @@ export class SignInUseCase {
 			input.password,
 		)
 
-		if (!isValid) throw new UnauthorizedError("Invalid credentials")
+		if (!isValid) throw new UnauthorizedError("Credenciais inválidas")
 
 		return user
 	}

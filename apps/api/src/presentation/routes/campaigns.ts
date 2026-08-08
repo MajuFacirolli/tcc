@@ -6,10 +6,10 @@ import {
 	apiErrorSchema,
 	apiResponseSchema,
 } from "@presentation/schemas/apiResponse"
-import type { GetCampaignsController } from "@presentation/controllers/GetCampaignsController"
-import type { GetCampaignsSummaryController } from "@presentation/controllers/GetCampaignsSummaryController"
-import type { GetCampaignController } from "@presentation/controllers/GetCampaignController"
-import type { CreateCampaignController } from "@presentation/controllers/CreateCampaignController"
+import type { GetCampaignsController } from "@/presentation/controllers/campaigns/GetCampaignsController"
+import type { GetCampaignsSummaryController } from "@/presentation/controllers/campaigns/GetCampaignsSummaryController"
+import type { GetCampaignController } from "@/presentation/controllers/campaigns/GetCampaignController"
+import type { CreateCampaignController } from "@/presentation/controllers/campaigns/CreateCampaignController"
 import {
 	campaignSchema,
 	campaignStatusSchema,

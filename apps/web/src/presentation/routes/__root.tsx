@@ -1,5 +1,6 @@
-import { createRootRoute, Outlet } from "@tanstack/react-router"
+import { createRootRouteWithContext, Outlet } from "@tanstack/react-router"
 // import { TanStackRouterDevtools } from "@tanstack/react-router-devtools"
+import type { QueryClient } from "@tanstack/react-query"
 import { NotFound } from "@/presentation/components/404"
 import { InternalServerError } from "@/presentation/components/500"
 
@@ -10,8 +11,10 @@ const MainLayout = () => (
 	</main>
 )
 
-export const Route = createRootRoute({
-	component: MainLayout,
-	notFoundComponent: NotFound,
-	errorComponent: InternalServerError,
-})
+export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
+	{
+		component: MainLayout,
+		notFoundComponent: NotFound,
+		errorComponent: InternalServerError,
+	},
+)

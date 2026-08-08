@@ -1,18 +1,31 @@
 import { useLoginForm } from "@/presentation/hooks/useLoginForm"
 import { createFileRoute, redirect } from "@tanstack/react-router"
-import { Droplets } from "lucide-react"
+import { Droplets, Loader } from "lucide-react"
+import { Button } from "@/presentation/components/ui/Button"
+import {
+	Field,
+	FieldError,
+	FieldLabel,
+} from "@/presentation/components/ui/Field"
+import { Input } from "@/presentation/components/ui/Input"
+import { profileQueryOptions } from "@/presentation/queries/profileQuery"
+import { PagesEnum } from "../enums/PagesEnum"
 
 export const Route = createFileRoute("/login")({
-	beforeLoad: () => {
-		if (localStorage.getItem("isAuthenticated")) {
-			throw redirect({ to: "/" })
+	beforeLoad: async ({ context }) => {
+		const profile = await context.queryClient
+			.ensureQueryData(profileQueryOptions)
+			.catch(() => null)
+
+		if (profile) {
+			throw redirect({ to: PagesEnum.HOME })
 		}
 	},
 	component: LoginPage,
 })
 
 function LoginPage() {
-	const { handleSubmit, register } = useLoginForm()
+	const { handleSubmit, register, errors, isSubmitting } = useLoginForm()
 
 	return (
 		<div className="w-full max-w-sm px-6 flex flex-col gap-6">
@@ -32,39 +45,39 @@ function LoginPage() {
 			</div>
 
 			<form onSubmit={handleSubmit} className="space-y-4">
-				<div className="space-y-1.5">
-					<label htmlFor="email" className="text-sm font-medium text-zinc-700">
-						E-mail
-					</label>
-					<input
+				<FieldError
+					errors={errors.root ? [errors.root] : []}
+					className="rounded-lg bg-red-50 border border-red-200 px-3 py-2 text-center"
+				/>
+
+				<Field className="gap-1.5">
+					<FieldLabel htmlFor="email">E-mail</FieldLabel>
+					<Input
 						{...register("email")}
+						id="email"
 						type="email"
 						placeholder="seu@email.com"
-						className="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none focus:ring-2 focus:ring-red-800 focus:border-transparent aria-invalid:border-red-400 aria-invalid:focus:ring-red-400"
+						aria-invalid={!!errors.email}
 					/>
-				</div>
+					<FieldError errors={[errors.email]} />
+				</Field>
 
-				<div className="space-y-1.5">
-					<label
-						htmlFor="password"
-						className="text-sm font-medium text-zinc-700"
-					>
-						Senha
-					</label>
-					<input
+				<Field className="gap-1.5">
+					<FieldLabel htmlFor="password">Senha</FieldLabel>
+					<Input
 						{...register("password")}
+						id="password"
 						type="password"
 						placeholder="••••••••"
-						className="w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none focus:ring-2 focus:ring-red-800 focus:border-transparent aria-invalid:border-red-400 aria-invalid:focus:ring-red-400"
+						aria-invalid={!!errors.password}
 					/>
-				</div>
+					<FieldError errors={[errors.password]} />
+				</Field>
 
-				<button
-					type="submit"
-					className="w-full rounded-lg bg-red-800 px-4 py-2 text-sm font-medium text-white hover:bg-red-900 transition-colors duration-150"
-				>
+				<Button type="submit" className="w-full" disabled={isSubmitting}>
 					Entrar
-				</button>
+					{isSubmitting && <Loader className="animate-spin" />}
+				</Button>
 			</form>
 		</div>
 	)
