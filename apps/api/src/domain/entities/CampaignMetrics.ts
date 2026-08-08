@@ -6,8 +6,18 @@ export class CampaignMetrics {
 		public averageResponseTime: number,
 	) {}
 
+	static calculateConversionRate(
+		notifiedCount: number,
+		intentionConfirmationsCount: number,
+	): number {
+		if (notifiedCount === 0) return 0
+		return intentionConfirmationsCount / notifiedCount
+	}
+
 	get conversionRate(): number {
-		if (this.notifiedCount === 0) return 0
-		return this.intentionConfirmationsCount / this.notifiedCount
+		return CampaignMetrics.calculateConversionRate(
+			this.notifiedCount,
+			this.intentionConfirmationsCount,
+		)
 	}
 }

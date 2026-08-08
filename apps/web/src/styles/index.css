@@ -1,8 +1,0 @@
-@import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
-@import "./_imports.css";
-
-body {
-	color: var(--color-zinc-900);
-}

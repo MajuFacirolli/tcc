@@ -19,6 +19,10 @@ export class IoCContainer {
 		this._container.bind<T>(signature).to(controller)
 	}
 
+	bindService<T>(signature: symbol, service: Newable<T>) {
+		this._container.bind<T>(signature).to(service).inSingletonScope()
+	}
+
 	get<T>(signature: symbol): T {
 		return this._container.get<T>(signature)
 	}
