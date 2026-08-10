@@ -4,5 +4,4 @@ export interface IPagedList<T> {
 	pageSize: number
 	lastPage: number
 	total: number
-	pageCount: number
 }
