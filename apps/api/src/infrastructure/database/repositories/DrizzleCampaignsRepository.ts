@@ -1,4 +1,4 @@
-import { and, desc, eq } from "drizzle-orm"
+import { and, desc, eq, sql } from "drizzle-orm"
 import { db } from "@infrastructure/database/drizzle/client"
 import { campaigns } from "@infrastructure/database/drizzle/schema/index"
 import { Campaign, type CampaignSummary } from "@domain/entities/Campaign"
@@ -8,7 +8,9 @@ import type {
 	ICampaignsRepository,
 	ICreateCampaignParams,
 } from "@application/interfaces/ICampaignsRepository"
-import type { GetCampaignsInputDTO } from "@application/dtos/campaigns/GetCampaignsInputDTO"
+import type { ListCampaignsInputDTO } from "@/application/dtos/campaigns/ListCampaignsInputDTO"
+import type { ListCampaignsOutputDTO } from "@/application/dtos/campaigns/ListCampaignsOutputDTO"
+import { DEFAULT_PAGE_SIZE } from "@/core/PagedList"
 
 export class DrizzleCampaignsRepository implements ICampaignsRepository {
 	private rowToMetrics(row: typeof campaigns.$inferSelect): CampaignMetrics {
@@ -20,20 +22,29 @@ export class DrizzleCampaignsRepository implements ICampaignsRepository {
 		)
 	}
 
-	async list(params?: GetCampaignsInputDTO): Promise<Array<Campaign>> {
+	async list(params: ListCampaignsInputDTO): Promise<ListCampaignsOutputDTO> {
+		const limit = params.limit ?? DEFAULT_PAGE_SIZE
+		const offset = (params.page - 1) * limit
+
+		const filters = and(
+			params.status ? eq(campaigns.status, params.status) : undefined,
+			params.bloodType ? eq(campaigns.bloodType, params.bloodType) : undefined,
+		)
+
+		const [countRow] = await db
+			.select({ total: sql<number>`count(*)` })
+			.from(campaigns)
+			.where(filters)
+
 		const rows = await db
 			.select()
 			.from(campaigns)
-			.where(
-				and(
-					params?.status ? eq(campaigns.status, params.status) : undefined,
-					params?.bloodType
-						? eq(campaigns.bloodType, params.bloodType)
-						: undefined,
-				),
-			)
+			.where(filters)
+			.orderBy(desc(campaigns.createdAt), desc(campaigns.id))
+			.limit(limit)
+			.offset(offset)
 
-		return rows.map(
+		const items = rows.map(
 			(row) =>
 				new Campaign(
 					row.id,
@@ -45,6 +56,11 @@ export class DrizzleCampaignsRepository implements ICampaignsRepository {
 					row.createdAt,
 				),
 		)
+
+		return {
+			items,
+			total: Number(countRow?.total ?? 0),
+		}
 	}
 
 	async listSummary(): Promise<Array<CampaignSummary>> {

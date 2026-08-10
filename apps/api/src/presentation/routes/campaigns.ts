@@ -5,7 +5,9 @@ import { TYPES } from "@/container/types"
 import {
 	apiErrorSchema,
 	apiResponseSchema,
+	pagedListSchema,
 } from "@presentation/schemas/apiResponse"
+import { paginationQuerySchema } from "@presentation/schemas/pagination"
 import type { GetCampaignsController } from "@/presentation/controllers/campaigns/GetCampaignsController"
 import type { GetCampaignsSummaryController } from "@/presentation/controllers/campaigns/GetCampaignsSummaryController"
 import type { GetCampaignController } from "@/presentation/controllers/campaigns/GetCampaignController"
@@ -41,12 +43,13 @@ export const campaigns: FastifyPluginAsyncZod = async (app) => {
 				summary: "List campaigns",
 				tags: ["Campaigns"],
 				security: [{ cookieAuth: [] }],
-				querystring: z.object({
+				querystring: paginationQuerySchema.extend({
 					status: campaignStatusSchema.optional(),
 					bloodType: bloodTypeSchema.optional(),
 				}),
 				response: {
-					200: apiResponseSchema(z.array(campaignSchema)),
+					200: apiResponseSchema(pagedListSchema(campaignSchema)),
+					400: apiErrorSchema,
 					401: apiErrorSchema,
 					404: apiErrorSchema,
 				},

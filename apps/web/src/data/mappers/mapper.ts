@@ -1,8 +1,10 @@
 import "reflect-metadata"
 
 import { classes } from "@automapper/classes"
-import { createMap, createMapper } from "@automapper/core"
+import { createMap, createMapper, forMember, mapFrom } from "@automapper/core"
 import { MapperError } from "@/core/errors/MapperError"
+import { CampaignVM } from "@/domain/viewmodels/CampaignVM"
+import { CampaignResponse } from "../models/responses/CampaignResponse"
 
 export const mapper = createMapper({
 	strategyInitializer: classes(),
@@ -12,3 +14,25 @@ export const mapper = createMapper({
 		},
 	},
 })
+
+createMap(
+	mapper,
+	CampaignResponse,
+	CampaignVM,
+	forMember(
+		(dest) => dest.bloodType,
+		mapFrom((src) => src.bloodType),
+	),
+	forMember(
+		(dest) => dest.status,
+		mapFrom((src) => src.status),
+	),
+	forMember(
+		(dest) => dest.createdAt,
+		mapFrom((src) => new Date(src.createdAt)),
+	),
+	forMember(
+		(dest) => dest.conversionRate,
+		mapFrom((src) => src.conversionRate * 100),
+	),
+)

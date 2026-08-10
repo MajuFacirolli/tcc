@@ -1,6 +1,7 @@
 import type { BloodType } from "@domain/value_objects/BloodType"
 import type { Campaign, CampaignSummary } from "@domain/entities/Campaign"
-import type { GetCampaignsInputDTO } from "@application/dtos/campaigns/GetCampaignsInputDTO"
+import type { ListCampaignsInputDTO } from "@/application/dtos/campaigns/ListCampaignsInputDTO"
+import type { ListCampaignsOutputDTO } from "../dtos/campaigns/ListCampaignsOutputDTO"
 
 export type ICreateCampaignParams = {
 	title: string
@@ -9,7 +10,7 @@ export type ICreateCampaignParams = {
 }
 
 export interface ICampaignsRepository {
-	list(params?: GetCampaignsInputDTO): Promise<Array<Campaign>>
+	list(params: ListCampaignsInputDTO): Promise<ListCampaignsOutputDTO>
 	listSummary(): Promise<Array<CampaignSummary>>
 	get(id: string): Promise<Campaign>
 	create(data: ICreateCampaignParams): Promise<string>

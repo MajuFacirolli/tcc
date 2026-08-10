@@ -13,6 +13,7 @@ const badgeVariants = tv({
 			success: "bg-green-500/10 border border-green-500/20 text-green-900",
 			warning: "bg-yellow-400/10 border border-yellow-600/20 text-yellow-600",
 			destructive: "bg-red-500/10 border border-red-500/20 text-red-700",
+			ghost: "bg-zinc-100 border border-zinc-400 text-zinc-600",
 		},
 	},
 	defaultVariants: {

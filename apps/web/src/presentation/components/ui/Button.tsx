@@ -8,7 +8,7 @@ const buttonVariants = tv({
 		variant: {
 			default: "bg-red-800 text-white hover:bg-red-900",
 			outline:
-				"border-border bg-background shadow-xs hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
+				"border-zinc-400 bg-zinc-200 shadow-xs hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground",
 			secondary:
 				"bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
 			ghost:
