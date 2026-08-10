@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/a11y/useSemanticElements: <shadcn base> */
 import { useMemo } from "react"
 import { twMerge } from "tailwind-merge"
 import { tv, type VariantProps } from "tailwind-variants"

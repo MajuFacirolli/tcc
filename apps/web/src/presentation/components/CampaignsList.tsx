@@ -1,4 +1,4 @@
-import { ArrowUpRight, Plus } from "lucide-react"
+import { ArrowUpRight } from "lucide-react"
 import { formatDate } from "@/utils/formatDate"
 import { useCampaigns } from "../hooks/useCampaigns"
 import { useCampaignsFilters } from "../hooks/useCampaignsFilters"
@@ -9,6 +9,7 @@ import { Card } from "./ui/Card"
 import Pagination from "./ui/Pagination"
 import { twMerge } from "tailwind-merge"
 import { CAMPAIGN_STATUS_CONFIG } from "../data/campaignStatusConfig"
+import { NewCampaign } from "./NewCampaign"
 
 export const CampaignsList = () => {
 	const { filters, setFilters, clearFilters, hasFilters } =
@@ -29,15 +30,7 @@ export const CampaignsList = () => {
 					hasFilters={hasFilters}
 				/>
 
-				<button
-					type="button"
-					className={twMerge(
-						"group flex items-center justify-center gap-3 p-2.5 rounded-lg text-sm font-medium bg-red-800 text-white",
-						"hover:bg-red-900 cursor-pointer",
-					)}
-				>
-					<Plus className="size-4.5" />
-				</button>
+				<NewCampaign />
 			</div>
 
 			{isLoading && (

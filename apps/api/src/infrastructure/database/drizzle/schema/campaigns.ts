@@ -10,7 +10,7 @@ export const campaigns = pgTable("campaigns", {
 	title: text().notNull(),
 	message: text().notNull(),
 	bloodType: bloodTypeEnum().notNull(),
-	status: campaignStatusEnum().notNull().default("draft"),
+	status: campaignStatusEnum().notNull().default("active"),
 	totalEligibleDonors: integer().notNull().default(0),
 	notifiedCount: integer().notNull().default(0),
 	intentionConfirmationsCount: integer().notNull().default(0),

@@ -4,13 +4,11 @@ import { campaigns } from "@infrastructure/database/drizzle/schema/index"
 import { Campaign, type CampaignSummary } from "@domain/entities/Campaign"
 import { CampaignMetrics } from "@domain/entities/CampaignMetrics"
 import { NotFoundError } from "@/core/errors/NotFoundError"
-import type {
-	ICampaignsRepository,
-	ICreateCampaignParams,
-} from "@application/interfaces/ICampaignsRepository"
+import type { ICampaignsRepository } from "@application/interfaces/ICampaignsRepository"
 import type { ListCampaignsInputDTO } from "@/application/dtos/campaigns/ListCampaignsInputDTO"
 import type { ListCampaignsOutputDTO } from "@/application/dtos/campaigns/ListCampaignsOutputDTO"
 import { DEFAULT_PAGE_SIZE } from "@/core/PagedList"
+import type { CreateCampaignsInputDTO } from "@/application/dtos/campaigns/CreateCampaignInputDTO"
 
 export class DrizzleCampaignsRepository implements ICampaignsRepository {
 	private rowToMetrics(row: typeof campaigns.$inferSelect): CampaignMetrics {
@@ -111,7 +109,7 @@ export class DrizzleCampaignsRepository implements ICampaignsRepository {
 		)
 	}
 
-	async create(params: ICreateCampaignParams): Promise<string> {
+	async create(params: CreateCampaignsInputDTO): Promise<string> {
 		const [row] = await db
 			.insert(campaigns)
 			.values(params)

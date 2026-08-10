@@ -36,6 +36,7 @@ export const SignOut = () => {
 			router.navigate({ to: PagesEnum.LOGIN })
 		})
 	}
+
 	return (
 		<Dialog>
 			<DialogTrigger
@@ -56,7 +57,7 @@ export const SignOut = () => {
 
 				<DialogFooter>
 					<DialogClose asChild>
-						<Button variant="outline">Cancelar</Button>
+						<Button variant="ghost">Cancelar</Button>
 					</DialogClose>
 					<Button type="submit" onClick={handleLogout}>
 						Sair
