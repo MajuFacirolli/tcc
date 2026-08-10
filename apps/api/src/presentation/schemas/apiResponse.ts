@@ -22,4 +22,5 @@ export const apiErrorSchema = z.object({
 	data: z.null(),
 	status: z.number(),
 	message: z.string(),
+	errors: z.record(z.string(), z.string()).optional(),
 })

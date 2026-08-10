@@ -4,11 +4,13 @@ import type { QueryClient } from "@tanstack/react-query"
 import { NuqsAdapter } from "nuqs/adapters/tanstack-router"
 import { NotFound } from "@/presentation/components/404"
 import { InternalServerError } from "@/presentation/components/500"
+import { Toaster } from "react-hot-toast"
 
 const MainLayout = () => (
 	<NuqsAdapter>
 		<main className="flex items-center justify-center w-full h-dvh">
 			<Outlet />
+			<Toaster position="top-center" toastOptions={{ duration: 5000 }} />
 			{/* <TanStackRouterDevtools /> */}
 		</main>
 	</NuqsAdapter>

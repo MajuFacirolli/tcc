@@ -23,3 +23,9 @@ export const campaignSummarySchema = z.object({
 	notifiedCount: z.number(),
 	conversionRate: z.number(),
 })
+
+export const createCampaignBodySchema = z.object({
+	title: z.string().min(1, "Título é obrigatório"),
+	message: z.string().min(1, "Mensagem é obrigatória"),
+	bloodType: bloodTypeSchema,
+})

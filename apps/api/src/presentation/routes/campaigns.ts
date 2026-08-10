@@ -16,6 +16,7 @@ import {
 	campaignSchema,
 	campaignStatusSchema,
 	campaignSummarySchema,
+	createCampaignBodySchema,
 } from "../schemas/campaigns"
 import { bloodTypeSchema } from "../schemas/bloodType"
 
@@ -100,13 +101,10 @@ export const campaigns: FastifyPluginAsyncZod = async (app) => {
 				summary: "Create campaign",
 				tags: ["Campaigns"],
 				security: [{ cookieAuth: [] }],
-				body: z.object({
-					title: z.string(),
-					message: z.string("Message is required"),
-					bloodType: bloodTypeSchema,
-				}),
+				body: createCampaignBodySchema,
 				response: {
 					201: apiResponseSchema(z.string()),
+					400: apiErrorSchema,
 					401: apiErrorSchema,
 					404: apiErrorSchema,
 				},
