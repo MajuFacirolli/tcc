@@ -39,6 +39,7 @@
 		"fastify-plugin": "^6.0.0",
 		"fastify-type-provider-zod": "^6.1.0",
 		"inversify": "^8.1.0",
+		"ioredis": "^6.0.0",
 		"pg": "^8.20.0",
 		"reflect-metadata": "^0.2.2",
 		"uuidv7": "^1.2.1",
