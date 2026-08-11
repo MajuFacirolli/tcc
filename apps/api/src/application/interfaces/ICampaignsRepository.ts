@@ -1,11 +1,11 @@
 import type { Campaign, CampaignSummary } from "@domain/entities/Campaign"
-import type { ListCampaignsInputDTO } from "@/application/dtos/campaigns/ListCampaignsInputDTO"
-import type { ListCampaignsOutputDTO } from "../dtos/campaigns/ListCampaignsOutputDTO"
-import type { CreateCampaignsInputDTO } from "../dtos/campaigns/CreateCampaignInputDTO"
+import type { ListCampaignsInput } from "@/application/dtos/campaigns/ListCampaignsInput"
+import type { ListCampaignsOutput } from "../dtos/campaigns/ListCampaignsOutput"
+import type { CreateCampaignsInput } from "../dtos/campaigns/CreateCampaignInput"
 
 export interface ICampaignsRepository {
-	list(params: ListCampaignsInputDTO): Promise<ListCampaignsOutputDTO>
+	list(params: ListCampaignsInput): Promise<ListCampaignsOutput>
 	listSummary(): Promise<Array<CampaignSummary>>
 	get(id: string): Promise<Campaign>
-	create(data: CreateCampaignsInputDTO): Promise<string>
+	create(data: CreateCampaignsInput): Promise<string>
 }

@@ -1,9 +1,9 @@
 import type { ICampaignsRepository } from "@application/interfaces/ICampaignsRepository"
-import type { ListCampaignsInputDTO } from "@/application/dtos/campaigns/ListCampaignsInputDTO"
+import type { ListCampaignsInput } from "@/application/dtos/campaigns/ListCampaignsInput"
 import {
-	type GetCampaignOutputDTO,
-	toGetCampaignOutputDTO,
-} from "@application/dtos/campaigns/GetCampaignOutputDTO"
+	type GetCampaignOutput,
+	toGetCampaignOutput,
+} from "@/application/dtos/campaigns/GetCampaignOutput"
 import {
 	DEFAULT_PAGE_SIZE,
 	type PagedList,
@@ -14,12 +14,12 @@ export class GetCampaignsUseCase {
 	constructor(private readonly campaignsRepository: ICampaignsRepository) {}
 
 	async execute(
-		params: ListCampaignsInputDTO,
-	): Promise<PagedList<GetCampaignOutputDTO>> {
+		params: ListCampaignsInput,
+	): Promise<PagedList<GetCampaignOutput>> {
 		const { items, total } = await this.campaignsRepository.list(params)
 
 		return toPagedList(
-			items.map(toGetCampaignOutputDTO),
+			items.map(toGetCampaignOutput),
 			total,
 			params.page,
 			DEFAULT_PAGE_SIZE,
