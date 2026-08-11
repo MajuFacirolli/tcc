@@ -38,6 +38,7 @@ const envSchema = z.object({
 	SEED_ADMIN_NAME: z.string().min(1).optional(),
 	SEED_ADMIN_EMAIL: z.email().optional(),
 	SEED_ADMIN_PASSWORD: z.string().min(8).optional(),
+	REDIS_URL: z.url(),
 })
 
 export const env = envSchema.parse(process.env)
