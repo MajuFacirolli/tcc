@@ -2,6 +2,7 @@ import "reflect-metadata"
 import { decorate, inject, injectable } from "inversify"
 // interfaces
 import type { ICampaignsRepository } from "@application/interfaces/ICampaignsRepository"
+import type { IJobQueue } from "@application/interfaces/IJobQueue"
 import type { IPasswordHasher } from "@application/interfaces/IPasswordHasher"
 import type { IUsersRepository } from "@application/interfaces/IUsersRepository"
 
@@ -28,6 +29,7 @@ import { GetProfileController } from "@/presentation/controllers/auth/GetProfile
 
 //services
 import { Argon2PasswordHasher } from "@infrastructure/identity/Argon2PasswordHasher"
+import { BullMqJobQueue } from "@infrastructure/queue/BullMqJobQueue"
 
 import { IoCContainer } from "./IoCContainer"
 import { TYPES } from "./types"
@@ -56,6 +58,7 @@ decorate(injectable(), GetProfileController)
 
 //services
 decorate(injectable(), Argon2PasswordHasher)
+decorate(injectable(), BullMqJobQueue)
 
 // inject
 // repositories
@@ -151,5 +154,6 @@ container.bindService<IPasswordHasher>(
 	TYPES.IPasswordHasher,
 	Argon2PasswordHasher,
 )
+container.bindService<IJobQueue>(TYPES.IJobQueue, BullMqJobQueue)
 
 export { container }
