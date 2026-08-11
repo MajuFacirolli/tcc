@@ -1,4 +1,7 @@
 import "reflect-metadata"
+import { createBullBoard } from "@bull-board/api"
+import { BullMQAdapter } from "@bull-board/api/bullMQAdapter"
+import { FastifyAdapter } from "@bull-board/fastify"
 import fastifyCookie from "@fastify/cookie"
 import fastifyCors from "@fastify/cors"
 import fastifyJwt from "@fastify/jwt"
@@ -13,6 +16,7 @@ import {
 	type ZodTypeProvider,
 } from "fastify-type-provider-zod"
 import { env } from "@/env"
+import { queues } from "@infrastructure/queue/queues"
 import { AUTH_COOKIE_NAME } from "@presentation/middlewares/authCookie"
 import { authenticate } from "@presentation/middlewares/authenticate"
 import { errorHandler } from "@presentation/middlewares/errorHandler"
@@ -70,6 +74,16 @@ export function buildApp() {
 	})
 
 	app.register(ScalarApiReference, { routePrefix: "/docs" })
+
+	const bullBoardServerAdapter = new FastifyAdapter()
+	bullBoardServerAdapter.setBasePath("/dashboard")
+	createBullBoard({
+		queues: Object.values(queues).map((queue) => new BullMQAdapter(queue)),
+		serverAdapter: bullBoardServerAdapter,
+	})
+	app.register(bullBoardServerAdapter.registerPlugin(), {
+		prefix: "/dashboard",
+	})
 
 	app.register(authenticate)
 
