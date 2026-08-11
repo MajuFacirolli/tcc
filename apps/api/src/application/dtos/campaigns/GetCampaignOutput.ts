@@ -2,7 +2,7 @@ import type { BloodType } from "@domain/value_objects/BloodType"
 import type { CampaignStatus } from "@domain/value_objects/CampaignStatus"
 import type { Campaign } from "@domain/entities/Campaign"
 
-export type GetCampaignOutputDTO = {
+export type GetCampaignOutput = {
 	id: string
 	title: string
 	message: string
@@ -14,9 +14,7 @@ export type GetCampaignOutputDTO = {
 	createdAt: string
 }
 
-export function toGetCampaignOutputDTO(
-	campaign: Campaign,
-): GetCampaignOutputDTO {
+export function toGetCampaignOutput(campaign: Campaign): GetCampaignOutput {
 	return {
 		id: campaign.id,
 		title: campaign.title,

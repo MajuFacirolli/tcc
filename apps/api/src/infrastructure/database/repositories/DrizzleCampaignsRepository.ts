@@ -5,10 +5,10 @@ import { Campaign, type CampaignSummary } from "@domain/entities/Campaign"
 import { CampaignMetrics } from "@domain/entities/CampaignMetrics"
 import { NotFoundError } from "@/core/errors/NotFoundError"
 import type { ICampaignsRepository } from "@application/interfaces/ICampaignsRepository"
-import type { ListCampaignsInputDTO } from "@/application/dtos/campaigns/ListCampaignsInputDTO"
-import type { ListCampaignsOutputDTO } from "@/application/dtos/campaigns/ListCampaignsOutputDTO"
+import type { ListCampaignsInput } from "@/application/dtos/campaigns/ListCampaignsInput"
+import type { ListCampaignsOutput } from "@/application/dtos/campaigns/ListCampaignsOutput"
 import { DEFAULT_PAGE_SIZE } from "@/core/PagedList"
-import type { CreateCampaignsInputDTO } from "@/application/dtos/campaigns/CreateCampaignInputDTO"
+import type { CreateCampaignsInput } from "@/application/dtos/campaigns/CreateCampaignInput"
 
 export class DrizzleCampaignsRepository implements ICampaignsRepository {
 	private rowToMetrics(row: typeof campaigns.$inferSelect): CampaignMetrics {
@@ -20,7 +20,7 @@ export class DrizzleCampaignsRepository implements ICampaignsRepository {
 		)
 	}
 
-	async list(params: ListCampaignsInputDTO): Promise<ListCampaignsOutputDTO> {
+	async list(params: ListCampaignsInput): Promise<ListCampaignsOutput> {
 		const limit = params.limit ?? DEFAULT_PAGE_SIZE
 		const offset = (params.page - 1) * limit
 
@@ -109,7 +109,7 @@ export class DrizzleCampaignsRepository implements ICampaignsRepository {
 		)
 	}
 
-	async create(params: CreateCampaignsInputDTO): Promise<string> {
+	async create(params: CreateCampaignsInput): Promise<string> {
 		const [row] = await db
 			.insert(campaigns)
 			.values(params)
