@@ -18,5 +18,6 @@ export const TYPES = {
 	GetProfileController: Symbol.for("GetProfileController"),
 
 	IPasswordHasher: Symbol.for("IPasswordHasher"),
+	IEmailService: Symbol.for("IEmailService"),
 	IJobQueue: Symbol.for("IJobQueue"),
 }
