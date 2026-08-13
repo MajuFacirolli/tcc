@@ -2,13 +2,15 @@ import "reflect-metadata"
 import { decorate, inject, injectable } from "inversify"
 // interfaces
 import type { ICampaignsRepository } from "@application/interfaces/ICampaignsRepository"
+import type { IUsersRepository } from "@application/interfaces/IUsersRepository"
+import type { IDonorsRepository } from "@application/interfaces/IDonorsRepository"
+import type { IPasswordHasher } from "@application/interfaces/IPasswordHasher"
 import type { IEmailService } from "@application/interfaces/IEmailService"
 import type { IJobQueue } from "@application/interfaces/IJobQueue"
-import type { IPasswordHasher } from "@application/interfaces/IPasswordHasher"
-import type { IUsersRepository } from "@application/interfaces/IUsersRepository"
 
 // repositories
 import { DrizzleCampaignsRepository } from "@infrastructure/database/repositories/DrizzleCampaignsRepository"
+import { DrizzleDonorsRepository } from "@infrastructure/database/repositories/DrizzleDonorsRepository"
 import { DrizzleUsersRepository } from "@infrastructure/database/repositories/DrizzleUsersRepository"
 
 // use cases
@@ -40,6 +42,7 @@ import { TYPES } from "./types"
 // repositories
 decorate(injectable(), DrizzleCampaignsRepository)
 decorate(injectable(), DrizzleUsersRepository)
+decorate(injectable(), DrizzleDonorsRepository)
 
 // use cases
 decorate(injectable(), GetCampaignsUseCase)
@@ -97,6 +100,10 @@ container.bindRepository<ICampaignsRepository>(
 container.bindRepository<IUsersRepository>(
 	TYPES.IUsersRepository,
 	DrizzleUsersRepository,
+)
+container.bindRepository<IDonorsRepository>(
+	TYPES.IDonorsRepository,
+	DrizzleDonorsRepository,
 )
 
 // use cases

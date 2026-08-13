@@ -1,6 +1,7 @@
 export const TYPES = {
 	ICampaignsRepository: Symbol.for("ICampaignsRepository"),
 	IUsersRepository: Symbol.for("IUsersRepository"),
+	IDonorsRepository: Symbol.for("IDonorsRepository"),
 
 	GetCampaignsUseCase: Symbol.for("GetCampaignsUseCase"),
 	GetCampaignsSummaryUseCase: Symbol.for("GetCampaignsSummaryUseCase"),
