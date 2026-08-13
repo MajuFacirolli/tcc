@@ -13,6 +13,7 @@
 		],
 		"module": "nodenext",
 		"target": "es2024",
+		"jsx": "react-jsx",
 
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,
