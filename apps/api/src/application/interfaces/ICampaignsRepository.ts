@@ -8,4 +8,5 @@ export interface ICampaignsRepository {
 	listSummary(): Promise<Array<CampaignSummary>>
 	get(id: string): Promise<Campaign>
 	create(data: CreateCampaignsInput): Promise<string>
+	incrementNotifiedCount(campaignId: string): Promise<void>
 }
