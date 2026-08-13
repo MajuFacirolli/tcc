@@ -72,6 +72,8 @@ decorate(inject(TYPES.ICampaignsRepository), GetCampaignsUseCase, 0)
 decorate(inject(TYPES.ICampaignsRepository), GetCampaignsSummaryUseCase, 0)
 decorate(inject(TYPES.ICampaignsRepository), GetCampaignUseCase, 0)
 decorate(inject(TYPES.ICampaignsRepository), CreateCampaignUseCase, 0)
+decorate(inject(TYPES.IDonorsRepository), CreateCampaignUseCase, 1)
+decorate(inject(TYPES.IJobQueue), CreateCampaignUseCase, 2)
 decorate(inject(TYPES.IUsersRepository), SignInUseCase, 0)
 decorate(inject(TYPES.IUsersRepository), GetProfileUseCase, 0)
 
