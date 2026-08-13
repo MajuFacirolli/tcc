@@ -116,4 +116,19 @@ export class DrizzleCampaignsRepository implements ICampaignsRepository {
 			.returning({ id: campaigns.id })
 		return row.id
 	}
+
+	async incrementNotifiedCount(campaignId: string): Promise<void> {
+		const [row] = await db
+			.update(campaigns)
+			.set({
+				notifiedCount: sql<number>`${campaigns.notifiedCount} + 1`,
+			})
+			.where(eq(campaigns.id, campaignId))
+			.returning({ id: campaigns.id })
+
+		if (!row.id)
+			throw new NotFoundError(
+				new Error(`Campaign with id "${campaignId}" was not found`),
+			)
+	}
 }
