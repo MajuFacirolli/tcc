@@ -20,5 +20,6 @@ export const TYPES = {
 
 	IPasswordHasher: Symbol.for("IPasswordHasher"),
 	IEmailService: Symbol.for("IEmailService"),
+	IEmailTemplateRenderer: Symbol.for("IEmailTemplateRenderer"),
 	IJobQueue: Symbol.for("IJobQueue"),
 }

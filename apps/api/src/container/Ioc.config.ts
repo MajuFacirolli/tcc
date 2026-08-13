@@ -6,6 +6,7 @@ import type { IUsersRepository } from "@application/interfaces/IUsersRepository"
 import type { IDonorsRepository } from "@application/interfaces/IDonorsRepository"
 import type { IPasswordHasher } from "@application/interfaces/IPasswordHasher"
 import type { IEmailService } from "@application/interfaces/IEmailService"
+import type { IEmailTemplateRenderer } from "@application/interfaces/IEmailTemplateRenderer"
 import type { IJobQueue } from "@application/interfaces/IJobQueue"
 
 // repositories
@@ -33,6 +34,7 @@ import { GetProfileController } from "@/presentation/controllers/auth/GetProfile
 //services
 import { Argon2PasswordHasher } from "@infrastructure/identity/Argon2PasswordHasher"
 import { NodemailerEmailService } from "@infrastructure/services/NodemailerEmailService"
+import { ReactEmailTemplateRenderer } from "@infrastructure/services/ReactEmailTemplateRenderer"
 import { BullMqJobQueue } from "@infrastructure/queue/BullMqJobQueue"
 
 import { IoCContainer } from "./IoCContainer"
@@ -64,6 +66,7 @@ decorate(injectable(), GetProfileController)
 //services
 decorate(injectable(), Argon2PasswordHasher)
 decorate(injectable(), NodemailerEmailService)
+decorate(injectable(), ReactEmailTemplateRenderer)
 decorate(injectable(), BullMqJobQueue)
 
 // inject
@@ -169,6 +172,10 @@ container.bindService<IPasswordHasher>(
 container.bindService<IEmailService>(
 	TYPES.IEmailService,
 	NodemailerEmailService,
+)
+container.bindService<IEmailTemplateRenderer>(
+	TYPES.IEmailTemplateRenderer,
+	ReactEmailTemplateRenderer,
 )
 container.bindService<IJobQueue>(TYPES.IJobQueue, BullMqJobQueue)
 
