@@ -30,19 +30,24 @@ export class CreateCampaignUseCase {
 
 		if (totalEligibleDonors === 0) return campaignId
 
-		await this.jobQueue.enqueueBulk<SendCampaignEmailInput>(
+		await this.jobQueue.enqueueBulk<SendCampaignEmailInput, string>(
 			QUEUE_NAMES.CAMPAIGN_EMAIL,
 			eligibleDonors.map((donor) => ({
 				name: JOB_NAMES.SEND_CAMPAIGN_EMAIL,
 				data: {
 					campaignId,
+					campaignMessage: data.message,
+					campaignTitle: data.title,
 					donorId: donor.id,
 					donorEmail: donor.email,
 					donorName: donor.name,
-					campaignTitle: data.title,
-					campaignMessage: data.message,
 				},
 			})),
+			{
+				queueName: QUEUE_NAMES.CAMPAIGN_LIFECYCLE,
+				name: JOB_NAMES.CLOSE_CAMPAIGN,
+				data: campaignId,
+			},
 		)
 
 		return campaignId
