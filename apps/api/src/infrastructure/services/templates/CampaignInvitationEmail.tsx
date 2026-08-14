@@ -120,11 +120,6 @@ export function CampaignInvitationEmail({
 								<Section className="bg-white">
 									<Row>
 										<Column className="px-6 py-10 text-center">
-											<Text className="font-11 text-fg-3 m-0 text-center font-sans leading-4 mb-4">
-												A Hemoconnect conecta doadores e <br /> hemocentros em
-												todo o Brasil.
-											</Text>
-
 											<Text className="font-11 text-fg-3 m-0 text-center font-sans leading-4">
 												Você recebeu este e-mail porque está cadastrado
 												<br /> como doador na {companyName}. <br />
