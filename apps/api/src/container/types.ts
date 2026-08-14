@@ -1,11 +1,14 @@
 export const TYPES = {
 	ICampaignsRepository: Symbol.for("ICampaignsRepository"),
 	IUsersRepository: Symbol.for("IUsersRepository"),
+	IDonorsRepository: Symbol.for("IDonorsRepository"),
 
 	GetCampaignsUseCase: Symbol.for("GetCampaignsUseCase"),
 	GetCampaignsSummaryUseCase: Symbol.for("GetCampaignsSummaryUseCase"),
 	GetCampaignUseCase: Symbol.for("GetCampaignUseCase"),
 	CreateCampaignUseCase: Symbol.for("CreateCampaignUseCase"),
+	SendCampaignEmailUseCase: Symbol.for("SendCampaignEmailUseCase"),
+	CloseCampaignUseCase: Symbol.for("CloseCampaignUseCase"),
 	SignInUseCase: Symbol.for("SignInUseCase"),
 	GetProfileUseCase: Symbol.for("GetProfileUseCase"),
 
@@ -18,4 +21,7 @@ export const TYPES = {
 	GetProfileController: Symbol.for("GetProfileController"),
 
 	IPasswordHasher: Symbol.for("IPasswordHasher"),
+	IEmailService: Symbol.for("IEmailService"),
+	IEmailTemplateRenderer: Symbol.for("IEmailTemplateRenderer"),
+	IJobQueue: Symbol.for("IJobQueue"),
 }
