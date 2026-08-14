@@ -6,3 +6,5 @@ export function createRedisConnection(): IORedis {
 		maxRetriesPerRequest: null,
 	})
 }
+
+export const redisConnection = createRedisConnection()
