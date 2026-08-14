@@ -1,14 +1,14 @@
 import type { ICampaignsRepository } from "@application/interfaces/ICampaignsRepository"
 import {
-	type GetCampaignOutputDTO,
-	toGetCampaignOutputDTO,
-} from "@application/dtos/campaigns/GetCampaignOutputDTO"
+	type GetCampaignOutput,
+	toGetCampaignOutput,
+} from "@/application/dtos/campaigns/GetCampaignOutput"
 
 export class GetCampaignUseCase {
 	constructor(private readonly campaignsRepository: ICampaignsRepository) {}
 
-	async execute(id: string): Promise<GetCampaignOutputDTO> {
+	async execute(id: string): Promise<GetCampaignOutput> {
 		const campaign = await this.campaignsRepository.get(id)
-		return toGetCampaignOutputDTO(campaign)
+		return toGetCampaignOutput(campaign)
 	}
 }

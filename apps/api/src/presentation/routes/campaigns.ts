@@ -8,10 +8,10 @@ import {
 	pagedListSchema,
 } from "@presentation/schemas/apiResponse"
 import { paginationQuerySchema } from "@presentation/schemas/pagination"
-import type { GetCampaignsController } from "@/presentation/controllers/campaigns/GetCampaignsController"
-import type { GetCampaignsSummaryController } from "@/presentation/controllers/campaigns/GetCampaignsSummaryController"
-import type { GetCampaignController } from "@/presentation/controllers/campaigns/GetCampaignController"
-import type { CreateCampaignController } from "@/presentation/controllers/campaigns/CreateCampaignController"
+import type { GetCampaignsController } from "@/presentation/controllers/campaigns/GetCampaigns"
+import type { GetCampaignsSummaryController } from "@/presentation/controllers/campaigns/GetCampaignsSummary"
+import type { GetCampaignController } from "@/presentation/controllers/campaigns/GetCampaign"
+import type { CreateCampaignController } from "@/presentation/controllers/campaigns/CreateCampaign"
 import {
 	campaignSchema,
 	campaignStatusSchema,
