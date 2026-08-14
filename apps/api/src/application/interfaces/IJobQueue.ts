@@ -1,10 +1,17 @@
 import type { QueueName } from "@/application/queues/queueNames"
 import type { JobName } from "../queues/jobNames"
 
+export type Job<T> = {
+	queueName: QueueName
+	name: JobName
+	data: T
+}
+
 export interface IJobQueue {
-	enqueue<T>(queueName: QueueName, jobName: JobName, data: T): Promise<void>
-	enqueueBulk<T>(
+	enqueue<T>(job: Job<T>): Promise<void>
+	enqueueBulk<T, C = unknown>(
 		queueName: QueueName,
-		jobs: Array<{ name: JobName; data: T }>,
+		jobs: Array<Omit<Job<T>, "queueName">>,
+		completion?: Job<C>,
 	): Promise<void>
 }
