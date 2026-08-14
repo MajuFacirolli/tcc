@@ -131,4 +131,17 @@ export class DrizzleCampaignsRepository implements ICampaignsRepository {
 				new Error(`Campaign with id "${campaignId}" was not found`),
 			)
 	}
+
+	async closeCampaign(campaignId: string): Promise<void> {
+		const [row] = await db
+			.update(campaigns)
+			.set({ status: "closed" })
+			.where(eq(campaigns.id, campaignId))
+			.returning({ id: campaigns.id })
+
+		if (!row.id)
+			throw new NotFoundError(
+				new Error(`Campaign with id "${campaignId}" was not found`),
+			)
+	}
 }

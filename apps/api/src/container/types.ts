@@ -8,6 +8,7 @@ export const TYPES = {
 	GetCampaignUseCase: Symbol.for("GetCampaignUseCase"),
 	CreateCampaignUseCase: Symbol.for("CreateCampaignUseCase"),
 	SendCampaignEmailUseCase: Symbol.for("SendCampaignEmailUseCase"),
+	CloseCampaignUseCase: Symbol.for("CloseCampaignUseCase"),
 	SignInUseCase: Symbol.for("SignInUseCase"),
 	GetProfileUseCase: Symbol.for("GetProfileUseCase"),
 
