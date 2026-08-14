@@ -19,6 +19,7 @@ import { GetCampaignsUseCase } from "@application/use_cases/campaigns/GetCampaig
 import { GetCampaignsSummaryUseCase } from "@application/use_cases/campaigns/GetCampaignsSummary"
 import { GetCampaignUseCase } from "@application/use_cases/campaigns/GetCampaign"
 import { CreateCampaignUseCase } from "@application/use_cases/campaigns/CreateCampaign"
+import { SendCampaignEmailUseCase } from "@application/use_cases/campaigns/SendCampaignEmail"
 import { SignInUseCase } from "@application/use_cases/auth/SignIn"
 import { GetProfileUseCase } from "@application/use_cases/auth/GetProfile"
 
@@ -51,6 +52,7 @@ decorate(injectable(), GetCampaignsUseCase)
 decorate(injectable(), GetCampaignsSummaryUseCase)
 decorate(injectable(), GetCampaignUseCase)
 decorate(injectable(), CreateCampaignUseCase)
+decorate(injectable(), SendCampaignEmailUseCase)
 decorate(injectable(), SignInUseCase)
 decorate(injectable(), GetProfileUseCase)
 
@@ -94,6 +96,9 @@ decorate(inject(TYPES.GetProfileUseCase), GetProfileController, 0)
 
 //services
 decorate(inject(TYPES.IPasswordHasher), SignInUseCase, 1)
+decorate(inject(TYPES.IEmailService), SendCampaignEmailUseCase, 0)
+decorate(inject(TYPES.ICampaignsRepository), SendCampaignEmailUseCase, 1)
+decorate(inject(TYPES.IEmailTemplateRenderer), SendCampaignEmailUseCase, 2)
 
 const container = new IoCContainer()
 
@@ -127,6 +132,10 @@ container.bindUseCase<GetCampaignUseCase>(
 container.bindUseCase<CreateCampaignUseCase>(
 	TYPES.CreateCampaignUseCase,
 	CreateCampaignUseCase,
+)
+container.bindUseCase<SendCampaignEmailUseCase>(
+	TYPES.SendCampaignEmailUseCase,
+	SendCampaignEmailUseCase,
 )
 container.bindUseCase<SignInUseCase>(TYPES.SignInUseCase, SignInUseCase)
 container.bindUseCase<GetProfileUseCase>(
