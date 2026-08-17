@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1779829986399,
-      "tag": "0000_sticky_master_chief",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1786112814377,
-      "tag": "0001_normal_night_nurse",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1786373463278,
-      "tag": "0002_cynical_next_avengers",
+      "when": 1786935204239,
+      "tag": "0000_complete_rogue",
       "breakpoints": true
     }
   ]
