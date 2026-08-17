@@ -1,3 +1,4 @@
+import { randomBytes } from "node:crypto"
 import { eq, sql } from "drizzle-orm"
 import { db } from "@infrastructure/database/drizzle/client"
 import {
@@ -7,12 +8,36 @@ import {
 import { NotFoundError } from "@/core/errors/NotFoundError"
 import { ConflictError } from "@/core/errors/ConflictError"
 import type { ConfirmDonationIntentionOutput } from "@/application/dtos/confirmations/ConfirmDonationIntentionOutput"
+import type { CreateConfirmationInput } from "@/application/dtos/confirmations/CreateConfirmationInput"
 import type { IConfirmationsRepository } from "@/application/interfaces/IConfirmationsRepository"
+import { env } from "@/env"
 import { MS_PER_SECOND } from "@/domain/utils/dateUtils"
 
 export class DrizzleConfirmationsRepository
 	implements IConfirmationsRepository
 {
+	async generateToken({
+		campaignId,
+		donorId,
+	}: CreateConfirmationInput): Promise<string> {
+		const token = randomBytes(32).toString("base64url")
+
+		const [confirmation] = await db
+			.insert(confirmations)
+			.values({ token, campaignId, donorId })
+			.onConflictDoUpdate({
+				target: [confirmations.campaignId, confirmations.donorId],
+				set: { token: sql`${confirmations.token}` },
+			})
+			.returning({ token: confirmations.token })
+
+		return confirmation.token
+	}
+
+	createConfirmationLink(token: string): string {
+		return `${env.WEB_ORIGIN}/confirmacoes/${token}`
+	}
+
 	async confirm(token: string): Promise<ConfirmDonationIntentionOutput> {
 		const [confirmation] = await db
 			.select({
