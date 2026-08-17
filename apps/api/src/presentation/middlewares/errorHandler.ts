@@ -8,6 +8,7 @@ import { UnauthorizedError } from "@/core/errors/UnauthorizedError"
 import { ValidationError } from "@/core/errors/ValidationError"
 import HttpStatusCode from "@/core/StatusCodesEnum"
 import { ManyRequestsError } from "@/core/errors/ManyRequestsError"
+import { ConflictError } from "@/core/errors/ConflictError"
 
 export function errorHandler(app: FastifyInstance) {
 	app.setErrorHandler(async (error: Error, _request, reply) => {
@@ -94,6 +95,14 @@ export function errorHandler(app: FastifyInstance) {
 			return reply.status(HttpStatusCode.TOO_MANY_REQUESTS).send({
 				data: null,
 				status: HttpStatusCode.TOO_MANY_REQUESTS,
+				message: error.message,
+			})
+		}
+
+		if (error instanceof ConflictError) {
+			return reply.status(HttpStatusCode.CONFLICT).send({
+				data: null,
+				status: HttpStatusCode.CONFLICT,
 				message: error.message,
 			})
 		}
