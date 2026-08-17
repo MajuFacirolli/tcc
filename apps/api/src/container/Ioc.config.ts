@@ -14,6 +14,7 @@ import type { IJobQueue } from "@application/interfaces/IJobQueue"
 import { DrizzleCampaignsRepository } from "@infrastructure/database/repositories/DrizzleCampaignsRepository"
 import { DrizzleDonorsRepository } from "@infrastructure/database/repositories/DrizzleDonorsRepository"
 import { DrizzleUsersRepository } from "@infrastructure/database/repositories/DrizzleUsersRepository"
+import { DrizzleConfirmationsRepository } from "@/infrastructure/database/repositories/DrizzleConfirmationsRepository"
 
 // use cases
 import { GetCampaignsUseCase } from "@application/use_cases/campaigns/GetCampaigns"
@@ -44,13 +45,13 @@ import { BullMqJobQueue } from "@infrastructure/queue/BullMqJobQueue"
 
 import { IoCContainer } from "./IoCContainer"
 import { TYPES } from "./types"
-import { DrizzleConfirmationsRepository } from "@/infrastructure/database/repositories/DrizzleConfirmationsRepository"
 
 // injectable
 // repositories
 decorate(injectable(), DrizzleCampaignsRepository)
 decorate(injectable(), DrizzleUsersRepository)
 decorate(injectable(), DrizzleDonorsRepository)
+decorate(injectable(), DrizzleConfirmationsRepository)
 
 // use cases
 decorate(injectable(), GetCampaignsUseCase)
@@ -117,6 +118,7 @@ decorate(inject(TYPES.IPasswordHasher), SignInUseCase, 1)
 decorate(inject(TYPES.IEmailService), SendCampaignEmailUseCase, 0)
 decorate(inject(TYPES.ICampaignsRepository), SendCampaignEmailUseCase, 1)
 decorate(inject(TYPES.IEmailTemplateRenderer), SendCampaignEmailUseCase, 2)
+decorate(inject(TYPES.IConfirmationsRepository), SendCampaignEmailUseCase, 3)
 decorate(inject(TYPES.ICampaignsRepository), CloseCampaignUseCase, 0)
 
 const container = new IoCContainer()
