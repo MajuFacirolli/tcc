@@ -1,6 +1,6 @@
 import { useLoginForm } from "@/presentation/hooks/useLoginForm"
 import { createFileRoute, redirect } from "@tanstack/react-router"
-import { Droplets, Loader } from "lucide-react"
+import { Loader } from "lucide-react"
 import { Button } from "@/presentation/components/ui/Button"
 import {
 	Field,
@@ -10,6 +10,7 @@ import {
 import { Input } from "@/presentation/components/ui/Input"
 import { profileQueryOptions } from "@/presentation/queries/profileQuery"
 import { PagesEnum } from "../enums/PagesEnum"
+import { Logo } from "../components/Logo"
 
 export const Route = createFileRoute("/login")({
 	beforeLoad: async ({ context }) => {
@@ -30,12 +31,7 @@ function LoginPage() {
 	return (
 		<div className="w-full max-w-sm px-6 flex flex-col gap-6">
 			<div className="flex flex-col gap-6">
-				<div className="flex items-center justify-center gap-2">
-					<Droplets className="w-5 h-5 text-red-800 fill-red-800" />
-					<span className="text-sm font-semibold tracking-tight">
-						HemoConnect
-					</span>
-				</div>
+				<Logo />
 				<div>
 					<h1 className="text-2xl font-bold text-zinc-900">Acesso ao Painel</h1>
 					<p className="text-sm text-zinc-500">
