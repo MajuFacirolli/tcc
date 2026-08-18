@@ -1,4 +1,5 @@
 import type { GenericError } from "./GenericError"
+import type { ConflictError } from "./ConflictError"
 import type { ForbiddenError } from "./ForbiddenError"
 import type { LockedError } from "./LockedError"
 import type { NotAcceptableError } from "./NotAcceptable"
@@ -10,6 +11,7 @@ import type { ValidationError } from "./ValidationError"
 export type TApplicationError =
 	| Error
 	| ServerError
+	| ConflictError
 	| ForbiddenError
 	| LockedError
 	| NotAcceptableError
