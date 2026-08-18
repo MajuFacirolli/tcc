@@ -1,22 +1,27 @@
-import { useForm } from "react-hook-form"
+import { createFormControl, useForm } from "react-hook-form"
 import {
 	newCampaignSchema,
 	type NewCampaignSchema,
 } from "../schemas/newCampaignSchema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { createCreateCampaignCommand } from "@/factories/createCreateCampaignCommand"
-import { QUERY_KEYS } from "../data/queryKeys"
 import { useErrors } from "./useErrors"
-import { useRefetchQuery } from "./useRefetchQuery"
 import toast from "react-hot-toast"
+import { useNavigate } from "@tanstack/react-router"
+import { PagesEnum } from "../enums/PagesEnum"
 
 const createCampaignCommand = createCreateCampaignCommand()
 
-interface IUseNewCampaignFormProps {
-	onSuccess?: () => void
-}
+export const newCampaignFormControl = createFormControl({
+	resolver: zodResolver(newCampaignSchema),
+	defaultValues: {
+		title: "",
+		message: "",
+		bloodType: undefined,
+	},
+})
 
-export const useNewCampaignForm = (props?: IUseNewCampaignFormProps) => {
+export const useNewCampaignForm = () => {
 	const {
 		register,
 		control,
@@ -25,11 +30,7 @@ export const useNewCampaignForm = (props?: IUseNewCampaignFormProps) => {
 		setError,
 		reset,
 	} = useForm<NewCampaignSchema>({
-		resolver: zodResolver(newCampaignSchema),
-		defaultValues: {
-			title: "",
-			message: "",
-		},
+		formControl: newCampaignFormControl,
 	})
 
 	const { handleError } = useErrors({
@@ -37,7 +38,7 @@ export const useNewCampaignForm = (props?: IUseNewCampaignFormProps) => {
 		fields: ["title", "message", "bloodType"],
 	})
 
-	const refetchQuery = useRefetchQuery()
+	const navigate = useNavigate()
 
 	async function handleCreateNewCampaign(data: NewCampaignSchema) {
 		const response = await createCampaignCommand.execute({
@@ -51,10 +52,9 @@ export const useNewCampaignForm = (props?: IUseNewCampaignFormProps) => {
 			return
 		}
 
-		refetchQuery([QUERY_KEYS.CAMPAIGNS])
 		reset()
-		props?.onSuccess?.()
 		toast.success("Campanha criada com sucesso")
+		navigate({ to: PagesEnum.CAMPAIGNS })
 	}
 
 	return {

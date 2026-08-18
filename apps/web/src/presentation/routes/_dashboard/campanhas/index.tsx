@@ -2,7 +2,7 @@ import { CampaignsList } from "@/presentation/components/CampaignsList"
 import { Heading } from "@/presentation/components/ui/Heading"
 import { createFileRoute } from "@tanstack/react-router"
 
-export const Route = createFileRoute("/_dashboard/campanhas")({
+export const Route = createFileRoute("/_dashboard/campanhas/")({
 	component: RouteComponent,
 })
 

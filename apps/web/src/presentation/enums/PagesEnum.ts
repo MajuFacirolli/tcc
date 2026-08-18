@@ -1,6 +1,7 @@
 export const PagesEnum = {
 	HOME: "/",
 	CAMPAIGNS: "/campanhas",
+	NEW_CAMPAIGN: "/campanhas/nova",
 	BLOOD_BANK: "/estoque",
 	DONORS: "/doadores",
 	METRICS: "/metricas",
