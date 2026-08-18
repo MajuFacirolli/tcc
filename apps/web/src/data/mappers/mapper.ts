@@ -3,8 +3,12 @@ import "reflect-metadata"
 import { classes } from "@automapper/classes"
 import { createMap, createMapper, forMember, mapFrom } from "@automapper/core"
 import { MapperError } from "@/core/errors/MapperError"
+
 import { CampaignVM } from "@/domain/viewmodels/CampaignVM"
+import { ConfirmationVM } from "@/domain/viewmodels/ConfirmationVM"
+
 import { CampaignResponse } from "../models/responses/CampaignResponse"
+import { ConfirmationResponse } from "../models/responses/ConfirmationResponse"
 
 export const mapper = createMapper({
 	strategyInitializer: classes(),
@@ -34,5 +38,19 @@ createMap(
 	forMember(
 		(dest) => dest.conversionRate,
 		mapFrom((src) => src.conversionRate * 100),
+	),
+)
+
+createMap(
+	mapper,
+	ConfirmationResponse,
+	ConfirmationVM,
+	forMember(
+		(dest) => dest.confirmedAt,
+		mapFrom((src) => new Date(src.confirmedAt)),
+	),
+	forMember(
+		(dest) => dest.alreadyConfirmed,
+		mapFrom((src) => src.alreadyConfirmed),
 	),
 )
