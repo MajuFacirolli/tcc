@@ -25,9 +25,9 @@ export const confirmations: FastifyPluginAsyncZod = async (app) => {
 					200: apiResponseSchema(
 						z.object({
 							confirmedAt: z.iso.datetime(),
+							alreadyConfirmed: z.boolean(),
 						}),
 					),
-					400: apiErrorSchema,
 					404: apiErrorSchema,
 				},
 			},
