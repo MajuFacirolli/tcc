@@ -2,6 +2,7 @@ import type { SendCampaignEmailInput } from "@/application/dtos/campaigns/SendCa
 import type { ICampaignsRepository } from "@application/interfaces/ICampaignsRepository"
 import type { IEmailService } from "@application/interfaces/IEmailService"
 import type { IEmailTemplateRenderer } from "@application/interfaces/IEmailTemplateRenderer"
+import type { IConfirmationsRepository } from "@application/interfaces/IConfirmationsRepository"
 import { EMAIL_TEMPLATE_NAMES } from "@application/emails/emailTemplateNames"
 
 export class SendCampaignEmailUseCase {
@@ -9,6 +10,7 @@ export class SendCampaignEmailUseCase {
 		private readonly emailService: IEmailService,
 		private readonly campaignsRepository: ICampaignsRepository,
 		private readonly templateRenderer: IEmailTemplateRenderer,
+		private readonly confirmationsRepository: IConfirmationsRepository,
 	) {}
 
 	async execute(data: SendCampaignEmailInput): Promise<void> {
@@ -17,11 +19,18 @@ export class SendCampaignEmailUseCase {
 			data.donorName,
 		)
 
+		const token = await this.confirmationsRepository.generateToken({
+			campaignId: data.campaignId,
+			donorId: data.donorId,
+		})
+
 		const { html, text } = await this.templateRenderer.render(
 			EMAIL_TEMPLATE_NAMES.CAMPAIGN_INVITATION,
 			{
 				campaignTitle: data.campaignTitle,
 				message: personalizedMessage,
+				confirmationLink:
+					this.confirmationsRepository.createConfirmationLink(token),
 			},
 		)
 
