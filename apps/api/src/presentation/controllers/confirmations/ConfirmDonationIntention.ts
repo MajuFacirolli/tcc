@@ -13,9 +13,7 @@ export class ConfirmDonationIntentionController {
 		)
 
 		return reply.status(HttpStatusCode.OK).send({
-			data: {
-				confirmedAt: data.confirmedAt.toISOString(),
-			},
+			data,
 			status: HttpStatusCode.OK,
 		})
 	}

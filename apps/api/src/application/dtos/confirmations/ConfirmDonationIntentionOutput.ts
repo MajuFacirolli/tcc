@@ -1,3 +1,4 @@
 export type ConfirmDonationIntentionOutput = {
-	confirmedAt: Date
+	confirmedAt: string
+	alreadyConfirmed: boolean
 }

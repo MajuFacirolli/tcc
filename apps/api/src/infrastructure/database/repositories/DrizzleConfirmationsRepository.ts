@@ -6,7 +6,6 @@ import {
 	confirmations,
 } from "@infrastructure/database/drizzle/schema/index"
 import { NotFoundError } from "@/core/errors/NotFoundError"
-import { ConflictError } from "@/core/errors/ConflictError"
 import type { ConfirmDonationIntentionOutput } from "@/application/dtos/confirmations/ConfirmDonationIntentionOutput"
 import type { CreateConfirmationInput } from "@/application/dtos/confirmations/CreateConfirmationInput"
 import type { IConfirmationsRepository } from "@/application/interfaces/IConfirmationsRepository"
@@ -54,9 +53,10 @@ export class DrizzleConfirmationsRepository
 			)
 
 		if (confirmation.confirmedAt) {
-			throw new ConflictError(
-				new Error("Donation intention has already been confirmed"),
-			)
+			return {
+				confirmedAt: confirmation.confirmedAt.toISOString(),
+				alreadyConfirmed: true,
+			}
 		}
 
 		const confirmedAt = new Date()
@@ -83,6 +83,9 @@ export class DrizzleConfirmationsRepository
 				.where(eq(campaigns.id, confirmation.campaignId))
 		})
 
-		return { confirmedAt }
+		return {
+			confirmedAt: confirmedAt.toISOString(),
+			alreadyConfirmed: false,
+		}
 	}
 }
