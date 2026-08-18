@@ -1,27 +1,22 @@
 import { BLOOD_TYPES } from "@/domain/enums/BloodTypeEnum"
-import { Field, FieldError, FieldLabel } from "../ui/Field"
-import { Input } from "../ui/Input"
+import { Field, FieldDescription, FieldError, FieldLabel } from "../../ui/Field"
+import { Input } from "../../ui/Input"
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "../ui/Select"
-import { Textarea } from "../ui/Textarea"
-import { Button } from "../ui/Button"
+} from "../../ui/Select"
+import { Textarea } from "../../ui/Textarea"
+import { Button } from "../../ui/Button"
 import { Loader, Send } from "lucide-react"
-import { DialogClose } from "../ui/Dialog"
 import { useNewCampaignForm } from "@/presentation/hooks/useNewCampaignForm"
 import { Controller } from "react-hook-form"
 
-interface INewCampaignFormProps {
-	onSuccess?: () => void
-}
-
-export const NewCampaignForm = ({ onSuccess }: INewCampaignFormProps) => {
+export const NewCampaignForm = () => {
 	const { register, control, handleSubmit, errors, isSubmitting } =
-		useNewCampaignForm({ onSuccess })
+		useNewCampaignForm()
 
 	return (
 		<form onSubmit={handleSubmit} className="w-full flex flex-col gap-6">
@@ -35,7 +30,7 @@ export const NewCampaignForm = ({ onSuccess }: INewCampaignFormProps) => {
 				<Input
 					{...register("title")}
 					id="title"
-					placeholder="Ex: Urgência O-"
+					placeholder="Título da campanha"
 					aria-invalid={!!errors.title}
 				/>
 				<FieldError errors={[errors.title]} />
@@ -70,10 +65,13 @@ export const NewCampaignForm = ({ onSuccess }: INewCampaignFormProps) => {
 
 			<Field className="gap-1.5">
 				<FieldLabel htmlFor="message">Conteúdo da mensagem</FieldLabel>
+				<FieldDescription>
+					Dica: Use [Nome] para personalizar a mensagem com o nome do doador
+				</FieldDescription>
 				<Textarea
 					{...register("message")}
 					id="message"
-					placeholder="Dica: Use [Nome] para personalizar a mensagem com o nome do doador. O link de confirmação será adicionado automaticamente ao final."
+					placeholder="Mensagem"
 					aria-invalid={!!errors.message}
 					className="min-h-40"
 				/>
@@ -81,11 +79,6 @@ export const NewCampaignForm = ({ onSuccess }: INewCampaignFormProps) => {
 			</Field>
 
 			<div className="w-full flex items-center justify-end">
-				<DialogClose asChild>
-					<Button variant="ghost" type="button" disabled={isSubmitting}>
-						Cancelar
-					</Button>
-				</DialogClose>
 				<Button type="submit">
 					Disparar agora
 					{isSubmitting ? <Loader className="animate-spin" /> : <Send />}

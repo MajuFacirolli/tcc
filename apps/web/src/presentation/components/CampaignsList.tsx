@@ -1,4 +1,4 @@
-import { ArrowUpRight } from "lucide-react"
+import { ArrowUpRight, Plus } from "lucide-react"
 import { formatDate } from "@/utils/formatDate"
 import { useCampaigns } from "../hooks/useCampaigns"
 import { useCampaignsFilters } from "../hooks/useCampaignsFilters"
@@ -9,7 +9,9 @@ import { Card } from "./ui/Card"
 import Pagination from "./ui/Pagination"
 import { twMerge } from "tailwind-merge"
 import { CAMPAIGN_STATUS_CONFIG } from "../data/campaignStatusConfig"
-import { NewCampaign } from "./NewCampaign"
+import { Link } from "@tanstack/react-router"
+import { PagesEnum } from "../enums/PagesEnum"
+import { Tooltip } from "./ui/Tooltip"
 
 export const CampaignsList = () => {
 	const { filters, setFilters, clearFilters, hasFilters } =
@@ -30,7 +32,12 @@ export const CampaignsList = () => {
 					hasFilters={hasFilters}
 				/>
 
-				<NewCampaign />
+				<Button size="icon-lg" asChild>
+					<Link to={PagesEnum.NEW_CAMPAIGN} className="relative group">
+						<Plus className="size-4.5" />
+						<Tooltip label="Nova campanha" direction="left" />
+					</Link>
+				</Button>
 			</div>
 
 			{isLoading && (
