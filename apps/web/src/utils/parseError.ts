@@ -1,4 +1,5 @@
 import type { TApplicationError } from "@/core/errors/ApplicationError"
+import { ConflictError } from "@/core/errors/ConflictError"
 import { ForbiddenError } from "@/core/errors/ForbiddenError"
 import { GenericError } from "@/core/errors/GenericError"
 import { LockedError } from "@/core/errors/LockedError"
@@ -153,6 +154,10 @@ export function parseError(
 
 	if (status === HttpStatusCode.TOO_MANY_REQUESTS) {
 		return new ManyRequestsError(responseError)
+	}
+
+	if (status === HttpStatusCode.CONFLICT) {
+		return new ConflictError(responseError)
 	}
 
 	if (status === HttpStatusCode.INTERNAL_SERVER_ERROR) {

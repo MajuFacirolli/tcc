@@ -17,14 +17,14 @@ import {
 type CampaignInvitationEmailProps = {
 	campaignTitle: string
 	message: string
-	// confirmationLink: string
+	confirmationLink: string
 	companyName?: string
 }
 
 export function CampaignInvitationEmail({
 	campaignTitle,
 	message,
-	// confirmationLink,
+	confirmationLink,
 	companyName = "HemoConnect",
 }: CampaignInvitationEmailProps) {
 	return (
@@ -103,7 +103,7 @@ export function CampaignInvitationEmail({
 
 									<Section className="mb-4 text-center">
 										<Button
-											// href={confirmationLink}
+											href={confirmationLink}
 											className="bg-[#991b1b] font-16 text-white inline-block rounded-lg px-7 py-4 text-center font-sans leading-6"
 										>
 											Confirmar intenção de doar

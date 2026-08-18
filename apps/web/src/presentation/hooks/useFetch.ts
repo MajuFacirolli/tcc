@@ -10,6 +10,8 @@ type FetchType<TData, TError> = {
 	queryKeys: QueryKey
 	queryFn: () => Promise<TEither<TApplicationError, TData>>
 	enabled?: boolean
+	staleTime?: UseQueryOptions<TData, TError>["staleTime"]
+	refetchOnWindowFocus?: UseQueryOptions<TData, TError>["refetchOnWindowFocus"]
 	placeholderData?: UseQueryOptions<TData, TError>["placeholderData"]
 }
 
@@ -17,10 +19,14 @@ export const useFetch = <TData, TError = TApplicationError>({
 	queryKeys,
 	queryFn,
 	enabled,
+	staleTime,
+	refetchOnWindowFocus,
 	placeholderData,
 }: FetchType<TData, TError>) =>
 	useQuery<TData, TError>({
 		enabled,
+		staleTime,
+		refetchOnWindowFocus,
 		placeholderData,
 		queryKey: queryKeys,
 		queryFn: async () => {
