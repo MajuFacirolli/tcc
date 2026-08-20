@@ -5,6 +5,7 @@ import type { ICampaignsRepository } from "@application/interfaces/ICampaignsRep
 import type { IUsersRepository } from "@application/interfaces/IUsersRepository"
 import type { IDonorsRepository } from "@application/interfaces/IDonorsRepository"
 import type { IConfirmationsRepository } from "@application/interfaces/IConfirmationsRepository"
+import type { IMetricsRepository } from "@application/interfaces/IMetricsRepository"
 import type { IPasswordHasher } from "@application/interfaces/IPasswordHasher"
 import type { IEmailService } from "@application/interfaces/IEmailService"
 import type { IEmailTemplateRenderer } from "@application/interfaces/IEmailTemplateRenderer"
@@ -15,6 +16,7 @@ import { DrizzleCampaignsRepository } from "@infrastructure/database/repositorie
 import { DrizzleDonorsRepository } from "@infrastructure/database/repositories/DrizzleDonorsRepository"
 import { DrizzleUsersRepository } from "@infrastructure/database/repositories/DrizzleUsersRepository"
 import { DrizzleConfirmationsRepository } from "@/infrastructure/database/repositories/DrizzleConfirmationsRepository"
+import { DrizzleMetricsRepository } from "@infrastructure/database/repositories/DrizzleMetricsRepository"
 
 // use cases
 import { GetCampaignsUseCase } from "@application/use_cases/campaigns/GetCampaigns"
@@ -26,6 +28,7 @@ import { CloseCampaignUseCase } from "@application/use_cases/campaigns/CloseCamp
 import { SignInUseCase } from "@application/use_cases/auth/SignIn"
 import { GetProfileUseCase } from "@application/use_cases/auth/GetProfile"
 import { ConfirmDonationIntentionUseCase } from "@application/use_cases/confirmations/ConfirmDonationIntention"
+import { GetMetricsUseCase } from "@application/use_cases/metrics/GetMetrics"
 
 // controllers
 import { GetCampaignsController } from "@/presentation/controllers/campaigns/GetCampaigns"
@@ -36,6 +39,7 @@ import { SignInController } from "@/presentation/controllers/auth/SignIn"
 import { SignOutController } from "@/presentation/controllers/auth/SignOut"
 import { GetProfileController } from "@/presentation/controllers/auth/GetProfile"
 import { ConfirmDonationIntentionController } from "@/presentation/controllers/confirmations/ConfirmDonationIntention"
+import { GetMetricsController } from "@/presentation/controllers/metrics/GetMetrics"
 
 //services
 import { Argon2PasswordHasher } from "@infrastructure/identity/Argon2PasswordHasher"
@@ -52,6 +56,7 @@ decorate(injectable(), DrizzleCampaignsRepository)
 decorate(injectable(), DrizzleUsersRepository)
 decorate(injectable(), DrizzleDonorsRepository)
 decorate(injectable(), DrizzleConfirmationsRepository)
+decorate(injectable(), DrizzleMetricsRepository)
 
 // use cases
 decorate(injectable(), GetCampaignsUseCase)
@@ -63,6 +68,7 @@ decorate(injectable(), CloseCampaignUseCase)
 decorate(injectable(), SignInUseCase)
 decorate(injectable(), GetProfileUseCase)
 decorate(injectable(), ConfirmDonationIntentionUseCase)
+decorate(injectable(), GetMetricsUseCase)
 
 // controllers
 decorate(injectable(), GetCampaignsController)
@@ -73,6 +79,7 @@ decorate(injectable(), SignInController)
 decorate(injectable(), SignOutController)
 decorate(injectable(), GetProfileController)
 decorate(injectable(), ConfirmDonationIntentionController)
+decorate(injectable(), GetMetricsController)
 
 //services
 decorate(injectable(), Argon2PasswordHasher)
@@ -95,6 +102,7 @@ decorate(
 	ConfirmDonationIntentionUseCase,
 	0,
 )
+decorate(inject(TYPES.IMetricsRepository), GetMetricsUseCase, 0)
 
 // use cases
 decorate(inject(TYPES.GetCampaignsUseCase), GetCampaignsController, 0)
@@ -112,6 +120,7 @@ decorate(
 	ConfirmDonationIntentionController,
 	0,
 )
+decorate(inject(TYPES.GetMetricsUseCase), GetMetricsController, 0)
 
 //services
 decorate(inject(TYPES.IPasswordHasher), SignInUseCase, 1)
@@ -139,6 +148,10 @@ container.bindRepository<IDonorsRepository>(
 container.bindRepository<IConfirmationsRepository>(
 	TYPES.IConfirmationsRepository,
 	DrizzleConfirmationsRepository,
+)
+container.bindRepository<IMetricsRepository>(
+	TYPES.IMetricsRepository,
+	DrizzleMetricsRepository,
 )
 
 // use cases
@@ -175,6 +188,10 @@ container.bindUseCase<ConfirmDonationIntentionUseCase>(
 	TYPES.ConfirmDonationIntentionUseCase,
 	ConfirmDonationIntentionUseCase,
 )
+container.bindUseCase<GetMetricsUseCase>(
+	TYPES.GetMetricsUseCase,
+	GetMetricsUseCase,
+)
 
 // controllers
 container.bindController<GetCampaignsController>(
@@ -208,6 +225,10 @@ container.bindController<GetProfileController>(
 container.bindController<ConfirmDonationIntentionController>(
 	TYPES.ConfirmDonationIntentionController,
 	ConfirmDonationIntentionController,
+)
+container.bindController<GetMetricsController>(
+	TYPES.GetMetricsController,
+	GetMetricsController,
 )
 
 //services
