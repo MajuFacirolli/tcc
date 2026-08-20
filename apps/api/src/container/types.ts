@@ -3,6 +3,7 @@ export const TYPES = {
 	IUsersRepository: Symbol.for("IUsersRepository"),
 	IDonorsRepository: Symbol.for("IDonorsRepository"),
 	IConfirmationsRepository: Symbol.for("IConfirmationsRepository"),
+	IMetricsRepository: Symbol.for("IMetricsRepository"),
 
 	GetCampaignsUseCase: Symbol.for("GetCampaignsUseCase"),
 	GetCampaignsSummaryUseCase: Symbol.for("GetCampaignsSummaryUseCase"),
@@ -15,6 +16,7 @@ export const TYPES = {
 	ConfirmDonationIntentionUseCase: Symbol.for(
 		"ConfirmDonationIntentionUseCase",
 	),
+	GetMetricsUseCase: Symbol.for("GetMetricsUseCase"),
 
 	GetCampaignsController: Symbol.for("GetCampaignsController"),
 	GetCampaignsSummaryController: Symbol.for("GetCampaignsSummaryController"),
@@ -26,6 +28,7 @@ export const TYPES = {
 	ConfirmDonationIntentionController: Symbol.for(
 		"ConfirmDonationIntentionController",
 	),
+	GetMetricsController: Symbol.for("GetMetricsController"),
 
 	IPasswordHasher: Symbol.for("IPasswordHasher"),
 	IEmailService: Symbol.for("IEmailService"),
