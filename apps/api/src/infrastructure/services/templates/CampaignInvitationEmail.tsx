@@ -67,7 +67,7 @@ export function CampaignInvitationEmail({
 
 							{/* Convite */}
 							<Section className="max-w-lg mx-auto mobile:px-6 mobile:py-12 rounded-lg px-10 py-16 text-center">
-								<Section className="mb-3">
+								<Section className="mb-3 text-center">
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
 										width="40"
@@ -85,7 +85,10 @@ export function CampaignInvitationEmail({
 										<path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97" />
 									</svg>
 
-									<Heading as="h1" className="font-28 m-0 font-sans mt-3">
+									<Heading
+										as="h1"
+										className="font-28 m-0 font-sans mt-3 text-center"
+									>
 										{campaignTitle}
 									</Heading>
 								</Section>
