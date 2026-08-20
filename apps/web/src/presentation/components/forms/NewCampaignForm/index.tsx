@@ -1,4 +1,4 @@
-import { BLOOD_TYPES } from "@/domain/enums/BloodTypeEnum"
+import { BLOOD_TYPES, BloodTypeEnum } from "@/domain/enums/BloodTypeEnum"
 import { Field, FieldDescription, FieldError, FieldLabel } from "../../ui/Field"
 import { Input } from "../../ui/Input"
 import {
@@ -14,9 +14,13 @@ import { Loader, Send } from "lucide-react"
 import { useNewCampaignForm } from "@/presentation/hooks/useNewCampaignForm"
 import { Controller } from "react-hook-form"
 
-export const NewCampaignForm = () => {
+interface INewCampaignFormProps {
+	bloodType?: BloodTypeEnum
+}
+
+export const NewCampaignForm = ({ bloodType }: INewCampaignFormProps) => {
 	const { register, control, handleSubmit, errors, isSubmitting } =
-		useNewCampaignForm()
+		useNewCampaignForm({ bloodType })
 
 	return (
 		<form onSubmit={handleSubmit} className="w-full flex flex-col gap-6">
