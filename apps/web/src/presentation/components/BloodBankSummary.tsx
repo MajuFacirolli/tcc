@@ -14,6 +14,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "./ui/Table"
+import type { BloodTypeEnum } from "@/domain/enums/BloodTypeEnum"
 
 const mockBloodBankSummary = [
 	{ type: "A+", status: BloodBankStatusEnum.STABLE },
@@ -67,8 +68,9 @@ export const BloodBankSummary = () => {
 								</Badge>
 							</TableCell>
 							<TableCell className="text-right flex justify-end">
-								<button
-									type="button"
+								<Link
+									to={PagesEnum.NEW_CAMPAIGN}
+									search={{ bloodType: item.type as BloodTypeEnum }}
 									className={twMerge(
 										"group flex items-center justify-center gap-3 p-2.5 rounded-lg text-sm font-medium text-red-800",
 										"hover:bg-red-50 transition-colors duration-150 cursor-pointer",
@@ -76,7 +78,7 @@ export const BloodBankSummary = () => {
 									)}
 								>
 									<Megaphone className="size-4" />
-								</button>
+								</Link>
 							</TableCell>
 						</TableRow>
 					))}

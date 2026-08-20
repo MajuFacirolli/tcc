@@ -2,7 +2,7 @@ export const PagesEnum = {
 	HOME: "/",
 	CAMPAIGNS: "/campanhas",
 	NEW_CAMPAIGN: "/campanhas/nova",
-	BLOOD_BANK: "/estoque",
+	BLOOD_BANK: "/banco-de-sangue",
 	DONORS: "/doadores",
 	METRICS: "/metricas",
 	HELP: "/ajuda",

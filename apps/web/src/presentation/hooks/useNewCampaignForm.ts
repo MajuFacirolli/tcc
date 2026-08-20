@@ -9,6 +9,7 @@ import { useErrors } from "./useErrors"
 import toast from "react-hot-toast"
 import { useNavigate } from "@tanstack/react-router"
 import { PagesEnum } from "../enums/PagesEnum"
+import type { BloodTypeEnum } from "@/domain/enums/BloodTypeEnum"
 
 const createCampaignCommand = createCreateCampaignCommand()
 
@@ -21,7 +22,11 @@ export const newCampaignFormControl = createFormControl({
 	},
 })
 
-export const useNewCampaignForm = () => {
+interface IUseNewCampaignFormProps {
+	bloodType?: BloodTypeEnum
+}
+
+export const useNewCampaignForm = ({ bloodType }: IUseNewCampaignFormProps) => {
 	const {
 		register,
 		control,
@@ -31,6 +36,9 @@ export const useNewCampaignForm = () => {
 		reset,
 	} = useForm<NewCampaignSchema>({
 		formControl: newCampaignFormControl,
+		defaultValues: {
+			bloodType,
+		},
 	})
 
 	const { handleError } = useErrors({
