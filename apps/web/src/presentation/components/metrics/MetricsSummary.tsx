@@ -107,7 +107,7 @@ export const MetricsSummary = ({ metrics }: IMetricsSummaryProps) => {
 				/>
 				<StatTile
 					Icon={Mails}
-					label="Doadores notificados"
+					label="Notificações enviadas"
 					value={formatInteger(summary.notifiedCount)}
 					delta={summary.deltas.notifiedCount}
 					trend={notifiedTrend}

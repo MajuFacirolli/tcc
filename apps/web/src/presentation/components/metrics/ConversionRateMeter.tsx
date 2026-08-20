@@ -22,7 +22,7 @@ export const ConversionRateMeter = ({
 	const percent = Math.min(Math.max(summary.conversionRate, 0), 100)
 
 	const readout = [
-		{ label: "Notificados", value: summary.notifiedCount },
+		{ label: "Notificações", value: summary.notifiedCount },
 		{ label: "Confirmações", value: summary.confirmationsCount },
 	]
 
