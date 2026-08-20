@@ -35,6 +35,17 @@
 	--border: var(--color-zinc-200);
 	--input: var(--color-zinc-200);
 	--ring: var(--color-zinc-400);
+
+	--chart-primary: var(--color-red-800);
+	--chart-ordinal-1: var(--color-red-400);
+	--chart-ordinal-2: var(--color-red-600);
+	--chart-ordinal-3: var(--color-red-800);
+	--chart-ordinal-4: var(--color-red-950);
+	--chart-track: var(--color-zinc-200);
+	--chart-grid: var(--color-zinc-200);
+	--chart-axis: var(--color-zinc-500);
+	--chart-positive: var(--color-emerald-700);
+	--chart-negative: var(--color-red-600);
 }
 
 /* `inline` so the utilities reference the variables above instead of copying
@@ -67,6 +78,17 @@
 	--color-border: var(--border);
 	--color-input: var(--input);
 	--color-ring: var(--ring);
+
+	--color-chart-primary: var(--chart-primary);
+	--color-chart-ordinal-1: var(--chart-ordinal-1);
+	--color-chart-ordinal-2: var(--chart-ordinal-2);
+	--color-chart-ordinal-3: var(--chart-ordinal-3);
+	--color-chart-ordinal-4: var(--chart-ordinal-4);
+	--color-chart-track: var(--chart-track);
+	--color-chart-grid: var(--chart-grid);
+	--color-chart-axis: var(--chart-axis);
+	--color-chart-positive: var(--chart-positive);
+	--color-chart-negative: var(--chart-negative);
 }
 
 body {
