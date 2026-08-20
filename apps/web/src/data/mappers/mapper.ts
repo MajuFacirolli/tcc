@@ -6,9 +6,11 @@ import { MapperError } from "@/core/errors/MapperError"
 
 import { CampaignVM } from "@/domain/viewmodels/CampaignVM"
 import { ConfirmationVM } from "@/domain/viewmodels/ConfirmationVM"
+import { CampaignSummaryVM } from "@/domain/viewmodels/CampaignSummaryVM"
 
 import { CampaignResponse } from "../models/responses/CampaignResponse"
 import { ConfirmationResponse } from "../models/responses/ConfirmationResponse"
+import { CampaignSummaryResponse } from "../models/responses/CampaignSummaryResponse"
 
 export const mapper = createMapper({
 	strategyInitializer: classes(),
@@ -52,5 +54,19 @@ createMap(
 	forMember(
 		(dest) => dest.alreadyConfirmed,
 		mapFrom((src) => src.alreadyConfirmed),
+	),
+)
+
+createMap(
+	mapper,
+	CampaignSummaryResponse,
+	CampaignSummaryVM,
+	forMember(
+		(dest) => dest.bloodType,
+		mapFrom((src) => src.bloodType),
+	),
+	forMember(
+		(dest) => dest.conversionRate,
+		mapFrom((src) => src.conversionRate * 100),
 	),
 )
