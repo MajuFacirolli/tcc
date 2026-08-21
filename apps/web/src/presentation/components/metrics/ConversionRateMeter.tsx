@@ -33,7 +33,7 @@ export const ConversionRateMeter = ({
 				<Card.Description>Confirmações sobre notificações.</Card.Description>
 			</div>
 
-			<div className="flex flex-1 items-center justify-center py-2">
+			<div className="flex flex-col flex-1 items-center justify-center py-2">
 				<div className="relative">
 					<svg
 						viewBox="0 0 160 160"
@@ -66,7 +66,6 @@ export const ConversionRateMeter = ({
 						<span className="text-4xl font-bold text-zinc-900">
 							{formatPercent(percent)}
 						</span>
-						<span className="text-xs text-zinc-500">converteram</span>
 					</div>
 				</div>
 			</div>

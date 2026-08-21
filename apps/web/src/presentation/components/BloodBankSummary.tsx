@@ -14,29 +14,24 @@ import {
 	TableHeader,
 	TableRow,
 } from "./ui/Table"
-import type { BloodTypeEnum } from "@/domain/enums/BloodTypeEnum"
-
-const mockBloodBankSummary = [
-	{ type: "A+", status: BloodBankStatusEnum.STABLE },
-	{ type: "A-", status: BloodBankStatusEnum.STABLE },
-	{ type: "B+", status: BloodBankStatusEnum.ATTENTION },
-	{ type: "B-", status: BloodBankStatusEnum.CRITICAL },
-	{ type: "AB+", status: BloodBankStatusEnum.ATTENTION },
-	{ type: "AB-", status: BloodBankStatusEnum.STABLE },
-	{ type: "O+", status: BloodBankStatusEnum.CRITICAL },
-	{ type: "O-", status: BloodBankStatusEnum.CRITICAL },
-]
+import { useBloodBankSummary } from "../hooks/useBloodBankSummary"
+import { BloodBankSummarySkeleton } from "./skeletons/BloodBankSummarySkeleton"
 
 const badgeVariantByStatus: Record<
 	BloodBankStatusEnum,
 	ComponentProps<typeof Badge>["variant"]
 > = {
 	[BloodBankStatusEnum.STABLE]: "success",
-	[BloodBankStatusEnum.ATTENTION]: "warning",
+	[BloodBankStatusEnum.WARNING]: "warning",
 	[BloodBankStatusEnum.CRITICAL]: "destructive",
 }
 
 export const BloodBankSummary = () => {
+	const { bloodBankSummary, error, isFetching, isLoading } =
+		useBloodBankSummary()
+
+	const hasData = !!bloodBankSummary?.length
+
 	return (
 		<section className="col-span-6 flex flex-col gap-6">
 			<div className="w-full flex items-center justify-between">
@@ -58,30 +53,64 @@ export const BloodBankSummary = () => {
 						<TableHead className="text-right">Ação</TableHead>
 					</TableRow>
 				</TableHeader>
-				<TableBody>
-					{mockBloodBankSummary.map((item) => (
-						<TableRow key={item.type}>
-							<TableCell className="font-bold text-base">{item.type}</TableCell>
-							<TableCell>
-								<Badge variant={badgeVariantByStatus[item.status]}>
-									{BLOOD_BANK_STATUS_LABELS[item.status]}
-								</Badge>
-							</TableCell>
-							<TableCell className="text-right flex justify-end">
-								<Link
-									to={PagesEnum.NEW_CAMPAIGN}
-									search={{ bloodType: item.type as BloodTypeEnum }}
-									className={twMerge(
-										"group flex items-center justify-center gap-3 p-2.5 rounded-lg text-sm font-medium text-red-800",
-										"hover:bg-red-50 transition-colors duration-150 cursor-pointer",
-										"[&.active]:bg-red-800 [&.active]:text-white",
-									)}
-								>
-									<Megaphone className="size-4" />
-								</Link>
+				<TableBody
+					data-fetching={isFetching}
+					aria-busy={isFetching}
+					className="bg-white"
+				>
+					{isLoading && <BloodBankSummarySkeleton />}
+
+					{!isLoading && error && (
+						<TableRow>
+							<TableCell colSpan={3} className="py-16 text-center">
+								<p className="text-sm text-zinc-500">
+									Não foi possível carregar o banco de sangue.
+								</p>
 							</TableCell>
 						</TableRow>
-					))}
+					)}
+
+					{!isLoading && !error && !hasData && (
+						<TableRow>
+							<TableCell colSpan={3} className="py-16 text-center">
+								<p className="text-sm text-zinc-500">
+									Ainda não há tipos sanguíneos cadastrados
+								</p>
+							</TableCell>
+						</TableRow>
+					)}
+
+					{!isLoading &&
+						!error &&
+						hasData &&
+						bloodBankSummary.map((item) => (
+							<TableRow
+								key={item.type}
+								className="transition-opacity duration-150 in-data-[fetching=true]:opacity-60"
+							>
+								<TableCell className="font-bold text-base">
+									{item.type}
+								</TableCell>
+								<TableCell>
+									<Badge variant={badgeVariantByStatus[item.status]}>
+										{BLOOD_BANK_STATUS_LABELS[item.status]}
+									</Badge>
+								</TableCell>
+								<TableCell className="text-right flex justify-end">
+									<Link
+										to={PagesEnum.NEW_CAMPAIGN}
+										search={{ bloodType: item.type }}
+										className={twMerge(
+											"group flex items-center justify-center gap-3 p-2.5 rounded-lg text-sm font-medium text-red-800",
+											"hover:bg-red-50 transition-colors duration-150 cursor-pointer",
+											"[&.active]:bg-red-800 [&.active]:text-white",
+										)}
+									>
+										<Megaphone className="size-4" />
+									</Link>
+								</TableCell>
+							</TableRow>
+						))}
 				</TableBody>
 			</Table>
 		</section>
