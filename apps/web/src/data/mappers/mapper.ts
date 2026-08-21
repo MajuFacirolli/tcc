@@ -7,10 +7,12 @@ import { MapperError } from "@/core/errors/MapperError"
 import { CampaignVM } from "@/domain/viewmodels/CampaignVM"
 import { ConfirmationVM } from "@/domain/viewmodels/ConfirmationVM"
 import { CampaignSummaryVM } from "@/domain/viewmodels/CampaignSummaryVM"
+import { BloodBankSummaryVM } from "@/domain/viewmodels/BloodBankSummaryVM"
 
 import { CampaignResponse } from "../models/responses/CampaignResponse"
 import { ConfirmationResponse } from "../models/responses/ConfirmationResponse"
 import { CampaignSummaryResponse } from "../models/responses/CampaignSummaryResponse"
+import { BloodBankSummaryResponse } from "../models/responses/BloodBankSummaryResponse"
 
 export const mapper = createMapper({
 	strategyInitializer: classes(),
@@ -68,5 +70,15 @@ createMap(
 	forMember(
 		(dest) => dest.conversionRate,
 		mapFrom((src) => src.conversionRate * 100),
+	),
+)
+
+createMap(
+	mapper,
+	BloodBankSummaryResponse,
+	BloodBankSummaryVM,
+	forMember(
+		(dest) => dest.type,
+		mapFrom((src) => src.id),
 	),
 )

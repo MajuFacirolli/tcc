@@ -1,7 +1,7 @@
 export const BloodBankStatusEnum = {
-	STABLE: 1,
-	ATTENTION: 2,
-	CRITICAL: 3,
+	STABLE: "stable",
+	WARNING: "warning",
+	CRITICAL: "critical",
 } as const
 
 export type BloodBankStatusEnum =

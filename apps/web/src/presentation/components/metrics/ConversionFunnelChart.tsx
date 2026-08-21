@@ -37,7 +37,7 @@ export const ConversionFunnelChart = ({
 
 	const stages = [
 		{ label: "Elegíveis alcançados", value: funnel.eligibleReached },
-		{ label: "Notificados", value: funnel.notified },
+		{ label: "Notificações", value: funnel.notified },
 		{ label: "Confirmações", value: funnel.confirmed },
 	]
 

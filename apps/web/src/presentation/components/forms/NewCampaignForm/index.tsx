@@ -1,4 +1,4 @@
-import { BLOOD_TYPES, BloodTypeEnum } from "@/domain/enums/BloodTypeEnum"
+import { BLOOD_TYPES, type BloodTypeEnum } from "@/domain/enums/BloodTypeEnum"
 import { Field, FieldDescription, FieldError, FieldLabel } from "../../ui/Field"
 import { Input } from "../../ui/Input"
 import {
