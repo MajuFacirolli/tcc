@@ -6,6 +6,7 @@ import type { IUsersRepository } from "@application/interfaces/IUsersRepository"
 import type { IDonorsRepository } from "@application/interfaces/IDonorsRepository"
 import type { IConfirmationsRepository } from "@application/interfaces/IConfirmationsRepository"
 import type { IMetricsRepository } from "@application/interfaces/IMetricsRepository"
+import type { IBloodBankRepository } from "@/application/interfaces/IBloodBankRepository"
 import type { IPasswordHasher } from "@application/interfaces/IPasswordHasher"
 import type { IEmailService } from "@application/interfaces/IEmailService"
 import type { IEmailTemplateRenderer } from "@application/interfaces/IEmailTemplateRenderer"
@@ -17,6 +18,7 @@ import { DrizzleDonorsRepository } from "@infrastructure/database/repositories/D
 import { DrizzleUsersRepository } from "@infrastructure/database/repositories/DrizzleUsersRepository"
 import { DrizzleConfirmationsRepository } from "@/infrastructure/database/repositories/DrizzleConfirmationsRepository"
 import { DrizzleMetricsRepository } from "@infrastructure/database/repositories/DrizzleMetricsRepository"
+import { DrizzleBloodBankRepository } from "@infrastructure/database/repositories/DrizzleBloodBankRepository"
 
 // use cases
 import { GetCampaignsUseCase } from "@application/use_cases/campaigns/GetCampaigns"
@@ -29,6 +31,7 @@ import { SignInUseCase } from "@application/use_cases/auth/SignIn"
 import { GetProfileUseCase } from "@application/use_cases/auth/GetProfile"
 import { ConfirmDonationIntentionUseCase } from "@application/use_cases/confirmations/ConfirmDonationIntention"
 import { GetMetricsUseCase } from "@application/use_cases/metrics/GetMetrics"
+import { GetBloodBankSummaryUseCase } from "@/application/use_cases/bloodBank/GetBloodBankSummary"
 
 // controllers
 import { GetCampaignsController } from "@/presentation/controllers/campaigns/GetCampaigns"
@@ -40,6 +43,7 @@ import { SignOutController } from "@/presentation/controllers/auth/SignOut"
 import { GetProfileController } from "@/presentation/controllers/auth/GetProfile"
 import { ConfirmDonationIntentionController } from "@/presentation/controllers/confirmations/ConfirmDonationIntention"
 import { GetMetricsController } from "@/presentation/controllers/metrics/GetMetrics"
+import { GetBloodBankSummaryController } from "@/presentation/controllers/bloodBank/GetBloodBankSummary"
 
 //services
 import { Argon2PasswordHasher } from "@infrastructure/identity/Argon2PasswordHasher"
@@ -57,6 +61,7 @@ decorate(injectable(), DrizzleUsersRepository)
 decorate(injectable(), DrizzleDonorsRepository)
 decorate(injectable(), DrizzleConfirmationsRepository)
 decorate(injectable(), DrizzleMetricsRepository)
+decorate(injectable(), DrizzleBloodBankRepository)
 
 // use cases
 decorate(injectable(), GetCampaignsUseCase)
@@ -69,6 +74,7 @@ decorate(injectable(), SignInUseCase)
 decorate(injectable(), GetProfileUseCase)
 decorate(injectable(), ConfirmDonationIntentionUseCase)
 decorate(injectable(), GetMetricsUseCase)
+decorate(injectable(), GetBloodBankSummaryUseCase)
 
 // controllers
 decorate(injectable(), GetCampaignsController)
@@ -80,6 +86,7 @@ decorate(injectable(), SignOutController)
 decorate(injectable(), GetProfileController)
 decorate(injectable(), ConfirmDonationIntentionController)
 decorate(injectable(), GetMetricsController)
+decorate(injectable(), GetBloodBankSummaryController)
 
 //services
 decorate(injectable(), Argon2PasswordHasher)
@@ -103,6 +110,7 @@ decorate(
 	0,
 )
 decorate(inject(TYPES.IMetricsRepository), GetMetricsUseCase, 0)
+decorate(inject(TYPES.IBloodBankRepository), GetBloodBankSummaryUseCase, 0)
 
 // use cases
 decorate(inject(TYPES.GetCampaignsUseCase), GetCampaignsController, 0)
@@ -121,6 +129,11 @@ decorate(
 	0,
 )
 decorate(inject(TYPES.GetMetricsUseCase), GetMetricsController, 0)
+decorate(
+	inject(TYPES.GetBloodBankSummaryUseCase),
+	GetBloodBankSummaryController,
+	0,
+)
 
 //services
 decorate(inject(TYPES.IPasswordHasher), SignInUseCase, 1)
@@ -152,6 +165,10 @@ container.bindRepository<IConfirmationsRepository>(
 container.bindRepository<IMetricsRepository>(
 	TYPES.IMetricsRepository,
 	DrizzleMetricsRepository,
+)
+container.bindRepository<IBloodBankRepository>(
+	TYPES.IBloodBankRepository,
+	DrizzleBloodBankRepository,
 )
 
 // use cases
@@ -192,6 +209,10 @@ container.bindUseCase<GetMetricsUseCase>(
 	TYPES.GetMetricsUseCase,
 	GetMetricsUseCase,
 )
+container.bindUseCase<GetBloodBankSummaryUseCase>(
+	TYPES.GetBloodBankSummaryUseCase,
+	GetBloodBankSummaryUseCase,
+)
 
 // controllers
 container.bindController<GetCampaignsController>(
@@ -229,6 +250,10 @@ container.bindController<ConfirmDonationIntentionController>(
 container.bindController<GetMetricsController>(
 	TYPES.GetMetricsController,
 	GetMetricsController,
+)
+container.bindController<GetBloodBankSummaryController>(
+	TYPES.GetBloodBankSummaryController,
+	GetBloodBankSummaryController,
 )
 
 //services
