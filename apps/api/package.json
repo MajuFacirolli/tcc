@@ -13,6 +13,7 @@
 		"db:generate": "drizzle-kit generate",
 		"db:migrate": "drizzle-kit migrate",
 		"db:seed": "tsx --env-file=.env src/infrastructure/database/drizzle/seed.ts",
+		"db:setup": "pnpm db:migrate && pnpm db:seed",
 		"db:studio": "drizzle-kit studio"
 	},
 	"keywords": [],
