@@ -39,6 +39,8 @@ const envSchema = z.object({
 	SEED_ADMIN_EMAIL: z.email().optional(),
 	SEED_ADMIN_PASSWORD: z.string().min(8).optional(),
 	REDIS_URL: z.url(),
+	DASHBOARD_USER: z.string().min(1).optional(),
+	DASHBOARD_PASSWORD: z.string().min(1).optional(),
 	SMTP_HOST: z.string().min(1),
 	SMTP_PORT: z.coerce.number(),
 	SMTP_USER: z.string().min(1),

@@ -17,6 +17,7 @@ export const confirmations: FastifyPluginAsyncZod = async (app) => {
 	app.post(
 		"/api/confirmations/:token",
 		{
+			config: { rateLimit: { max: 20, timeWindow: "1 minute" } },
 			schema: {
 				summary: "Confirm donation intention",
 				tags: ["Confirmations"],
@@ -29,6 +30,7 @@ export const confirmations: FastifyPluginAsyncZod = async (app) => {
 						}),
 					),
 					404: apiErrorSchema,
+					429: apiErrorSchema,
 				},
 			},
 		},

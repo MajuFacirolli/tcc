@@ -15,10 +15,15 @@ import {
 	validatorCompiler,
 	type ZodTypeProvider,
 } from "fastify-type-provider-zod"
+import { ManyRequestsError } from "@/core/errors/ManyRequestsError"
 import { env } from "@/env"
 import { queues } from "@infrastructure/queue/queues"
 import { AUTH_COOKIE_NAME } from "@presentation/middlewares/authCookie"
 import { authenticate } from "@presentation/middlewares/authenticate"
+import {
+	dashboardBasicAuth,
+	resolveDashboardCredentials,
+} from "@presentation/middlewares/dashboardAuth"
 import { errorHandler } from "@presentation/middlewares/errorHandler"
 import { registerRoutes } from "@presentation/routes"
 
@@ -50,7 +55,13 @@ export function buildApp() {
 		credentials: true,
 	})
 
-	app.register(fastifyRateLimit, { global: false })
+	app.register(fastifyRateLimit, {
+		global: false,
+		errorResponseBuilder: (_request, context) =>
+			new ManyRequestsError(
+				new Error(`Muitas requisições. Tente novamente em ${context.after}.`),
+			),
+	})
 
 	app.register(fastifySwagger, {
 		openapi: {
@@ -75,17 +86,26 @@ export function buildApp() {
 
 	app.register(ScalarApiReference, { routePrefix: "/docs" })
 
-	const bullBoardServerAdapter = new FastifyAdapter()
-	bullBoardServerAdapter.setBasePath("/dashboard")
-	createBullBoard({
-		queues: Object.values(queues).map((queue) => new BullMQAdapter(queue)),
-		serverAdapter: bullBoardServerAdapter,
-	})
-	app.register(bullBoardServerAdapter.registerPlugin(), {
-		prefix: "/dashboard",
-	})
-
 	app.register(authenticate)
+
+	const dashboardCredentials = resolveDashboardCredentials()
+
+	if (dashboardCredentials) {
+		const bullBoardServerAdapter = new FastifyAdapter()
+		bullBoardServerAdapter.setBasePath("/dashboard")
+		createBullBoard({
+			queues: Object.values(queues).map((queue) => new BullMQAdapter(queue)),
+			serverAdapter: bullBoardServerAdapter,
+		})
+
+		app.register(async (instance) => {
+			instance.addHook("onRequest", dashboardBasicAuth(dashboardCredentials))
+
+			await instance.register(bullBoardServerAdapter.registerPlugin(), {
+				prefix: "/dashboard",
+			})
+		})
+	}
 
 	errorHandler(app)
 
