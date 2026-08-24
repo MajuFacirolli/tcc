@@ -8,6 +8,7 @@ import {
 import { ELIGIBILITY_DAYS } from "@domain/entities/Donor"
 import type { MetricsGranularity } from "@domain/utils/metricsWindow"
 import type {
+	DailyMetricsRow,
 	IMetricsRepository,
 	IMetricsRepositoryWindow,
 	MetricsBloodTypeRow,
@@ -206,5 +207,38 @@ export class DrizzleMetricsRepository implements IMetricsRepository {
 			bloodType: row.bloodType,
 			confirmations: toNumber(row.confirmations),
 		}))
+	}
+
+	async getDailyMetrics({
+		from,
+		to,
+	}: IMetricsRepositoryWindow): Promise<DailyMetricsRow> {
+		const [donorRow, campaignRow, confirmationRow] = await Promise.all([
+			db
+				.select({
+					registered: sql<number>`count(*)`,
+					eligible: sql<number>`count(*) filter (where ${isEligible})`,
+				})
+				.from(donors),
+			db
+				.select({
+					active: sql<number>`count(*) filter (where ${campaigns.status} = 'active')`,
+				})
+				.from(campaigns),
+			db
+				.select({
+					notified: sql<number>`count(*) filter (where ${confirmations.createdAt} >= ${utcLiteral(from)} and ${confirmations.createdAt} < ${utcLiteral(to)})`,
+					confirmed: sql<number>`count(*) filter (where ${confirmations.confirmedAt} >= ${utcLiteral(from)} and ${confirmations.confirmedAt} < ${utcLiteral(to)})`,
+				})
+				.from(confirmations),
+		])
+
+		return {
+			registeredDonors: toNumber(donorRow[0]?.registered),
+			eligibleDonors: toNumber(donorRow[0]?.eligible),
+			activeCampaigns: toNumber(campaignRow[0]?.active),
+			confirmationsToday: toNumber(confirmationRow[0]?.confirmed),
+			notificationsSentToday: toNumber(confirmationRow[0]?.notified),
+		}
 	}
 }

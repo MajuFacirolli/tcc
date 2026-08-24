@@ -31,6 +31,7 @@ import { SignInUseCase } from "@application/use_cases/auth/SignIn"
 import { GetProfileUseCase } from "@application/use_cases/auth/GetProfile"
 import { ConfirmDonationIntentionUseCase } from "@application/use_cases/confirmations/ConfirmDonationIntention"
 import { GetMetricsUseCase } from "@application/use_cases/metrics/GetMetrics"
+import { GetDailyMetricsUseCase } from "@application/use_cases/metrics/GetDailyMetrics"
 import { GetBloodBankSummaryUseCase } from "@/application/use_cases/bloodBank/GetBloodBankSummary"
 
 // controllers
@@ -43,6 +44,7 @@ import { SignOutController } from "@/presentation/controllers/auth/SignOut"
 import { GetProfileController } from "@/presentation/controllers/auth/GetProfile"
 import { ConfirmDonationIntentionController } from "@/presentation/controllers/confirmations/ConfirmDonationIntention"
 import { GetMetricsController } from "@/presentation/controllers/metrics/GetMetrics"
+import { GetDailyMetricsController } from "@/presentation/controllers/metrics/GetDailyMetrics"
 import { GetBloodBankSummaryController } from "@/presentation/controllers/bloodBank/GetBloodBankSummary"
 
 //services
@@ -74,6 +76,7 @@ decorate(injectable(), SignInUseCase)
 decorate(injectable(), GetProfileUseCase)
 decorate(injectable(), ConfirmDonationIntentionUseCase)
 decorate(injectable(), GetMetricsUseCase)
+decorate(injectable(), GetDailyMetricsUseCase)
 decorate(injectable(), GetBloodBankSummaryUseCase)
 
 // controllers
@@ -86,6 +89,7 @@ decorate(injectable(), SignOutController)
 decorate(injectable(), GetProfileController)
 decorate(injectable(), ConfirmDonationIntentionController)
 decorate(injectable(), GetMetricsController)
+decorate(injectable(), GetDailyMetricsController)
 decorate(injectable(), GetBloodBankSummaryController)
 
 //services
@@ -110,6 +114,7 @@ decorate(
 	0,
 )
 decorate(inject(TYPES.IMetricsRepository), GetMetricsUseCase, 0)
+decorate(inject(TYPES.IMetricsRepository), GetDailyMetricsUseCase, 0)
 decorate(inject(TYPES.IBloodBankRepository), GetBloodBankSummaryUseCase, 0)
 
 // use cases
@@ -129,6 +134,7 @@ decorate(
 	0,
 )
 decorate(inject(TYPES.GetMetricsUseCase), GetMetricsController, 0)
+decorate(inject(TYPES.GetDailyMetricsUseCase), GetDailyMetricsController, 0)
 decorate(
 	inject(TYPES.GetBloodBankSummaryUseCase),
 	GetBloodBankSummaryController,
@@ -209,6 +215,10 @@ container.bindUseCase<GetMetricsUseCase>(
 	TYPES.GetMetricsUseCase,
 	GetMetricsUseCase,
 )
+container.bindUseCase<GetDailyMetricsUseCase>(
+	TYPES.GetDailyMetricsUseCase,
+	GetDailyMetricsUseCase,
+)
 container.bindUseCase<GetBloodBankSummaryUseCase>(
 	TYPES.GetBloodBankSummaryUseCase,
 	GetBloodBankSummaryUseCase,
@@ -250,6 +260,10 @@ container.bindController<ConfirmDonationIntentionController>(
 container.bindController<GetMetricsController>(
 	TYPES.GetMetricsController,
 	GetMetricsController,
+)
+container.bindController<GetDailyMetricsController>(
+	TYPES.GetDailyMetricsController,
+	GetDailyMetricsController,
 )
 container.bindController<GetBloodBankSummaryController>(
 	TYPES.GetBloodBankSummaryController,

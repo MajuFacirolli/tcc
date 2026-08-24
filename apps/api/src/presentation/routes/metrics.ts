@@ -6,13 +6,22 @@ import {
 	apiResponseSchema,
 } from "@presentation/schemas/apiResponse"
 import type { GetMetricsController } from "@/presentation/controllers/metrics/GetMetrics"
-import { metricsQuerySchema, metricsSchema } from "../schemas/metrics"
+import type { GetDailyMetricsController } from "@/presentation/controllers/metrics/GetDailyMetrics"
+import {
+	dailyMetricsSchema,
+	metricsQuerySchema,
+	metricsSchema,
+} from "../schemas/metrics"
 
 export const metrics: FastifyPluginAsyncZod = async (app) => {
 	app.addHook("onRequest", app.authenticate)
 
 	const getMetricsController = container.get<GetMetricsController>(
 		TYPES.GetMetricsController,
+	)
+
+	const getDailyMetricsController = container.get<GetDailyMetricsController>(
+		TYPES.GetDailyMetricsController,
 	)
 
 	app.get(
@@ -31,5 +40,21 @@ export const metrics: FastifyPluginAsyncZod = async (app) => {
 			},
 		},
 		(req, rep) => getMetricsController.handle(req, rep),
+	)
+
+	app.get(
+		"/api/metrics/daily",
+		{
+			schema: {
+				summary: "Get today's dashboard indicators",
+				tags: ["Metrics"],
+				security: [{ cookieAuth: [] }],
+				response: {
+					200: apiResponseSchema(dailyMetricsSchema),
+					401: apiErrorSchema,
+				},
+			},
+		},
+		(req, rep) => getDailyMetricsController.handle(req, rep),
 	)
 }

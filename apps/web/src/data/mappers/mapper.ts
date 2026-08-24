@@ -8,11 +8,13 @@ import { CampaignVM } from "@/domain/viewmodels/CampaignVM"
 import { ConfirmationVM } from "@/domain/viewmodels/ConfirmationVM"
 import { CampaignSummaryVM } from "@/domain/viewmodels/CampaignSummaryVM"
 import { BloodBankSummaryVM } from "@/domain/viewmodels/BloodBankSummaryVM"
+import { DailyMetricsVM } from "@/domain/viewmodels/DailyMetricsVM"
 
 import { CampaignResponse } from "../models/responses/CampaignResponse"
 import { ConfirmationResponse } from "../models/responses/ConfirmationResponse"
 import { CampaignSummaryResponse } from "../models/responses/CampaignSummaryResponse"
 import { BloodBankSummaryResponse } from "../models/responses/BloodBankSummaryResponse"
+import { DailyMetricsResponse } from "../models/responses/DailyMetricsResponse"
 
 export const mapper = createMapper({
 	strategyInitializer: classes(),
@@ -82,3 +84,5 @@ createMap(
 		mapFrom((src) => src.id),
 	),
 )
+
+createMap(mapper, DailyMetricsResponse, DailyMetricsVM)
