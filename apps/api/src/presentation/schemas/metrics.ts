@@ -50,3 +50,11 @@ export const metricsSchema = z.object({
 		}),
 	),
 })
+
+export const dailyMetricsSchema = z.object({
+	registeredDonors: z.number(),
+	eligibleDonors: z.number(),
+	activeCampaigns: z.number(),
+	confirmationsToday: z.number(),
+	notificationsSentToday: z.number(),
+})

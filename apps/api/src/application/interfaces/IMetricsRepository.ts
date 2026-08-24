@@ -14,6 +14,14 @@ export type MetricsBucketRow = {
 	averageResponseTime: number | null
 }
 
+export type DailyMetricsRow = {
+	registeredDonors: number
+	eligibleDonors: number
+	activeCampaigns: number
+	confirmationsToday: number
+	notificationsSentToday: number
+}
+
 export type MetricsBloodTypeRow = {
 	bloodType: BloodType
 	confirmations: number
@@ -38,4 +46,5 @@ export interface IMetricsRepository {
 	getConfirmationsByBloodType(
 		window: IMetricsRepositoryWindow,
 	): Promise<MetricsBloodTypeRow[]>
+	getDailyMetrics(window: IMetricsRepositoryWindow): Promise<DailyMetricsRow>
 }

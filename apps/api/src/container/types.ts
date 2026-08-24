@@ -18,6 +18,7 @@ export const TYPES = {
 		"ConfirmDonationIntentionUseCase",
 	),
 	GetMetricsUseCase: Symbol.for("GetMetricsUseCase"),
+	GetDailyMetricsUseCase: Symbol.for("GetDailyMetricsUseCase"),
 	GetBloodBankSummaryUseCase: Symbol.for("GetBloodBankSummaryUseCase"),
 
 	GetCampaignsController: Symbol.for("GetCampaignsController"),
@@ -31,6 +32,7 @@ export const TYPES = {
 		"ConfirmDonationIntentionController",
 	),
 	GetMetricsController: Symbol.for("GetMetricsController"),
+	GetDailyMetricsController: Symbol.for("GetDailyMetricsController"),
 	GetBloodBankSummaryController: Symbol.for("GetBloodBankSummaryController"),
 
 	IPasswordHasher: Symbol.for("IPasswordHasher"),
