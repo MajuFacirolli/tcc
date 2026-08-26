@@ -115,7 +115,7 @@ export const DonorsTable = () => {
 								</TableCell>
 								<TableCell>
 									<Badge variant={donor.isEligible ? "success" : "ghost"}>
-										{donor.isEligible ? "Apto" : "Em intervalo"}
+										{donor.isEligible ? "Elegível" : "Em intervalo"}
 									</Badge>
 								</TableCell>
 							</TableRow>
