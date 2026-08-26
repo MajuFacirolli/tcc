@@ -75,7 +75,7 @@ export const DonorsFilters = ({
 			</SelectTrigger>
 			<SelectContent>
 				<SelectItem value={ALL}>Todos os doadores</SelectItem>
-				<SelectItem value={ELIGIBLE}>Aptos</SelectItem>
+				<SelectItem value={ELIGIBLE}>Elegíveis</SelectItem>
 				<SelectItem value={NOT_ELIGIBLE}>Em intervalo</SelectItem>
 			</SelectContent>
 		</Select>
