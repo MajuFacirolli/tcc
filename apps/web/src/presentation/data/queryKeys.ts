@@ -6,4 +6,5 @@ export const QUERY_KEYS = {
 	METRICS: "metrics",
 	DAILY_METRICS: "daily_metrics",
 	BLOOD_BANK_SUMMARY: "blood_bank_summary",
+	DONORS: "donors",
 } as const

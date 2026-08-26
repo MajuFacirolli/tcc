@@ -5,6 +5,7 @@ import { health } from "./health"
 import { confirmations } from "./confirmations"
 import { metrics } from "./metrics"
 import { bloodBank } from "./bloodBank"
+import { donors } from "./donors"
 
 export async function registerRoutes(app: FastifyInstance) {
 	app.register(health)
@@ -13,4 +14,5 @@ export async function registerRoutes(app: FastifyInstance) {
 	app.register(confirmations)
 	app.register(metrics)
 	app.register(bloodBank)
+	app.register(donors)
 }

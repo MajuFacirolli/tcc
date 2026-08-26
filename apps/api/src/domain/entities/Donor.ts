@@ -1,11 +1,6 @@
 import type { BloodType } from "@domain/value_objects/BloodType"
 import type { Sex } from "@domain/value_objects/Sex"
-import { MS_PER_DAY } from "@domain/utils/dateUtils"
-
-export const ELIGIBILITY_DAYS: Record<Sex, number> = {
-	male: 60,
-	female: 90,
-}
+import { isDonorEligible } from "@domain/rules/donorEligibility"
 
 export class Donor {
 	constructor(
@@ -18,10 +13,6 @@ export class Donor {
 	) {}
 
 	get isEligible(): boolean {
-		if (!this.lastDonationDate) return true
-		const days = Math.floor(
-			(Date.now() - this.lastDonationDate.getTime()) / MS_PER_DAY,
-		)
-		return days >= ELIGIBILITY_DAYS[this.sex]
+		return isDonorEligible(this.sex, this.lastDonationDate)
 	}
 }

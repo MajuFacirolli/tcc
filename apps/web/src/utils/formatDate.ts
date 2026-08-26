@@ -10,3 +10,9 @@ const dateTimeFormatter = new Intl.DateTimeFormat("pt-BR", {
 })
 
 export const formatDateTime = (date: Date) => dateTimeFormatter.format(date)
+
+const shortDateFormatter = new Intl.DateTimeFormat("pt-BR", {
+	dateStyle: "short",
+})
+
+export const formatShortDate = (date: Date) => shortDateFormatter.format(date)
