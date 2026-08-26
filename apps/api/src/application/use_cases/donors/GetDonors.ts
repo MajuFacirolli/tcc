@@ -4,23 +4,24 @@ import {
 	type GetDonorOutput,
 	toGetDonorOutput,
 } from "@/application/dtos/donors/GetDonorOutput"
-import {
-	DEFAULT_PAGE_SIZE,
-	type PagedList,
-	toPagedList,
-} from "@/core/PagedList"
+import { type PagedList, toPagedList } from "@/core/PagedList"
+
+const DONORS_PAGE_SIZE = 12
 
 export class GetDonorsUseCase {
 	constructor(private readonly donorsRepository: IDonorsRepository) {}
 
 	async execute(params: ListDonorsInput): Promise<PagedList<GetDonorOutput>> {
-		const { items, total } = await this.donorsRepository.list(params)
+		const { items, total } = await this.donorsRepository.list({
+			...params,
+			limit: DONORS_PAGE_SIZE,
+		})
 
 		return toPagedList(
 			items.map(toGetDonorOutput),
 			total,
 			params.page,
-			DEFAULT_PAGE_SIZE,
+			DONORS_PAGE_SIZE,
 		)
 	}
 }
