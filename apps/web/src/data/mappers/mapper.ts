@@ -9,12 +9,14 @@ import { ConfirmationVM } from "@/domain/viewmodels/ConfirmationVM"
 import { CampaignSummaryVM } from "@/domain/viewmodels/CampaignSummaryVM"
 import { BloodBankSummaryVM } from "@/domain/viewmodels/BloodBankSummaryVM"
 import { DailyMetricsVM } from "@/domain/viewmodels/DailyMetricsVM"
+import { DonorVM } from "@/domain/viewmodels/DonorVM"
 
 import { CampaignResponse } from "../models/responses/CampaignResponse"
 import { ConfirmationResponse } from "../models/responses/ConfirmationResponse"
 import { CampaignSummaryResponse } from "../models/responses/CampaignSummaryResponse"
 import { BloodBankSummaryResponse } from "../models/responses/BloodBankSummaryResponse"
 import { DailyMetricsResponse } from "../models/responses/DailyMetricsResponse"
+import { DonorResponse } from "../models/responses/DonorResponse"
 
 export const mapper = createMapper({
 	strategyInitializer: classes(),
@@ -86,3 +88,23 @@ createMap(
 )
 
 createMap(mapper, DailyMetricsResponse, DailyMetricsVM)
+
+createMap(
+	mapper,
+	DonorResponse,
+	DonorVM,
+	forMember(
+		(dest) => dest.sex,
+		mapFrom((src) => src.sex),
+	),
+	forMember(
+		(dest) => dest.bloodType,
+		mapFrom((src) => src.bloodType),
+	),
+	forMember(
+		(dest) => dest.lastDonationDate,
+		mapFrom((src) =>
+			src.lastDonationDate ? new Date(src.lastDonationDate) : null,
+		),
+	),
+)

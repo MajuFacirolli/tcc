@@ -5,7 +5,7 @@ import {
 	confirmations,
 	donors,
 } from "@infrastructure/database/drizzle/schema/index"
-import { ELIGIBILITY_DAYS } from "@domain/entities/Donor"
+import { donorEligibilitySql } from "@infrastructure/database/drizzle/donorEligibility"
 import type { MetricsGranularity } from "@domain/utils/metricsWindow"
 import type {
 	DailyMetricsRow,
@@ -24,23 +24,6 @@ const GRANULARITY_SQL: Record<
 	day: { unit: "day", interval: "1 day" },
 	month: { unit: "month", interval: "1 month" },
 }
-
-/**
- * Mirrors `Donor.isEligible`, built from the exported domain thresholds.
- * The `::int` cast is required: the bound day counts arrive as untyped parameters
- * that Postgres infers as `text`, and `text * interval` has no operator.
- */
-const eligibilityThresholdDays = sql`(case ${sql.join(
-	Object.entries(ELIGIBILITY_DAYS).map(
-		([sex, days]) => sql`when ${donors.sex} = ${sex} then ${days}`,
-	),
-	sql` `,
-)} end)::int`
-
-const isEligible = sql`(
-	${donors.lastDonationDate} is null
-	or ${donors.lastDonationDate} <= now() - (${eligibilityThresholdDays} * interval '1 day')
-)`
 
 const responseTimeSeconds = sql`extract(epoch from (${confirmations.confirmedAt} - ${confirmations.createdAt}))`
 
@@ -69,7 +52,9 @@ function utcLiteral(date: Date) {
 export class DrizzleMetricsRepository implements IMetricsRepository {
 	async countEligibleDonors(): Promise<number> {
 		const [row] = await db
-			.select({ total: sql<number>`count(*) filter (where ${isEligible})` })
+			.select({
+				total: sql<number>`count(*) filter (where ${donorEligibilitySql})`,
+			})
 			.from(donors)
 
 		return toNumber(row?.total)
@@ -217,7 +202,7 @@ export class DrizzleMetricsRepository implements IMetricsRepository {
 			db
 				.select({
 					registered: sql<number>`count(*)`,
-					eligible: sql<number>`count(*) filter (where ${isEligible})`,
+					eligible: sql<number>`count(*) filter (where ${donorEligibilitySql})`,
 				})
 				.from(donors),
 			db
