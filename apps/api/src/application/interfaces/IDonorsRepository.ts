@@ -6,4 +6,5 @@ import type { ListDonorsOutput } from "../dtos/donors/ListDonorsOutput"
 export interface IDonorsRepository {
 	list(params: ListDonorsInput): Promise<ListDonorsOutput>
 	findByBloodType(bloodType: BloodType): Promise<Array<Donor>>
+	countEligibleByBloodType(bloodType: BloodType): Promise<number>
 }

@@ -21,6 +21,7 @@ export const TYPES = {
 	GetDailyMetricsUseCase: Symbol.for("GetDailyMetricsUseCase"),
 	GetBloodBankSummaryUseCase: Symbol.for("GetBloodBankSummaryUseCase"),
 	GetDonorsUseCase: Symbol.for("GetDonorsUseCase"),
+	CountEligibleDonorsUseCase: Symbol.for("CountEligibleDonorsUseCase"),
 
 	GetCampaignsController: Symbol.for("GetCampaignsController"),
 	GetCampaignsSummaryController: Symbol.for("GetCampaignsSummaryController"),
@@ -36,6 +37,7 @@ export const TYPES = {
 	GetDailyMetricsController: Symbol.for("GetDailyMetricsController"),
 	GetBloodBankSummaryController: Symbol.for("GetBloodBankSummaryController"),
 	GetDonorsController: Symbol.for("GetDonorsController"),
+	CountEligibleDonorsController: Symbol.for("CountEligibleDonorsController"),
 
 	IPasswordHasher: Symbol.for("IPasswordHasher"),
 	IEmailService: Symbol.for("IEmailService"),

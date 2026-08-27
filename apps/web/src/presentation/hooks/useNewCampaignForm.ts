@@ -1,4 +1,4 @@
-import { createFormControl, useForm } from "react-hook-form"
+import { createFormControl, useForm, useWatch } from "react-hook-form"
 import {
 	newCampaignSchema,
 	type NewCampaignSchema,
@@ -10,6 +10,7 @@ import toast from "react-hot-toast"
 import { useNavigate } from "@tanstack/react-router"
 import { PagesEnum } from "../enums/PagesEnum"
 import type { BloodTypeEnum } from "@/domain/enums/BloodTypeEnum"
+import { useEligibleDonorsCount } from "./useEligibleDonorsCount"
 
 const createCampaignCommand = createCreateCampaignCommand()
 
@@ -33,6 +34,7 @@ export const useNewCampaignForm = ({ bloodType }: IUseNewCampaignFormProps) => {
 		handleSubmit,
 		formState: { isSubmitting, errors },
 		setError,
+		setValue,
 		reset,
 	} = useForm<NewCampaignSchema>({
 		formControl: newCampaignFormControl,
@@ -47,6 +49,20 @@ export const useNewCampaignForm = ({ bloodType }: IUseNewCampaignFormProps) => {
 	})
 
 	const navigate = useNavigate()
+
+	const selectedBloodType = useWatch({ control, name: "bloodType" })
+
+	const { eligibleDonorsCount, isLoading: isLoadingEligibleDonorsCount } =
+		useEligibleDonorsCount({ bloodType: selectedBloodType })
+
+	function handleBloodTypeChange(value: BloodTypeEnum) {
+		setValue("bloodType", value, { shouldValidate: true })
+		navigate({
+			to: PagesEnum.NEW_CAMPAIGN,
+			search: { bloodType: value },
+			replace: true,
+		})
+	}
 
 	async function handleCreateNewCampaign(data: NewCampaignSchema) {
 		const response = await createCampaignCommand.execute({
@@ -71,5 +87,8 @@ export const useNewCampaignForm = ({ bloodType }: IUseNewCampaignFormProps) => {
 		control,
 		isSubmitting,
 		errors,
+		handleBloodTypeChange,
+		eligibleDonorsCount,
+		isLoadingEligibleDonorsCount,
 	}
 }

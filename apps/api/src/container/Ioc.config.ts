@@ -34,6 +34,7 @@ import { GetMetricsUseCase } from "@application/use_cases/metrics/GetMetrics"
 import { GetDailyMetricsUseCase } from "@application/use_cases/metrics/GetDailyMetrics"
 import { GetBloodBankSummaryUseCase } from "@/application/use_cases/bloodBank/GetBloodBankSummary"
 import { GetDonorsUseCase } from "@application/use_cases/donors/GetDonors"
+import { CountEligibleDonorsUseCase } from "@application/use_cases/donors/CountEligibleDonors"
 
 // controllers
 import { GetCampaignsController } from "@/presentation/controllers/campaigns/GetCampaigns"
@@ -48,6 +49,7 @@ import { GetMetricsController } from "@/presentation/controllers/metrics/GetMetr
 import { GetDailyMetricsController } from "@/presentation/controllers/metrics/GetDailyMetrics"
 import { GetBloodBankSummaryController } from "@/presentation/controllers/bloodBank/GetBloodBankSummary"
 import { GetDonorsController } from "@/presentation/controllers/donors/GetDonors"
+import { CountEligibleDonorsController } from "@/presentation/controllers/donors/CountEligibleDonors"
 
 //services
 import { Argon2PasswordHasher } from "@infrastructure/identity/Argon2PasswordHasher"
@@ -81,6 +83,7 @@ decorate(injectable(), GetMetricsUseCase)
 decorate(injectable(), GetDailyMetricsUseCase)
 decorate(injectable(), GetBloodBankSummaryUseCase)
 decorate(injectable(), GetDonorsUseCase)
+decorate(injectable(), CountEligibleDonorsUseCase)
 
 // controllers
 decorate(injectable(), GetCampaignsController)
@@ -95,6 +98,7 @@ decorate(injectable(), GetMetricsController)
 decorate(injectable(), GetDailyMetricsController)
 decorate(injectable(), GetBloodBankSummaryController)
 decorate(injectable(), GetDonorsController)
+decorate(injectable(), CountEligibleDonorsController)
 
 //services
 decorate(injectable(), Argon2PasswordHasher)
@@ -121,6 +125,7 @@ decorate(inject(TYPES.IMetricsRepository), GetMetricsUseCase, 0)
 decorate(inject(TYPES.IMetricsRepository), GetDailyMetricsUseCase, 0)
 decorate(inject(TYPES.IBloodBankRepository), GetBloodBankSummaryUseCase, 0)
 decorate(inject(TYPES.IDonorsRepository), GetDonorsUseCase, 0)
+decorate(inject(TYPES.IDonorsRepository), CountEligibleDonorsUseCase, 0)
 
 // use cases
 decorate(inject(TYPES.GetCampaignsUseCase), GetCampaignsController, 0)
@@ -146,6 +151,11 @@ decorate(
 	0,
 )
 decorate(inject(TYPES.GetDonorsUseCase), GetDonorsController, 0)
+decorate(
+	inject(TYPES.CountEligibleDonorsUseCase),
+	CountEligibleDonorsController,
+	0,
+)
 
 //services
 decorate(inject(TYPES.IPasswordHasher), SignInUseCase, 1)
@@ -233,6 +243,10 @@ container.bindUseCase<GetDonorsUseCase>(
 	TYPES.GetDonorsUseCase,
 	GetDonorsUseCase,
 )
+container.bindUseCase<CountEligibleDonorsUseCase>(
+	TYPES.CountEligibleDonorsUseCase,
+	CountEligibleDonorsUseCase,
+)
 
 // controllers
 container.bindController<GetCampaignsController>(
@@ -282,6 +296,10 @@ container.bindController<GetBloodBankSummaryController>(
 container.bindController<GetDonorsController>(
 	TYPES.GetDonorsController,
 	GetDonorsController,
+)
+container.bindController<CountEligibleDonorsController>(
+	TYPES.CountEligibleDonorsController,
+	CountEligibleDonorsController,
 )
 
 //services
