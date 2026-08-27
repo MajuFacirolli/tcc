@@ -73,3 +73,57 @@ describe("GET /api/donors", () => {
 		expect(response.statusCode).not.toBe(401)
 	})
 })
+
+describe("GET /api/donors/eligible-count", () => {
+	let app: FastifyInstance
+
+	beforeEach(() => {
+		app = buildTestApp()
+	})
+
+	afterEach(async () => {
+		await app.close()
+	})
+
+	it("requires authentication", async () => {
+		const response = await app.inject({
+			method: "GET",
+			url: "/api/donors/eligible-count?bloodType=O%2B",
+		})
+
+		expect(response.statusCode).toBe(401)
+	})
+
+	it("requires a blood type", async () => {
+		const response = await app.inject({
+			method: "GET",
+			url: "/api/donors/eligible-count",
+			cookies: await authCookie(app),
+		})
+
+		expect(response.statusCode).toBe(400)
+		expect(response.json().message).toBeTruthy()
+	})
+
+	it("rejects an unknown blood type", async () => {
+		const response = await app.inject({
+			method: "GET",
+			url: "/api/donors/eligible-count?bloodType=Z%2B",
+			cookies: await authCookie(app),
+		})
+
+		expect(response.statusCode).toBe(400)
+	})
+
+	it("accepts a known blood type", async () => {
+		const response = await app.inject({
+			method: "GET",
+			url: "/api/donors/eligible-count?bloodType=O%2B",
+			cookies: await authCookie(app),
+		})
+
+		// Reaches the repository and fails on the mock DB rather than on validation.
+		expect(response.statusCode).not.toBe(400)
+		expect(response.statusCode).not.toBe(401)
+	})
+})

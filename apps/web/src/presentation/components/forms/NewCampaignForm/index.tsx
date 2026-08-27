@@ -12,6 +12,7 @@ import { Textarea } from "../../ui/Textarea"
 import { Button } from "../../ui/Button"
 import { Loader, Send } from "lucide-react"
 import { useNewCampaignForm } from "@/presentation/hooks/useNewCampaignForm"
+import { EligibleDonors } from "./EligibleDonors"
 import { Controller } from "react-hook-form"
 
 interface INewCampaignFormProps {
@@ -19,8 +20,16 @@ interface INewCampaignFormProps {
 }
 
 export const NewCampaignForm = ({ bloodType }: INewCampaignFormProps) => {
-	const { register, control, handleSubmit, errors, isSubmitting } =
-		useNewCampaignForm({ bloodType })
+	const {
+		register,
+		control,
+		handleSubmit,
+		errors,
+		isSubmitting,
+		handleBloodTypeChange,
+		eligibleDonorsCount,
+		isLoadingEligibleDonorsCount,
+	} = useNewCampaignForm({ bloodType })
 
 	return (
 		<form onSubmit={handleSubmit} className="w-full flex flex-col gap-6">
@@ -46,7 +55,7 @@ export const NewCampaignForm = ({ bloodType }: INewCampaignFormProps) => {
 				render={({ field, fieldState }) => (
 					<Field className="gap-1.5">
 						<FieldLabel htmlFor="bloodType">Tipo sanguíneo</FieldLabel>
-						<Select value={field.value} onValueChange={field.onChange}>
+						<Select value={field.value} onValueChange={handleBloodTypeChange}>
 							<SelectTrigger
 								aria-label="Tipo sanguíneo"
 								className="w-full"
@@ -63,6 +72,13 @@ export const NewCampaignForm = ({ bloodType }: INewCampaignFormProps) => {
 							</SelectContent>
 						</Select>
 						<FieldError errors={[fieldState.error]} />
+						{field.value && (
+							<EligibleDonors
+								bloodType={field.value}
+								count={eligibleDonorsCount}
+								isLoading={isLoadingEligibleDonorsCount}
+							/>
+						)}
 					</Field>
 				)}
 			/>
