@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router"
 import { ArrowRight, TrendingDown, TrendingUp } from "lucide-react"
 import { twMerge } from "tailwind-merge"
 import { PagesEnum } from "@/presentation/enums/PagesEnum"
+import { CampaignKindBadge } from "./CampaignKindBadge"
 import { useCampaignsSummary } from "../hooks/useCampaignsSummary"
 
 export const RecentCampaigns = () => {
@@ -63,10 +64,11 @@ export const RecentCampaigns = () => {
 						>
 							<div className="min-w-0 flex-1 pr-4">
 								<p className="text-sm font-medium truncate">{campaign.title}</p>
-								<div className="flex items-center gap-2 mt-1">
-									<span className="text-xs font-semibold border border-zinc-300 text-zinc-500 bg-zinc-100 px-1.5 py-0.5 rounded">
-										{campaign.bloodType}
-									</span>
+								<div className="flex items-center gap-2 mt-1 flex-wrap">
+									<CampaignKindBadge
+										kind={campaign.kind}
+										bloodType={campaign.bloodType}
+									/>
 									<span className="text-xs text-zinc-500">
 										{campaign.notifiedCount} notificados
 									</span>
