@@ -1,4 +1,5 @@
-import { BLOOD_TYPES, type BloodTypeEnum } from "@/domain/enums/BloodTypeEnum"
+import { BLOOD_TYPES } from "@/domain/enums/BloodTypeEnum"
+import type { BloodTypeEnum } from "@/domain/enums/BloodTypeEnum"
 import { Field, FieldDescription, FieldError, FieldLabel } from "../../ui/Field"
 import { Input } from "../../ui/Input"
 import {
@@ -12,6 +13,7 @@ import { Textarea } from "../../ui/Textarea"
 import { Button } from "../../ui/Button"
 import { Loader, Send } from "lucide-react"
 import { useNewCampaignForm } from "@/presentation/hooks/useNewCampaignForm"
+import { CampaignKindField } from "./CampaignKindField"
 import { EligibleDonors } from "./EligibleDonors"
 import { Controller } from "react-hook-form"
 
@@ -27,6 +29,8 @@ export const NewCampaignForm = ({ bloodType }: INewCampaignFormProps) => {
 		errors,
 		isSubmitting,
 		handleBloodTypeChange,
+		handleKindChange,
+		isSegmented,
 		eligibleDonorsCount,
 		isLoadingEligibleDonorsCount,
 	} = useNewCampaignForm({ bloodType })
@@ -51,37 +55,56 @@ export const NewCampaignForm = ({ bloodType }: INewCampaignFormProps) => {
 
 			<Controller
 				control={control}
-				name="bloodType"
+				name="kind"
 				render={({ field, fieldState }) => (
 					<Field className="gap-1.5">
-						<FieldLabel htmlFor="bloodType">Tipo sanguíneo</FieldLabel>
-						<Select value={field.value} onValueChange={handleBloodTypeChange}>
-							<SelectTrigger
-								aria-label="Tipo sanguíneo"
-								className="w-full"
-								aria-invalid={!!fieldState.error}
-							>
-								<SelectValue placeholder="Tipo sanguíneo" />
-							</SelectTrigger>
-							<SelectContent>
-								{BLOOD_TYPES.map((bloodType) => (
-									<SelectItem key={bloodType} value={bloodType}>
-										{bloodType}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
+						<CampaignKindField
+							value={field.value}
+							onChange={handleKindChange}
+						/>
 						<FieldError errors={[fieldState.error]} />
-						{field.value && (
-							<EligibleDonors
-								bloodType={field.value}
-								count={eligibleDonorsCount}
-								isLoading={isLoadingEligibleDonorsCount}
-							/>
-						)}
 					</Field>
 				)}
 			/>
+
+			{isSegmented && (
+				<Controller
+					control={control}
+					name="bloodType"
+					render={({ field, fieldState }) => (
+						<Field className="gap-1.5">
+							<FieldLabel htmlFor="bloodType">Tipo sanguíneo</FieldLabel>
+							<Select
+								value={field.value ?? undefined}
+								onValueChange={handleBloodTypeChange}
+							>
+								<SelectTrigger
+									aria-label="Tipo sanguíneo"
+									className="w-full"
+									aria-invalid={!!fieldState.error}
+								>
+									<SelectValue placeholder="Tipo sanguíneo" />
+								</SelectTrigger>
+								<SelectContent>
+									{BLOOD_TYPES.map((bloodType) => (
+										<SelectItem key={bloodType} value={bloodType}>
+											{bloodType}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+							<FieldError errors={[fieldState.error]} />
+							{field.value && (
+								<EligibleDonors
+									bloodType={field.value}
+									count={eligibleDonorsCount}
+									isLoading={isLoadingEligibleDonorsCount}
+								/>
+							)}
+						</Field>
+					)}
+				/>
+			)}
 
 			<Field className="gap-1.5">
 				<FieldLabel htmlFor="message">Conteúdo da mensagem</FieldLabel>

@@ -36,6 +36,10 @@ createMap(
 		mapFrom((src) => src.bloodType),
 	),
 	forMember(
+		(dest) => dest.kind,
+		mapFrom((src) => src.kind),
+	),
+	forMember(
 		(dest) => dest.status,
 		mapFrom((src) => src.status),
 	),
@@ -70,6 +74,10 @@ createMap(
 	forMember(
 		(dest) => dest.bloodType,
 		mapFrom((src) => src.bloodType),
+	),
+	forMember(
+		(dest) => dest.kind,
+		mapFrom((src) => src.kind),
 	),
 	forMember(
 		(dest) => dest.conversionRate,
