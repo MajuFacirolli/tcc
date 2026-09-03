@@ -7,10 +7,12 @@ const countEligibleDonorsQuery = createCountEligibleDonorsQuery()
 
 interface IUseEligibleDonorsCountProps {
 	bloodType?: BloodTypeEnum
+	enabled: boolean
 }
 
 export const useEligibleDonorsCount = ({
 	bloodType,
+	enabled,
 }: IUseEligibleDonorsCountProps) => {
 	const { data, isLoading, isFetching, error } = useFetch({
 		queryKeys: [QUERY_KEYS.ELIGIBLE_DONORS_COUNT, bloodType],
@@ -18,7 +20,7 @@ export const useEligibleDonorsCount = ({
 			await countEligibleDonorsQuery.execute({
 				bloodType: bloodType as BloodTypeEnum,
 			}),
-		enabled: !!bloodType,
+		enabled: enabled && !!bloodType,
 	})
 
 	return {

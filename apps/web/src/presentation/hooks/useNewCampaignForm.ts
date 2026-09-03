@@ -1,3 +1,4 @@
+import { useEffect } from "react"
 import { createFormControl, useForm, useWatch } from "react-hook-form"
 import {
 	newCampaignSchema,
@@ -10,6 +11,7 @@ import toast from "react-hot-toast"
 import { useNavigate } from "@tanstack/react-router"
 import { PagesEnum } from "../enums/PagesEnum"
 import type { BloodTypeEnum } from "@/domain/enums/BloodTypeEnum"
+import { CampaignKindEnum } from "@/domain/enums/CampaignKindEnum"
 import { useEligibleDonorsCount } from "./useEligibleDonorsCount"
 
 const createCampaignCommand = createCreateCampaignCommand()
@@ -20,6 +22,7 @@ export const newCampaignFormControl = createFormControl({
 		title: "",
 		message: "",
 		bloodType: undefined,
+		kind: CampaignKindEnum.SEGMENTED,
 	},
 })
 
@@ -45,15 +48,37 @@ export const useNewCampaignForm = ({ bloodType }: IUseNewCampaignFormProps) => {
 
 	const { handleError } = useErrors({
 		setError,
-		fields: ["title", "message", "bloodType"],
+		fields: ["title", "message", "bloodType", "kind"],
 	})
 
 	const navigate = useNavigate()
 
+	/**
+	 * Arriving with a blood type in the URL — from the blood bank shortcuts — is a
+	 * request to target that type, so the campaign is segmented by definition. The form
+	 * control outlives the route, so the kind is forced rather than merely defaulted:
+	 * a "generic" left over from a previous visit would otherwise drop the blood type.
+	 */
+	useEffect(() => {
+		if (!bloodType) return
+
+		setValue("bloodType", bloodType)
+		setValue("kind", CampaignKindEnum.SEGMENTED)
+	}, [bloodType, setValue])
+
 	const selectedBloodType = useWatch({ control, name: "bloodType" })
+	const kind = useWatch({ control, name: "kind" })
+	const isSegmented = kind === CampaignKindEnum.SEGMENTED
 
 	const { eligibleDonorsCount, isLoading: isLoadingEligibleDonorsCount } =
-		useEligibleDonorsCount({ bloodType: selectedBloodType })
+		useEligibleDonorsCount({
+			bloodType: selectedBloodType ?? undefined,
+			enabled: isSegmented,
+		})
+
+	function handleKindChange(value: CampaignKindEnum) {
+		setValue("kind", value, { shouldValidate: true })
+	}
 
 	function handleBloodTypeChange(value: BloodTypeEnum) {
 		setValue("bloodType", value, { shouldValidate: true })
@@ -68,7 +93,8 @@ export const useNewCampaignForm = ({ bloodType }: IUseNewCampaignFormProps) => {
 		const response = await createCampaignCommand.execute({
 			title: data.title,
 			message: data.message,
-			bloodType: data.bloodType,
+			kind: data.kind,
+			bloodType: isSegmented ? (data.bloodType as BloodTypeEnum) : null,
 		})
 
 		if (response.isLeft()) {
@@ -88,6 +114,8 @@ export const useNewCampaignForm = ({ bloodType }: IUseNewCampaignFormProps) => {
 		isSubmitting,
 		errors,
 		handleBloodTypeChange,
+		handleKindChange,
+		isSegmented,
 		eligibleDonorsCount,
 		isLoadingEligibleDonorsCount,
 	}
