@@ -13,6 +13,7 @@ import type {
 	IMetricsRepositoryWindow,
 	MetricsBloodTypeRow,
 	MetricsBucketRow,
+	MetricsKindRow,
 	MetricsWindowTotals,
 } from "@application/interfaces/IMetricsRepository"
 import { parseUtcTimestamp } from "@/domain/utils/dateUtils"
@@ -100,22 +101,6 @@ export class DrizzleMetricsRepository implements IMetricsRepository {
 		}
 	}
 
-	async sumEligibleReached({
-		from,
-		to,
-	}: IMetricsRepositoryWindow): Promise<number> {
-		const [row] = await db
-			.select({
-				total: sql<number>`coalesce(sum(${campaigns.totalEligibleDonors}), 0)`,
-			})
-			.from(campaigns)
-			.where(
-				sql`${campaigns.createdAt} >= ${utcLiteral(from)} and ${campaigns.createdAt} < ${utcLiteral(to)}`,
-			)
-
-		return toNumber(row?.total)
-	}
-
 	async getBuckets(
 		{ from, to }: IMetricsRepositoryWindow,
 		granularity: MetricsGranularity,
@@ -172,25 +157,76 @@ export class DrizzleMetricsRepository implements IMetricsRepository {
 		})
 	}
 
+	/** By the donor's blood type: a generic campaign names none of its own. */
 	async getConfirmationsByBloodType({
 		from,
 		to,
 	}: IMetricsRepositoryWindow): Promise<MetricsBloodTypeRow[]> {
 		const rows = await db
 			.select({
-				bloodType: campaigns.bloodType,
+				bloodType: donors.bloodType,
 				confirmations: sql<number>`count(*)`,
 			})
 			.from(confirmations)
-			.innerJoin(campaigns, eq(campaigns.id, confirmations.campaignId))
+			.innerJoin(donors, eq(donors.id, confirmations.donorId))
 			.where(
 				sql`${confirmations.confirmedAt} >= ${utcLiteral(from)} and ${confirmations.confirmedAt} < ${utcLiteral(to)}`,
 			)
-			.groupBy(campaigns.bloodType)
+			.groupBy(donors.bloodType)
 
 		return rows.map((row) => ({
 			bloodType: row.bloodType,
 			confirmations: toNumber(row.confirmations),
+		}))
+	}
+
+	/**
+	 * Scoped by `campaigns.createdAt`, so a campaign belongs whole to one window. The
+	 * response-time average has to come from the confirmations themselves, since
+	 * `campaigns.averageResponseTime` is a per-campaign mean that cannot be re-averaged.
+	 */
+	async getComparisonByKind({
+		from,
+		to,
+	}: IMetricsRepositoryWindow): Promise<MetricsKindRow[]> {
+		const createdInWindow = sql`${campaigns.createdAt} >= ${utcLiteral(from)} and ${campaigns.createdAt} < ${utcLiteral(to)}`
+
+		const [totals, responseTimes] = await Promise.all([
+			db
+				.select({
+					kind: campaigns.kind,
+					campaignsCount: sql<number>`count(*)`,
+					notifiedCount: sql<number>`coalesce(sum(${campaigns.notifiedCount}), 0)`,
+					eligibleReached: sql<number>`coalesce(sum(${campaigns.totalEligibleDonors}), 0)`,
+					confirmationsCount: sql<number>`coalesce(sum(${campaigns.intentionConfirmationsCount}), 0)`,
+				})
+				.from(campaigns)
+				.where(createdInWindow)
+				.groupBy(campaigns.kind),
+			db
+				.select({
+					kind: campaigns.kind,
+					averageResponseTime: sql<number | null>`avg(${responseTimeSeconds})`,
+				})
+				.from(confirmations)
+				.innerJoin(campaigns, eq(campaigns.id, confirmations.campaignId))
+				.where(
+					sql`${createdInWindow} and ${confirmations.confirmedAt} is not null`,
+				)
+				.groupBy(campaigns.kind),
+		])
+
+		const averageByKind = new Map(
+			responseTimes.map((row) => [row.kind, row.averageResponseTime]),
+		)
+
+		return totals.map((row) => ({
+			kind: row.kind,
+			campaignsCount: toNumber(row.campaignsCount),
+			notifiedCount: toNumber(row.notifiedCount),
+			eligibleReached: toNumber(row.eligibleReached),
+			confirmationsCount: toNumber(row.confirmationsCount),
+			averageResponseTime: toNullableNumber(averageByKind.get(row.kind)),
 		}))
 	}
 

@@ -1,6 +1,7 @@
 import { METRICS_PERIODS } from "@/domain/value_objects/MetricsPeriod"
 import { z } from "zod"
 import { bloodTypeSchema } from "./bloodType"
+import { campaignKindSchema } from "./campaigns"
 
 export const metricsPeriodSchema = z.enum(
 	METRICS_PERIODS,
@@ -18,6 +19,20 @@ const metricsBucketSchema = z.object({
 	averageResponseTime: z.number().nullable(),
 })
 
+const metricsKindSummarySchema = z.object({
+	kind: campaignKindSchema,
+	campaignsCount: z.number(),
+	notifiedCount: z.number(),
+	eligibleReached: z.number(),
+	confirmationsCount: z.number(),
+	conversionRate: z.number(),
+	eligibleConversionRate: z.number(),
+	wastedMessages: z.number(),
+	wastedMessageRate: z.number(),
+	targetingPrecision: z.number(),
+	averageResponseTime: z.number(),
+})
+
 export const metricsSchema = z.object({
 	period: metricsPeriodSchema,
 	granularity: z.enum(["day", "month"]),
@@ -31,16 +46,14 @@ export const metricsSchema = z.object({
 		confirmationsCount: z.number(),
 		conversionRate: z.number(),
 		averageResponseTime: z.number(),
+		eligibleReached: z.number(),
+		campaignNotifiedCount: z.number(),
+		targetingPrecision: z.number(),
 		deltas: z.object({
 			notifiedCount: z.number(),
 			confirmationsCount: z.number(),
 			averageResponseTime: z.number(),
 		}),
-	}),
-	funnel: z.object({
-		eligibleReached: z.number(),
-		notified: z.number(),
-		confirmed: z.number(),
 	}),
 	series: z.array(metricsBucketSchema),
 	confirmationsByBloodType: z.array(
@@ -49,6 +62,13 @@ export const metricsSchema = z.object({
 			confirmations: z.number(),
 		}),
 	),
+	comparison: z.object({
+		generic: metricsKindSummarySchema,
+		segmented: metricsKindSummarySchema,
+		conversionLift: z.number().nullable(),
+		wastedMessageRateReduction: z.number().nullable(),
+		targetingPrecisionGain: z.number().nullable(),
+	}),
 })
 
 export const dailyMetricsSchema = z.object({
