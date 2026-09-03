@@ -1,14 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { ConfirmationsByBloodTypeChart } from "@/presentation/components/metrics/ConfirmationsByBloodTypeChart"
 import { ConfirmationsOverTimeChart } from "@/presentation/components/metrics/ConfirmationsOverTimeChart"
-import { ConversionFunnelChart } from "@/presentation/components/metrics/ConversionFunnelChart"
-import { ConversionRateMeter } from "@/presentation/components/metrics/ConversionRateMeter"
+import { CoreMetricsComparison } from "@/presentation/components/metrics/CoreMetricsComparison"
 import { MetricsFilters } from "@/presentation/components/metrics/MetricsFilters"
-import { MetricsSummary } from "@/presentation/components/metrics/MetricsSummary"
+import { SegmentationComparisonChart } from "@/presentation/components/metrics/SegmentationComparisonChart"
+import { SegmentationTable } from "@/presentation/components/metrics/SegmentationTable"
+import { SegmentationVerdict } from "@/presentation/components/metrics/SegmentationVerdict"
+import { MetricsDashboardSkeleton } from "@/presentation/components/skeletons/MetricsDashboardSkeleton"
 import { Heading } from "@/presentation/components/ui/Heading"
 import { useMetrics } from "@/presentation/hooks/useMetrics"
 import { useMetricsFilters } from "@/presentation/hooks/useMetricsFilters"
-import { MetricsDashboardSkeleton } from "@/presentation/components/skeletons/MetricsDashboardSkeleton"
 
 export const Route = createFileRoute("/_dashboard/metricas")({
 	component: RouteComponent,
@@ -24,8 +25,8 @@ function RouteComponent() {
 				<Heading.Overline>Desempenho</Heading.Overline>
 				<Heading.Title>Métricas</Heading.Title>
 				<Heading.Description>
-					Acompanhe o desempenho das campanhas e identifique oportunidades para
-					melhorar a mobilização de doadores.
+					Campanhas segmentadas por elegibilidade e tipo sanguíneo, comparadas
+					ao envio genérico.
 				</Heading.Description>
 			</Heading>
 
@@ -47,26 +48,39 @@ function RouteComponent() {
 
 			{!isLoading && !error && metrics && (
 				<div
-					className="flex flex-col gap-10"
+					className="flex flex-col gap-12"
 					data-fetching={isFetching}
 					aria-busy={isFetching}
 				>
-					<div className="in-data-[fetching=true]:opacity-60 transition-opacity">
-						<MetricsSummary metrics={metrics} />
-					</div>
+					<section className="flex flex-col gap-6 in-data-[fetching=true]:opacity-60 transition-opacity">
+						<h3 className="typography-overline">Métricas por estratégia</h3>
+
+						<CoreMetricsComparison metrics={metrics} />
+					</section>
 
 					<section className="flex flex-col gap-6 in-data-[fetching=true]:opacity-60 transition-opacity">
-						<h3 className="typography-overline">Análise das campanhas</h3>
+						<h3 className="typography-overline">O que a segmentação muda</h3>
 
-						<div className="grid grid-cols-1 md:grid-cols-12 gap-y-10 gap-x-4">
-							<ConversionFunnelChart
+						<div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+							<SegmentationVerdict
 								metrics={metrics}
-								className="col-span-12 min-w-0 lg:col-span-8"
+								className="col-span-12 min-w-0 lg:col-span-5"
 							/>
-							<ConversionRateMeter
+							<SegmentationComparisonChart
 								metrics={metrics}
-								className="col-span-12 min-w-0 lg:col-span-4"
+								className="col-span-12 min-w-0 lg:col-span-7"
 							/>
+							<SegmentationTable
+								metrics={metrics}
+								className="col-span-12 min-w-0"
+							/>
+						</div>
+					</section>
+
+					<section className="flex flex-col gap-6 in-data-[fetching=true]:opacity-60 transition-opacity">
+						<h3 className="typography-overline">Atividade no período</h3>
+
+						<div className="grid grid-cols-1 md:grid-cols-12 gap-4">
 							<ConfirmationsOverTimeChart
 								metrics={metrics}
 								className="col-span-12 min-w-0 lg:col-span-8"
