@@ -1,17 +1,12 @@
 import type { BloodBankStatus } from "@domain/value_objects/BloodBankStatus"
 import type { BloodType } from "@domain/value_objects/BloodType"
 
-/**
- * The donor and stock facts ride along with the job rather than being looked up
- * again in the worker: `CreateCampaignUseCase` already has every donor row and the
- * blood bank in hand, so carrying them costs one campaign-wide read instead of one
- * query per notification.
- */
+/** Donor and stock facts ride along so the worker needs no per-notification query. */
 export type SendCampaignEmailInput = {
 	campaignId: string
 	campaignTitle: string
 	campaignMessage: string
-	campaignBloodType: BloodType
+	campaignBloodType: BloodType | null
 	donorId: string
 	donorEmail: string
 	donorName: string

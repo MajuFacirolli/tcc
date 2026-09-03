@@ -11,7 +11,8 @@ export interface DonationIntentionInput {
 	campaignId: string
 	donorId: string
 	donorBloodType: BloodType
-	campaignBloodType: BloodType
+	/** `null` for a generic campaign: no donor matches, so no donor gets the boost. */
+	campaignBloodType: BloodType | null
 	donorIsEligible: boolean
 	stockStatus: BloodBankStatus
 }

@@ -13,6 +13,7 @@ import type { GetCampaignsSummaryController } from "@/presentation/controllers/c
 import type { GetCampaignController } from "@/presentation/controllers/campaigns/GetCampaign"
 import type { CreateCampaignController } from "@/presentation/controllers/campaigns/CreateCampaign"
 import {
+	campaignKindSchema,
 	campaignSchema,
 	campaignStatusSchema,
 	campaignSummarySchema,
@@ -47,6 +48,7 @@ export const campaigns: FastifyPluginAsyncZod = async (app) => {
 				querystring: paginationQuerySchema.extend({
 					status: campaignStatusSchema.optional(),
 					bloodType: bloodTypeSchema.optional(),
+					kind: campaignKindSchema.optional(),
 				}),
 				response: {
 					200: apiResponseSchema(pagedListSchema(campaignSchema)),

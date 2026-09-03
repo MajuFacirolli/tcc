@@ -1,6 +1,6 @@
 {
-	"id": "ad6ce76c-1096-461a-a240-f41f09f123c3",
-	"prevId": "00000000-0000-0000-0000-000000000000",
+	"id": "d0f6decb-6120-4aa8-b548-42797884dbc8",
+	"prevId": "ad6ce76c-1096-461a-a240-f41f09f123c3",
 	"version": "7",
 	"dialect": "postgresql",
 	"tables": {
@@ -72,6 +72,14 @@
 					"typeSchema": "public",
 					"primaryKey": false,
 					"notNull": true
+				},
+				"kind": {
+					"name": "kind",
+					"type": "campaign_kind",
+					"typeSchema": "public",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "'segmented'"
 				},
 				"status": {
 					"name": "status",
@@ -336,6 +344,11 @@
 			"name": "blood_type",
 			"schema": "public",
 			"values": ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]
+		},
+		"public.campaign_kind": {
+			"name": "campaign_kind",
+			"schema": "public",
+			"values": ["generic", "segmented"]
 		},
 		"public.campaign_status": {
 			"name": "campaign_status",
