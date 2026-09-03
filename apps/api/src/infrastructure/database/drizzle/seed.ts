@@ -3,6 +3,7 @@ import { env } from "@/env"
 import type { BloodType } from "@domain/value_objects/BloodType"
 import { Argon2PasswordHasher } from "@infrastructure/identity/Argon2PasswordHasher"
 import { db } from "./client"
+import { seedCampaigns } from "./seedCampaigns"
 import { seedDonors } from "./seedDonors"
 import { bloodBank, users } from "./schema/index"
 
@@ -59,6 +60,7 @@ async function seed() {
 	await seedAdmin()
 	await seedBloodBank()
 	await seedDonors()
+	await seedCampaigns()
 }
 
 seed()
