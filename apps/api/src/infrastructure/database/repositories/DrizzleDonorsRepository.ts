@@ -66,6 +66,12 @@ export class DrizzleDonorsRepository implements IDonorsRepository {
 		return Number(countRow?.total ?? 0)
 	}
 
+	async findAll(): Promise<Array<Donor>> {
+		const rows = await db.select().from(donors)
+
+		return rows.map((row) => this.rowToDonor(row))
+	}
+
 	async findByBloodType(bloodType: BloodType): Promise<Array<Donor>> {
 		const rows = await db
 			.select()

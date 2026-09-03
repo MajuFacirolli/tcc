@@ -27,6 +27,7 @@ export class DrizzleCampaignsRepository implements ICampaignsRepository {
 		const filters = and(
 			params.status ? eq(campaigns.status, params.status) : undefined,
 			params.bloodType ? eq(campaigns.bloodType, params.bloodType) : undefined,
+			params.kind ? eq(campaigns.kind, params.kind) : undefined,
 		)
 
 		const [countRow] = await db
@@ -49,6 +50,7 @@ export class DrizzleCampaignsRepository implements ICampaignsRepository {
 					row.title,
 					row.message,
 					row.bloodType,
+					row.kind,
 					row.status,
 					this.rowToMetrics(row),
 					row.createdAt,
@@ -67,6 +69,7 @@ export class DrizzleCampaignsRepository implements ICampaignsRepository {
 				id: campaigns.id,
 				title: campaigns.title,
 				bloodType: campaigns.bloodType,
+				kind: campaigns.kind,
 				notifiedCount: campaigns.notifiedCount,
 				intentionConfirmationsCount: campaigns.intentionConfirmationsCount,
 			})
@@ -78,6 +81,7 @@ export class DrizzleCampaignsRepository implements ICampaignsRepository {
 			id: row.id,
 			title: row.title,
 			bloodType: row.bloodType,
+			kind: row.kind,
 			notifiedCount: row.notifiedCount,
 			conversionRate: CampaignMetrics.calculateConversionRate(
 				row.notifiedCount,
@@ -103,6 +107,7 @@ export class DrizzleCampaignsRepository implements ICampaignsRepository {
 			row.title,
 			row.message,
 			row.bloodType,
+			row.kind,
 			row.status,
 			this.rowToMetrics(row),
 			row.createdAt,
