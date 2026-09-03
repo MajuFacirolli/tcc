@@ -59,6 +59,24 @@ export const formatResponseTime = (seconds: number) => {
 
 export const formatInteger = (value: number) => value.toLocaleString("pt-BR")
 
+/**
+ * A ratio between two rates, e.g. "3,2x". Distinct from `formatPercent` on purpose:
+ * a segmented campaign converting 3,2 times better is not the same statement as one
+ * converting 320% better, and the two are easy to conflate.
+ */
+export const formatMultiplier = (value: number) =>
+	`${value.toLocaleString("pt-BR", {
+		minimumFractionDigits: 1,
+		maximumFractionDigits: 1,
+	})}x`
+
+/** Percentage points, for a difference between two percentages. */
+export const formatPoints = (value: number) =>
+	`${value.toLocaleString("pt-BR", {
+		minimumFractionDigits: 1,
+		maximumFractionDigits: 1,
+	})} p.p.`
+
 export const formatPercent = (value: number, fractionDigits = 1) =>
 	`${value.toLocaleString("pt-BR", {
 		minimumFractionDigits: fractionDigits,
