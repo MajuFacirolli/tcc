@@ -3,6 +3,8 @@ import { formatDate } from "@/utils/formatDate"
 import { useCampaigns } from "../hooks/useCampaigns"
 import { useCampaignsFilters } from "../hooks/useCampaignsFilters"
 import { CAMPAIGN_STATUS_LABELS } from "../data/campaignStatusLabels"
+import { CampaignDetailsDialog } from "./CampaignDetailsDialog"
+import { CampaignKindBadge } from "./CampaignKindBadge"
 import { CampaignsFilters } from "./CampaignsFilters"
 import { Button } from "./ui/Button"
 import { Card } from "./ui/Card"
@@ -95,7 +97,26 @@ export const CampaignsList = () => {
 									/>
 									{CAMPAIGN_STATUS_LABELS[campaign.status]}
 								</p>
-								<ArrowUpRight className="size-7" />
+								<span className="flex items-center gap-2">
+									{/*
+									 * The kind is what the metrics comparison is drawn along, so a
+									 * campaign in the list has to say which arm it belongs to.
+									 */}
+									<CampaignKindBadge
+										kind={campaign.kind}
+										bloodType={campaign.bloodType}
+										showIcon={false}
+									/>
+									<CampaignDetailsDialog campaign={campaign}>
+										<button
+											type="button"
+											aria-label={`Ver detalhes da campanha ${campaign.title}`}
+											className="rounded-md text-zinc-900 transition-colors duration-150 hover:text-red-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-800"
+										>
+											<ArrowUpRight className="size-7" />
+										</button>
+									</CampaignDetailsDialog>
+								</span>
 							</div>
 
 							<div className="flex flex-col gap-2">
