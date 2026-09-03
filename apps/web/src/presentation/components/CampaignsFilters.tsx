@@ -1,8 +1,13 @@
 import { BLOOD_TYPES, type BloodTypeEnum } from "@/domain/enums/BloodTypeEnum"
 import {
+	CAMPAIGN_KINDS,
+	type CampaignKindEnum,
+} from "@/domain/enums/CampaignKindEnum"
+import {
 	CAMPAIGN_STATUSES,
 	type CampaignStatusEnum,
 } from "@/domain/enums/CampaignStatusEnum"
+import { CAMPAIGN_KIND_LABELS } from "../data/campaignKindLabels"
 import { CAMPAIGN_STATUS_LABELS } from "../data/campaignStatusLabels"
 import type { useCampaignsFilters } from "../hooks/useCampaignsFilters"
 import { Button } from "./ui/Button"
@@ -49,6 +54,30 @@ export const CampaignsFilters = ({
 				{BLOOD_TYPES.map((bloodType) => (
 					<SelectItem key={bloodType} value={bloodType}>
 						{bloodType}
+					</SelectItem>
+				))}
+			</SelectContent>
+		</Select>
+
+		<Select
+			value={filters.kind ?? ALL}
+			onValueChange={(value) =>
+				setFilters({
+					kind: value === ALL ? null : (value as CampaignKindEnum),
+				})
+			}
+		>
+			<SelectTrigger
+				aria-label="Tipo de campanha"
+				className="max-w-44 w-full shrink-0"
+			>
+				<SelectValue placeholder="Tipo de campanha" />
+			</SelectTrigger>
+			<SelectContent>
+				<SelectItem value={ALL}>Todos os tipos de envio</SelectItem>
+				{CAMPAIGN_KINDS.map((kind) => (
+					<SelectItem key={kind} value={kind}>
+						{CAMPAIGN_KIND_LABELS[kind]}
 					</SelectItem>
 				))}
 			</SelectContent>
