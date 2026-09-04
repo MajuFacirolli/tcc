@@ -1,4 +1,4 @@
-import type { Campaign, CampaignSummary } from "@domain/entities/Campaign"
+import type { CampaignSummary } from "@domain/entities/Campaign"
 import type { ListCampaignsInput } from "@/application/dtos/campaigns/ListCampaignsInput"
 import type { ListCampaignsOutput } from "../dtos/campaigns/ListCampaignsOutput"
 import type { CreateCampaignsInput } from "../dtos/campaigns/CreateCampaignInput"
