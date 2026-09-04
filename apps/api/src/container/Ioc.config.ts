@@ -23,7 +23,6 @@ import { DrizzleBloodBankRepository } from "@infrastructure/database/repositorie
 // use cases
 import { GetCampaignsUseCase } from "@application/use_cases/campaigns/GetCampaigns"
 import { GetCampaignsSummaryUseCase } from "@application/use_cases/campaigns/GetCampaignsSummary"
-import { GetCampaignUseCase } from "@application/use_cases/campaigns/GetCampaign"
 import { CreateCampaignUseCase } from "@application/use_cases/campaigns/CreateCampaign"
 import { SendCampaignEmailUseCase } from "@application/use_cases/campaigns/SendCampaignEmail"
 import { CloseCampaignUseCase } from "@application/use_cases/campaigns/CloseCampaign"
@@ -39,7 +38,6 @@ import { CountEligibleDonorsUseCase } from "@application/use_cases/donors/CountE
 // controllers
 import { GetCampaignsController } from "@/presentation/controllers/campaigns/GetCampaigns"
 import { GetCampaignsSummaryController } from "@/presentation/controllers/campaigns/GetCampaignsSummary"
-import { GetCampaignController } from "@/presentation/controllers/campaigns/GetCampaign"
 import { CreateCampaignController } from "@/presentation/controllers/campaigns/CreateCampaign"
 import { SignInController } from "@/presentation/controllers/auth/SignIn"
 import { SignOutController } from "@/presentation/controllers/auth/SignOut"
@@ -72,7 +70,6 @@ decorate(injectable(), DrizzleBloodBankRepository)
 // use cases
 decorate(injectable(), GetCampaignsUseCase)
 decorate(injectable(), GetCampaignsSummaryUseCase)
-decorate(injectable(), GetCampaignUseCase)
 decorate(injectable(), CreateCampaignUseCase)
 decorate(injectable(), SendCampaignEmailUseCase)
 decorate(injectable(), CloseCampaignUseCase)
@@ -88,7 +85,6 @@ decorate(injectable(), CountEligibleDonorsUseCase)
 // controllers
 decorate(injectable(), GetCampaignsController)
 decorate(injectable(), GetCampaignsSummaryController)
-decorate(injectable(), GetCampaignController)
 decorate(injectable(), CreateCampaignController)
 decorate(injectable(), SignInController)
 decorate(injectable(), SignOutController)
@@ -110,7 +106,6 @@ decorate(injectable(), BullMqJobQueue)
 // repositories
 decorate(inject(TYPES.ICampaignsRepository), GetCampaignsUseCase, 0)
 decorate(inject(TYPES.ICampaignsRepository), GetCampaignsSummaryUseCase, 0)
-decorate(inject(TYPES.ICampaignsRepository), GetCampaignUseCase, 0)
 decorate(inject(TYPES.ICampaignsRepository), CreateCampaignUseCase, 0)
 decorate(inject(TYPES.IDonorsRepository), CreateCampaignUseCase, 1)
 decorate(inject(TYPES.IJobQueue), CreateCampaignUseCase, 2)
@@ -134,7 +129,6 @@ decorate(
 	GetCampaignsSummaryController,
 	0,
 )
-decorate(inject(TYPES.GetCampaignUseCase), GetCampaignController, 0)
 decorate(inject(TYPES.CreateCampaignUseCase), CreateCampaignController, 0)
 decorate(inject(TYPES.SignInUseCase), SignInController, 0)
 decorate(inject(TYPES.GetProfileUseCase), GetProfileController, 0)
@@ -202,10 +196,6 @@ container.bindUseCase<GetCampaignsSummaryUseCase>(
 	TYPES.GetCampaignsSummaryUseCase,
 	GetCampaignsSummaryUseCase,
 )
-container.bindUseCase<GetCampaignUseCase>(
-	TYPES.GetCampaignUseCase,
-	GetCampaignUseCase,
-)
 container.bindUseCase<CreateCampaignUseCase>(
 	TYPES.CreateCampaignUseCase,
 	CreateCampaignUseCase,
@@ -256,10 +246,6 @@ container.bindController<GetCampaignsController>(
 container.bindController<GetCampaignsSummaryController>(
 	TYPES.GetCampaignsSummaryController,
 	GetCampaignsSummaryController,
-)
-container.bindController<GetCampaignController>(
-	TYPES.GetCampaignController,
-	GetCampaignController,
 )
 container.bindController<CreateCampaignController>(
 	TYPES.CreateCampaignController,

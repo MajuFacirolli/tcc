@@ -59,7 +59,6 @@ function buildUseCase() {
 		create: vi.fn().mockResolvedValue(CAMPAIGN_ID),
 		list: vi.fn(),
 		listSummary: vi.fn(),
-		get: vi.fn(),
 		incrementNotifiedCount: vi.fn(),
 		closeCampaign: vi.fn(),
 	} satisfies ICampaignsRepository

@@ -90,30 +90,6 @@ export class DrizzleCampaignsRepository implements ICampaignsRepository {
 		}))
 	}
 
-	async get(id: string): Promise<Campaign> {
-		const [row] = await db
-			.select()
-			.from(campaigns)
-			.where(eq(campaigns.id, id))
-			.limit(1)
-
-		if (!row)
-			throw new NotFoundError(
-				new Error(`Campaign with id "${id}" was not found`),
-			)
-
-		return new Campaign(
-			row.id,
-			row.title,
-			row.message,
-			row.bloodType,
-			row.kind,
-			row.status,
-			this.rowToMetrics(row),
-			row.createdAt,
-		)
-	}
-
 	async create(params: CreateCampaignsInput): Promise<string> {
 		const [row] = await db
 			.insert(campaigns)
