@@ -3,6 +3,15 @@
 @import "./_imports.css";
 
 /*
+ * Radix writes the open/closed state to `data-state`, so the `data-open:` and
+ * `data-closed:` utilities the ui primitives are written with need a variant that
+ * matches it. Without these, Tailwind emits `[data-open]` and every enter/exit
+ * animation in Dialog, Select and Accordion silently never runs.
+ */
+@custom-variant data-open (&[data-state="open"]);
+@custom-variant data-closed (&[data-state="closed"]);
+
+/*
  * Design tokens consumed by the shadcn components in `presentation/components/ui`.
  * They are mapped onto Tailwind's own palette so the generated components stay in
  * step with the hand-written ones, which use `zinc-*` and `red-800` directly.
