@@ -1,49 +1,40 @@
 import type { BloodTypeEnum } from "@/domain/enums/BloodTypeEnum"
-import type { CampaignKindEnum } from "@/domain/enums/CampaignKindEnum"
-
-export interface IMetricsKindSummaryResponse {
-	kind: CampaignKindEnum
-	campaignsCount: number
-	notifiedCount: number
-	eligibleReached: number
-	confirmationsCount: number
-	conversionRate: number
-	eligibleConversionRate: number
-	targetingPrecision: number
-	averageResponseTime: number
-}
+import type { MetricsPeriodEnum } from "@/presentation/enums/MetricsPeriodEnum"
 
 export interface IMetricsBucketResponse {
 	bucketStart: string
 	notifiedCount: number
 	confirmationsCount: number
+	averageResponseTime: number | null
 }
 
 export interface IMetricsResponse {
-	windowDays: number
+	period: MetricsPeriodEnum
+	granularity: "day" | "month"
 	range: {
 		from: string
 		to: string
 	}
 	summary: {
 		eligibleDonorsPool: number
-		campaignsCount: number
 		notifiedCount: number
-		eligibleReached: number
 		confirmationsCount: number
 		conversionRate: number
-		targetingPrecision: number
 		averageResponseTime: number
+		deltas: {
+			notifiedCount: number
+			confirmationsCount: number
+			averageResponseTime: number
+		}
+	}
+	funnel: {
+		eligibleReached: number
+		notified: number
+		confirmed: number
 	}
 	series: IMetricsBucketResponse[]
 	confirmationsByBloodType: {
 		bloodType: BloodTypeEnum
 		confirmations: number
 	}[]
-	comparison: {
-		generic: IMetricsKindSummaryResponse
-		segmented: IMetricsKindSummaryResponse
-		conversionLift: number | null
-		targetingPrecisionGain: number | null
-	}
 }
