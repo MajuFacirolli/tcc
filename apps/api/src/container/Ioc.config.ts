@@ -52,9 +52,11 @@ import { CountEligibleDonorsController } from "@/presentation/controllers/donors
 //services
 import { Argon2PasswordHasher } from "@infrastructure/identity/Argon2PasswordHasher"
 import { NodemailerEmailService } from "@infrastructure/services/NodemailerEmailService"
+import { NoopEmailService } from "@infrastructure/services/NoopEmailService"
 import { ReactEmailTemplateRenderer } from "@infrastructure/services/ReactEmailTemplateRenderer"
 import { BullMqJobQueue } from "@infrastructure/queue/BullMqJobQueue"
 
+import { env } from "@/env"
 import { IoCContainer } from "./IoCContainer"
 import { TYPES } from "./types"
 
@@ -99,6 +101,7 @@ decorate(injectable(), CountEligibleDonorsController)
 //services
 decorate(injectable(), Argon2PasswordHasher)
 decorate(injectable(), NodemailerEmailService)
+decorate(injectable(), NoopEmailService)
 decorate(injectable(), ReactEmailTemplateRenderer)
 decorate(injectable(), BullMqJobQueue)
 
@@ -295,7 +298,7 @@ container.bindService<IPasswordHasher>(
 )
 container.bindService<IEmailService>(
 	TYPES.IEmailService,
-	NodemailerEmailService,
+	env.EMAIL_TRANSPORT === "noop" ? NoopEmailService : NodemailerEmailService,
 )
 container.bindService<IEmailTemplateRenderer>(
 	TYPES.IEmailTemplateRenderer,

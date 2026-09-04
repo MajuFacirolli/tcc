@@ -41,6 +41,11 @@ const envSchema = z.object({
 	REDIS_URL: z.url(),
 	DASHBOARD_USER: z.string().min(1).optional(),
 	DASHBOARD_PASSWORD: z.string().min(1).optional(),
+	/**
+	 * `noop` swaps the SMTP transport for one that delivers nowhere. The end-to-end
+	 * run uses it so no message can leave the machine.
+	 */
+	EMAIL_TRANSPORT: z.enum(["smtp", "noop"]).default("smtp"),
 	SMTP_HOST: z.string().min(1),
 	SMTP_PORT: z.coerce.number(),
 	SMTP_USER: z.string().min(1),
