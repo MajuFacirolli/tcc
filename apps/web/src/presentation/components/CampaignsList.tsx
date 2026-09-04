@@ -1,4 +1,4 @@
-import { ArrowUpRight, Plus } from "lucide-react"
+import { ArrowUpRight } from "lucide-react"
 import { formatDate } from "@/utils/formatDate"
 import { useCampaigns } from "../hooks/useCampaigns"
 import { useCampaignsFilters } from "../hooks/useCampaignsFilters"
@@ -11,9 +11,6 @@ import { Card } from "./ui/Card"
 import Pagination from "./ui/Pagination"
 import { twMerge } from "tailwind-merge"
 import { CAMPAIGN_STATUS_CONFIG } from "../data/campaignStatusConfig"
-import { Link } from "@tanstack/react-router"
-import { PagesEnum } from "../enums/PagesEnum"
-import { Tooltip } from "./ui/Tooltip"
 
 export const CampaignsList = () => {
 	const { filters, setFilters, clearFilters, hasFilters } =
@@ -26,21 +23,12 @@ export const CampaignsList = () => {
 
 	return (
 		<section className="flex flex-col gap-6">
-			<div className="flex items-center justify-between gap-2">
-				<CampaignsFilters
-					filters={filters}
-					setFilters={setFilters}
-					clearFilters={clearFilters}
-					hasFilters={hasFilters}
-				/>
-
-				<Button size="icon-lg" asChild>
-					<Link to={PagesEnum.NEW_CAMPAIGN} className="relative group">
-						<Plus className="size-4.5" />
-						<Tooltip label="Nova campanha" direction="left" />
-					</Link>
-				</Button>
-			</div>
+			<CampaignsFilters
+				filters={filters}
+				setFilters={setFilters}
+				clearFilters={clearFilters}
+				hasFilters={hasFilters}
+			/>
 
 			{isLoading && (
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
@@ -98,24 +86,11 @@ export const CampaignsList = () => {
 									{CAMPAIGN_STATUS_LABELS[campaign.status]}
 								</p>
 								<span className="flex items-center gap-2">
-									{/*
-									 * The kind is what the metrics comparison is drawn along, so a
-									 * campaign in the list has to say which arm it belongs to.
-									 */}
 									<CampaignKindBadge
 										kind={campaign.kind}
 										bloodType={campaign.bloodType}
 										showIcon={false}
 									/>
-									<CampaignDetailsDrawer campaign={campaign}>
-										<button
-											type="button"
-											aria-label={`Ver detalhes da campanha ${campaign.title}`}
-											className="rounded-md text-zinc-900 transition-colors duration-150 hover:text-red-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-800"
-										>
-											<ArrowUpRight className="size-7" />
-										</button>
-									</CampaignDetailsDrawer>
 								</span>
 							</div>
 
@@ -123,12 +98,24 @@ export const CampaignsList = () => {
 								<Card.Title className="uppercase text-xl line-clamp-3">
 									{campaign.title}
 								</Card.Title>
-								<time
-									className="text-sm"
-									dateTime={campaign.createdAt.toISOString()}
-								>
-									{formatDate(campaign.createdAt)}
-								</time>
+								<div className=" flex items-center justify-between">
+									<time
+										className="text-sm"
+										dateTime={campaign.createdAt.toISOString()}
+									>
+										{formatDate(campaign.createdAt)}
+									</time>
+									<CampaignDetailsDrawer campaign={campaign}>
+										<Button
+											type="button"
+											aria-label={`Ver detalhes da campanha ${campaign.title}`}
+											size="icon-sm"
+											variant="ghost"
+										>
+											<ArrowUpRight className="size-7" />
+										</Button>
+									</CampaignDetailsDrawer>
+								</div>
 							</div>
 						</Card>
 					))}
