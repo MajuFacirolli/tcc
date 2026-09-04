@@ -7,6 +7,7 @@ import {
 } from "@domain/rules/campaignAudience"
 import { ELIGIBILITY_DAYS } from "@domain/rules/donorEligibility"
 import { MS_PER_DAY } from "@domain/utils/dateUtils"
+import { BLOOD_TYPES, type BloodType } from "@domain/value_objects/BloodType"
 
 const NOW = new Date("2026-09-01T12:00:00.000Z")
 
@@ -58,6 +59,86 @@ describe("campaign audience", () => {
 			expect(
 				isInCampaignAudience(OTHER_TYPE_ELIGIBLE, "segmented", "O+", NOW),
 			).toBe(false)
+		})
+	})
+
+	/**
+	 * The Rh sign is half the identity of a blood type, and the pool above only ever
+	 * contrasts types that differ in both letter and sign. These cases isolate each
+	 * half: same ABO group with the opposite sign, and the same sign with a different
+	 * group. Selection is an exact match on the pair — the code carries no ABO/Rh
+	 * compatibility table, so no donor is ever a substitute for another type.
+	 */
+	describe("blood type and Rh factor", () => {
+		const eligible = (bloodType: BloodType): CampaignAudienceDonor => ({
+			sex: "male",
+			bloodType,
+			lastDonationDate: null,
+		})
+
+		it("excludes the opposite Rh of the same group", () => {
+			expect(isInCampaignAudience(eligible("O-"), "segmented", "O+", NOW)).toBe(
+				false,
+			)
+			expect(isInCampaignAudience(eligible("O+"), "segmented", "O-", NOW)).toBe(
+				false,
+			)
+		})
+
+		it("excludes a different group carrying the same Rh sign", () => {
+			expect(
+				isInCampaignAudience(eligible("A+"), "segmented", "AB+", NOW),
+			).toBe(false)
+			expect(
+				isInCampaignAudience(eligible("B-"), "segmented", "AB-", NOW),
+			).toBe(false)
+		})
+
+		it("does not treat O- as a universal donor", () => {
+			const universalPool = BLOOD_TYPES.map(eligible)
+
+			for (const target of BLOOD_TYPES) {
+				const audience = selectCampaignAudience(
+					universalPool,
+					"segmented",
+					target,
+					NOW,
+				)
+
+				expect(audience.map((donor) => donor.bloodType)).toEqual([target])
+			}
+		})
+
+		it("selects every eligible donor of the targeted type and no other", () => {
+			// Two donors per type, so a passing assertion cannot be a single lucky row.
+			const pool = BLOOD_TYPES.flatMap((bloodType) => [
+				eligible(bloodType),
+				eligible(bloodType),
+			])
+
+			for (const target of BLOOD_TYPES) {
+				const audience = selectCampaignAudience(pool, "segmented", target, NOW)
+
+				expect(audience).toHaveLength(2)
+				expect(audience.every((donor) => donor.bloodType === target)).toBe(true)
+			}
+		})
+
+		it("still applies the waiting interval within the targeted type", () => {
+			const waiting: CampaignAudienceDonor = {
+				sex: "male",
+				bloodType: "O-",
+				lastDonationDate: daysAgo(ELIGIBILITY_DAYS.male - 1),
+			}
+
+			expect(
+				selectCampaignAudience(
+					[eligible("O-"), waiting],
+					"segmented",
+					"O-",
+					NOW,
+				),
+			).toEqual([eligible("O-")])
 		})
 	})
 
