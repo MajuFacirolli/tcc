@@ -1,11 +1,16 @@
 import { addDays, startOfDay } from "./dateUtils"
 
 /**
- * The page reports on one fixed rolling window, so every number on it shares a
- * period by construction and there is no filter that could put two panels on
- * different ranges.
+ * The page reports on one fixed rolling window, so every panel shares a period by
+ * construction and there is no filter that could put two of them on different ranges.
  */
 export const METRICS_WINDOW_DAYS = 30
+
+/**
+ * Cut-offs for the response-speed curve, in hours. Cumulative: each is "answered
+ * within this long", which is the form the question takes when staffing a shift.
+ */
+export const RESPONSE_SPEED_HOURS = [2, 6, 12, 24, 48] as const
 
 export interface MetricsWindow {
 	from: Date

@@ -12,15 +12,8 @@ export const CAMPAIGN_KIND_DESCRIPTIONS: Record<CampaignKindEnum, string> = {
 		"Envia apenas para doadores do tipo sanguíneo solicitado que já cumpriram o intervalo entre doações.",
 }
 
-/**
- * The control arm reads muted and the system's own approach carries the hue, so the
- * comparison states which side is the claim before any number is read.
- *
- * Both arms are named beside every mark they colour — legend, direct label, row or
- * column header — so identity never rests on the colour alone. That is what lets the
- * baseline sit below the chroma floor a categorical hue would have to clear.
- */
+/** Baseline in the pale step, the system's own approach in the emphatic one. */
 export const CAMPAIGN_KIND_CHART_COLORS: Record<CampaignKindEnum, string> = {
-	[CampaignKindEnum.GENERIC]: "var(--chart-baseline)",
+	[CampaignKindEnum.GENERIC]: "var(--chart-ordinal-1)",
 	[CampaignKindEnum.SEGMENTED]: "var(--chart-primary)",
 }

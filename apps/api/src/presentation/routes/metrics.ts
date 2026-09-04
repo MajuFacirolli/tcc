@@ -24,7 +24,7 @@ export const metrics: FastifyPluginAsyncZod = async (app) => {
 		"/api/metrics",
 		{
 			schema: {
-				summary: "Get campaign metrics for the last 30 days",
+				summary: "Get decision metrics for the last 30 days",
 				tags: ["Metrics"],
 				security: [{ cookieAuth: [] }],
 				response: {

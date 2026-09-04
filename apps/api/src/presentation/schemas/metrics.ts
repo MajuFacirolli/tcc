@@ -1,24 +1,5 @@
 import { z } from "zod"
 import { bloodTypeSchema } from "./bloodType"
-import { campaignKindSchema } from "./campaigns"
-
-const metricsBucketSchema = z.object({
-	bucketStart: z.iso.datetime(),
-	notifiedCount: z.number(),
-	confirmationsCount: z.number(),
-})
-
-const metricsKindSummarySchema = z.object({
-	kind: campaignKindSchema,
-	campaignsCount: z.number(),
-	notifiedCount: z.number(),
-	eligibleReached: z.number(),
-	confirmationsCount: z.number(),
-	conversionRate: z.number(),
-	eligibleConversionRate: z.number(),
-	targetingPrecision: z.number(),
-	averageResponseTime: z.number(),
-})
 
 export const metricsSchema = z.object({
 	windowDays: z.number(),
@@ -26,29 +7,61 @@ export const metricsSchema = z.object({
 		from: z.iso.datetime(),
 		to: z.iso.datetime(),
 	}),
-	summary: z.object({
-		eligibleDonorsPool: z.number(),
-		campaignsCount: z.number(),
-		notifiedCount: z.number(),
-		eligibleReached: z.number(),
-		confirmationsCount: z.number(),
-		conversionRate: z.number(),
-		targetingPrecision: z.number(),
+	headline: z.object({
+		responseRate: z.number(),
 		averageResponseTime: z.number(),
+		intentions: z.number(),
+		retentionRate: z.number(),
 	}),
-	series: z.array(metricsBucketSchema),
-	confirmationsByBloodType: z.array(
+	reach: z.object({
+		notifications: z.number(),
+		donorsReached: z.number(),
+		respondingDonors: z.number(),
+		repeatResponders: z.number(),
+		eligibleDonorsPool: z.number(),
+	}),
+	retention: z.object({
+		rate: z.number(),
+		reactivationRate: z.number(),
+		answeredThenNotified: z.number(),
+		ignoredThenNotified: z.number(),
+	}),
+	responseSpeed: z.array(
 		z.object({
-			bloodType: bloodTypeSchema,
-			confirmations: z.number(),
+			hours: z.number(),
+			intentions: z.number(),
+			share: z.number(),
 		}),
 	),
-	comparison: z.object({
-		generic: metricsKindSummarySchema,
-		segmented: metricsKindSummarySchema,
-		conversionLift: z.number().nullable(),
-		targetingPrecisionGain: z.number().nullable(),
-	}),
+	byBloodType: z.array(
+		z.object({
+			bloodType: bloodTypeSchema,
+			notifications: z.number(),
+			intentions: z.number(),
+			responseRate: z.number(),
+			bagsCount: z.number(),
+			minThreshold: z.number(),
+			stockBalance: z.number(),
+		}),
+	),
+	series: z.array(
+		z.object({
+			bucketStart: z.iso.datetime(),
+			notifications: z.number(),
+			intentions: z.number(),
+		}),
+	),
+	campaigns: z.array(
+		z.object({
+			id: z.string(),
+			title: z.string(),
+			createdAt: z.iso.datetime(),
+			notifications: z.number(),
+			intentions: z.number(),
+			responseRate: z.number(),
+			averageResponseTime: z.number(),
+		}),
+	),
 })
 
 export const dailyMetricsSchema = z.object({

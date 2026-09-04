@@ -1,22 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { Calendar } from "lucide-react"
 import { ConfirmationsByBloodTypeChart } from "@/presentation/components/metrics/ConfirmationsByBloodTypeChart"
 import { ConfirmationsOverTimeChart } from "@/presentation/components/metrics/ConfirmationsOverTimeChart"
-import { CoreMetricsComparison } from "@/presentation/components/metrics/CoreMetricsComparison"
-import { SegmentationComparisonChart } from "@/presentation/components/metrics/SegmentationComparisonChart"
-import { SegmentationTable } from "@/presentation/components/metrics/SegmentationTable"
-import { SegmentationVerdict } from "@/presentation/components/metrics/SegmentationVerdict"
-import { MetricsDashboardSkeleton } from "@/presentation/components/skeletons/MetricsDashboardSkeleton"
+import { ConversionFunnelChart } from "@/presentation/components/metrics/ConversionFunnelChart"
+import { ConversionRateMeter } from "@/presentation/components/metrics/ConversionRateMeter"
+import { MetricsFilters } from "@/presentation/components/metrics/MetricsFilters"
+import { MetricsSummary } from "@/presentation/components/metrics/MetricsSummary"
 import { Heading } from "@/presentation/components/ui/Heading"
 import { useMetrics } from "@/presentation/hooks/useMetrics"
-import { formatPeriodRange } from "@/presentation/utils/formatMetrics"
+import { useMetricsFilters } from "@/presentation/hooks/useMetricsFilters"
+import { MetricsDashboardSkeleton } from "@/presentation/components/skeletons/MetricsDashboardSkeleton"
 
 export const Route = createFileRoute("/_dashboard/metricas")({
 	component: RouteComponent,
 })
 
 function RouteComponent() {
-	const { metrics, isLoading, error } = useMetrics()
+	const { period, setPeriod } = useMetricsFilters()
+	const { metrics, isLoading, isFetching, error } = useMetrics(period)
 
 	return (
 		<div className="max-w-7xl mx-auto px-6 py-8 flex flex-col gap-10">
@@ -24,18 +24,16 @@ function RouteComponent() {
 				<Heading.Overline>Desempenho</Heading.Overline>
 				<Heading.Title>Métricas</Heading.Title>
 				<Heading.Description>
-					Campanhas segmentadas por elegibilidade e tipo sanguíneo, comparadas
-					ao envio genérico.
+					Acompanhe o desempenho das campanhas e identifique oportunidades para
+					melhorar a mobilização de doadores.
 				</Heading.Description>
 			</Heading>
 
-			{/* One fixed window for the whole page, so no two panels can disagree. */}
-			<p className="flex items-center gap-2 text-sm text-zinc-500">
-				<Calendar className="size-4 shrink-0" aria-hidden="true" />
-				Últimos {metrics?.windowDays ?? 30} dias
-				{metrics &&
-					` · ${formatPeriodRange(metrics.range.from, metrics.range.to)}`}
-			</p>
+			<MetricsFilters
+				period={period}
+				onPeriodChange={setPeriod}
+				range={metrics?.range}
+			/>
 
 			{isLoading && <MetricsDashboardSkeleton />}
 
@@ -48,36 +46,27 @@ function RouteComponent() {
 			)}
 
 			{!isLoading && !error && metrics && (
-				<div className="flex flex-col gap-12">
-					<section className="flex flex-col gap-6">
-						<h3 className="typography-overline">Métricas por estratégia</h3>
+				<div
+					className="flex flex-col gap-10"
+					data-fetching={isFetching}
+					aria-busy={isFetching}
+				>
+					<div className="in-data-[fetching=true]:opacity-60 transition-opacity">
+						<MetricsSummary metrics={metrics} />
+					</div>
 
-						<CoreMetricsComparison metrics={metrics} />
-					</section>
+					<section className="flex flex-col gap-6 in-data-[fetching=true]:opacity-60 transition-opacity">
+						<h3 className="typography-overline">Análise das campanhas</h3>
 
-					<section className="flex flex-col gap-6">
-						<h3 className="typography-overline">O que a segmentação muda</h3>
-
-						<div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-							<SegmentationVerdict
+						<div className="grid grid-cols-1 md:grid-cols-12 gap-y-10 gap-x-4">
+							<ConversionFunnelChart
 								metrics={metrics}
-								className="col-span-12 min-w-0 lg:col-span-5"
+								className="col-span-12 min-w-0 lg:col-span-8"
 							/>
-							<SegmentationComparisonChart
+							<ConversionRateMeter
 								metrics={metrics}
-								className="col-span-12 min-w-0 lg:col-span-7"
+								className="col-span-12 min-w-0 lg:col-span-4"
 							/>
-							<SegmentationTable
-								metrics={metrics}
-								className="col-span-12 min-w-0"
-							/>
-						</div>
-					</section>
-
-					<section className="flex flex-col gap-6">
-						<h3 className="typography-overline">Atividade no período</h3>
-
-						<div className="grid grid-cols-1 md:grid-cols-12 gap-4">
 							<ConfirmationsOverTimeChart
 								metrics={metrics}
 								className="col-span-12 min-w-0 lg:col-span-8"

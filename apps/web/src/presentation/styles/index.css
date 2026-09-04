@@ -37,11 +37,6 @@
 	--ring: var(--color-zinc-400);
 
 	--chart-primary: var(--color-red-800);
-	/* The control arm of a comparison. Deliberately achromatic: it marks the number
-	   being beaten, so it must recede behind --chart-primary rather than compete with
-	   it for identity. Kept clear of --chart-grid and --chart-axis so a baseline mark
-	   still reads as data and not as chrome. */
-	--chart-baseline: var(--color-zinc-400);
 	--chart-ordinal-1: var(--color-red-400);
 	--chart-ordinal-2: var(--color-red-600);
 	--chart-ordinal-3: var(--color-red-800);
@@ -85,7 +80,6 @@
 	--color-ring: var(--ring);
 
 	--color-chart-primary: var(--chart-primary);
-	--color-chart-baseline: var(--chart-baseline);
 	--color-chart-ordinal-1: var(--chart-ordinal-1);
 	--color-chart-ordinal-2: var(--chart-ordinal-2);
 	--color-chart-ordinal-3: var(--chart-ordinal-3);
