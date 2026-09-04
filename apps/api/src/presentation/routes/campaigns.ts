@@ -10,7 +10,6 @@ import {
 import { paginationQuerySchema } from "@presentation/schemas/pagination"
 import type { GetCampaignsController } from "@/presentation/controllers/campaigns/GetCampaigns"
 import type { GetCampaignsSummaryController } from "@/presentation/controllers/campaigns/GetCampaignsSummary"
-import type { GetCampaignController } from "@/presentation/controllers/campaigns/GetCampaign"
 import type { CreateCampaignController } from "@/presentation/controllers/campaigns/CreateCampaign"
 import {
 	campaignKindSchema,
@@ -31,9 +30,6 @@ export const campaigns: FastifyPluginAsyncZod = async (app) => {
 		container.get<GetCampaignsSummaryController>(
 			TYPES.GetCampaignsSummaryController,
 		)
-	const getCampaignController = container.get<GetCampaignController>(
-		TYPES.GetCampaignController,
-	)
 	const createCampaignController = container.get<CreateCampaignController>(
 		TYPES.CreateCampaignController,
 	)
@@ -76,24 +72,6 @@ export const campaigns: FastifyPluginAsyncZod = async (app) => {
 			},
 		},
 		(req, rep) => getCampaignsSummaryController.handle(req, rep),
-	)
-
-	app.get(
-		"/api/campaigns/:id",
-		{
-			schema: {
-				summary: "Get campaign",
-				tags: ["Campaigns"],
-				security: [{ cookieAuth: [] }],
-				params: z.object({ id: z.string() }),
-				response: {
-					200: apiResponseSchema(campaignSchema),
-					401: apiErrorSchema,
-					404: apiErrorSchema,
-				},
-			},
-		},
-		(req, rep) => getCampaignController.handle(req, rep),
 	)
 
 	app.post(

@@ -6,7 +6,6 @@ import type { CreateCampaignsInput } from "../dtos/campaigns/CreateCampaignInput
 export interface ICampaignsRepository {
 	list(params: ListCampaignsInput): Promise<ListCampaignsOutput>
 	listSummary(): Promise<Array<CampaignSummary>>
-	get(id: string): Promise<Campaign>
 	create(data: CreateCampaignsInput): Promise<string>
 	incrementNotifiedCount(campaignId: string): Promise<void>
 	closeCampaign(campaignId: string): Promise<void>

@@ -8,7 +8,6 @@ export const TYPES = {
 
 	GetCampaignsUseCase: Symbol.for("GetCampaignsUseCase"),
 	GetCampaignsSummaryUseCase: Symbol.for("GetCampaignsSummaryUseCase"),
-	GetCampaignUseCase: Symbol.for("GetCampaignUseCase"),
 	CreateCampaignUseCase: Symbol.for("CreateCampaignUseCase"),
 	SendCampaignEmailUseCase: Symbol.for("SendCampaignEmailUseCase"),
 	CloseCampaignUseCase: Symbol.for("CloseCampaignUseCase"),
@@ -25,7 +24,6 @@ export const TYPES = {
 
 	GetCampaignsController: Symbol.for("GetCampaignsController"),
 	GetCampaignsSummaryController: Symbol.for("GetCampaignsSummaryController"),
-	GetCampaignController: Symbol.for("GetCampaignController"),
 	CreateCampaignController: Symbol.for("CreateCampaignController"),
 	SignInController: Symbol.for("SignInController"),
 	SignOutController: Symbol.for("SignOutController"),
