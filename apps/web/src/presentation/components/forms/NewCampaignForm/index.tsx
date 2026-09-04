@@ -73,7 +73,15 @@ export const NewCampaignForm = ({ bloodType }: INewCampaignFormProps) => {
 					name="bloodType"
 					render={({ field, fieldState }) => (
 						<Field className="gap-1.5">
-							<FieldLabel htmlFor="bloodType">Tipo sanguíneo</FieldLabel>
+							<div className="flex items-center justify-between gap-3">
+								<FieldLabel htmlFor="bloodType">Tipo sanguíneo</FieldLabel>
+								{field.value && (
+									<EligibleDonors
+										count={eligibleDonorsCount}
+										isLoading={isLoadingEligibleDonorsCount}
+									/>
+								)}
+							</div>
 							<Select
 								value={field.value ?? undefined}
 								onValueChange={handleBloodTypeChange}
@@ -94,13 +102,6 @@ export const NewCampaignForm = ({ bloodType }: INewCampaignFormProps) => {
 								</SelectContent>
 							</Select>
 							<FieldError errors={[fieldState.error]} />
-							{field.value && (
-								<EligibleDonors
-									bloodType={field.value}
-									count={eligibleDonorsCount}
-									isLoading={isLoadingEligibleDonorsCount}
-								/>
-							)}
 						</Field>
 					)}
 				/>
