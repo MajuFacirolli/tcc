@@ -12,8 +12,3 @@ export const CAMPAIGN_KIND_DESCRIPTIONS: Record<CampaignKindEnum, string> = {
 		"Envia apenas para doadores do tipo sanguíneo solicitado que já cumpriram o intervalo entre doações.",
 }
 
-/** Baseline in the pale step, the system's own approach in the emphatic one. */
-export const CAMPAIGN_KIND_CHART_COLORS: Record<CampaignKindEnum, string> = {
-	[CampaignKindEnum.GENERIC]: "var(--chart-ordinal-1)",
-	[CampaignKindEnum.SEGMENTED]: "var(--chart-primary)",
-}

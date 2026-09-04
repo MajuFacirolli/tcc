@@ -1,15 +1,6 @@
-import { MetricsPeriodEnum } from "../enums/MetricsPeriodEnum"
-
-const WEEKDAY = new Intl.DateTimeFormat("pt-BR", {
-	weekday: "short",
-	timeZone: "UTC",
-})
-const DAY = new Intl.DateTimeFormat("pt-BR", {
+const SHORT_DATE = new Intl.DateTimeFormat("pt-BR", {
 	day: "2-digit",
-	timeZone: "UTC",
-})
-const MONTH = new Intl.DateTimeFormat("pt-BR", {
-	month: "short",
+	month: "2-digit",
 	timeZone: "UTC",
 })
 
@@ -20,26 +11,18 @@ const FULL_DATE = new Intl.DateTimeFormat("pt-BR", {
 	timeZone: "UTC",
 })
 
-const capitalize = (value: string) =>
-	value.charAt(0).toUpperCase() + value.slice(1)
-
-const stripPunctuation = (value: string) => value.replace(/\.$/, "")
-
 /**
  * Bucket boundaries are UTC instants, so they are formatted in UTC — reading them in
- * the browser's zone would shift a midnight bucket into the previous day.
+ * the browser's zone would shift a midnight bucket into the previous day. The month is
+ * kept because a 30-day window straddles two of them and a bare day number would repeat.
  */
-export const formatBucketLabel = (
-	bucketStart: Date,
-	period: MetricsPeriodEnum,
-) => {
-	if (period === MetricsPeriodEnum.YEAR)
-		return capitalize(stripPunctuation(MONTH.format(bucketStart)))
+export const formatBucketLabel = (bucketStart: Date) =>
+	SHORT_DATE.format(bucketStart)
 
-	if (period === MetricsPeriodEnum.MONTH) return DAY.format(bucketStart)
+export const formatDate = (date: Date) => FULL_DATE.format(date)
 
-	return capitalize(stripPunctuation(WEEKDAY.format(bucketStart)))
-}
+export const formatPeriodRange = (from: Date, to: Date) =>
+	`${FULL_DATE.format(from)} - ${FULL_DATE.format(new Date(to.getTime() - 1))}`
 
 const SECONDS_PER_MINUTE = 60
 const SECONDS_PER_HOUR = 3600
@@ -59,14 +42,22 @@ export const formatResponseTime = (seconds: number) => {
 
 export const formatInteger = (value: number) => value.toLocaleString("pt-BR")
 
+/** A bag balance reads as a direction, so the sign is always shown. */
+export const formatSigned = (value: number) =>
+	`${value > 0 ? "+" : ""}${value.toLocaleString("pt-BR")}`
+
 export const formatPercent = (value: number, fractionDigits = 1) =>
 	`${value.toLocaleString("pt-BR", {
 		minimumFractionDigits: fractionDigits,
 		maximumFractionDigits: fractionDigits,
 	})}%`
 
-export const formatPeriodRange = (from: Date, to: Date) => {
-	const lastIncludedDay = new Date(to.getTime() - 1)
+/** Percentage points, for a difference between two percentages. */
+export const formatPoints = (value: number) =>
+	`${value > 0 ? "+" : ""}${value.toLocaleString("pt-BR", {
+		minimumFractionDigits: 1,
+		maximumFractionDigits: 1,
+	})} p.p.`
 
-	return `${FULL_DATE.format(from)} - ${FULL_DATE.format(lastIncludedDay)}`
-}
+/** Cumulative cut-offs read as "até 6 h". */
+export const formatHours = (hours: number) => `${hours} h`

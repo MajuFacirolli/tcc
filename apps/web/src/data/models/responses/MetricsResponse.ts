@@ -1,40 +1,45 @@
 import type { BloodTypeEnum } from "@/domain/enums/BloodTypeEnum"
-import type { MetricsPeriodEnum } from "@/presentation/enums/MetricsPeriodEnum"
-
-export interface IMetricsBucketResponse {
-	bucketStart: string
-	notifiedCount: number
-	confirmationsCount: number
-	averageResponseTime: number | null
-}
 
 export interface IMetricsResponse {
-	period: MetricsPeriodEnum
-	granularity: "day" | "month"
-	range: {
-		from: string
-		to: string
-	}
-	summary: {
-		eligibleDonorsPool: number
-		notifiedCount: number
-		confirmationsCount: number
-		conversionRate: number
+	windowDays: number
+	range: { from: string; to: string }
+	headline: {
+		responseRate: number
 		averageResponseTime: number
-		deltas: {
-			notifiedCount: number
-			confirmationsCount: number
-			averageResponseTime: number
-		}
+		intentions: number
+		retentionRate: number
 	}
-	funnel: {
-		eligibleReached: number
-		notified: number
-		confirmed: number
+	reach: {
+		notifications: number
+		donorsReached: number
+		respondingDonors: number
+		repeatResponders: number
+		eligibleDonorsPool: number
 	}
-	series: IMetricsBucketResponse[]
-	confirmationsByBloodType: {
+	retention: {
+		rate: number
+		reactivationRate: number
+		answeredThenNotified: number
+		ignoredThenNotified: number
+	}
+	responseSpeed: { hours: number; intentions: number; share: number }[]
+	byBloodType: {
 		bloodType: BloodTypeEnum
-		confirmations: number
+		notifications: number
+		intentions: number
+		responseRate: number
+		bagsCount: number
+		minThreshold: number
+		stockBalance: number
+	}[]
+	series: { bucketStart: string; notifications: number; intentions: number }[]
+	campaigns: {
+		id: string
+		title: string
+		createdAt: string
+		notifications: number
+		intentions: number
+		responseRate: number
+		averageResponseTime: number
 	}[]
 }

@@ -1,16 +1,8 @@
 import type { TEither } from "@/core/Either"
 import type { TApplicationError } from "@/core/errors/ApplicationError"
 import type { IQuery } from "@/core/Query"
-import type { MetricsPeriodEnum } from "@/presentation/enums/MetricsPeriodEnum"
 import type { IMetricsVM } from "../viewmodels/MetricsVM"
 
-export interface IGetMetricsQueryExecuteParams {
-	period: MetricsPeriodEnum
-}
-
+/** The window is fixed at the last 30 days, so the query takes no parameters. */
 export interface IGetMetricsQuery
-	extends IQuery<
-		IGetMetricsQueryExecuteParams,
-		TEither<TApplicationError, IMetricsVM>,
-		void
-	> {}
+	extends IQuery<void, TEither<TApplicationError, IMetricsVM>, void> {}
