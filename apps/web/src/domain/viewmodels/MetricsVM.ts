@@ -1,6 +1,5 @@
 import type { BloodTypeEnum } from "../enums/BloodTypeEnum"
 import type { CampaignKindEnum } from "../enums/CampaignKindEnum"
-import type { MetricsPeriodEnum } from "@/presentation/enums/MetricsPeriodEnum"
 
 /**
  * One arm of the generic-vs-segmented comparison. Every rate is already a percentage,
@@ -20,13 +19,9 @@ export interface IMetricsKindSummaryVM {
 	conversionRate: number
 	/** Confirmations per message that reached someone able to answer. */
 	eligibleConversionRate: number
-	wastedMessages: number
-	/** Share of messages spent on a donor who could not have confirmed. */
-	wastedMessageRate: number
 	/**
 	 * Precisão do direcionamento: share of messages that reached someone in the
-	 * target audience and able to donate. The positive statement of what
-	 * `wastedMessageRate` states negatively.
+	 * target audience and able to donate.
 	 */
 	targetingPrecision: number
 	/** Seconds. */
@@ -37,41 +32,35 @@ export interface IMetricsBucketVM {
 	bucketStart: Date
 	notifiedCount: number
 	confirmationsCount: number
-	/** Seconds. `null` when nothing was confirmed in the bucket. */
-	averageResponseTime: number | null
 }
 
 export interface IMetricsVM {
-	period: MetricsPeriodEnum
-	granularity: "day" | "month"
+	/** The fixed rolling window every number below describes. */
+	windowDays: number
 	range: {
 		from: Date
+		/** Exclusive. */
 		to: Date
 	}
+	/**
+	 * The two arms pooled — each field is the sum, or the confirmation-weighted mean,
+	 * of the same field on both arms of `comparison`. `eligibleDonorsPool` is the
+	 * exception: it is a snapshot of the base right now, so it carries no window.
+	 */
 	summary: {
-		/** Donors eligible right now. Has no history, so it carries no delta. */
 		eligibleDonorsPool: number
+		campaignsCount: number
 		notifiedCount: number
+		eligibleReached: number
 		confirmationsCount: number
 		/** Percentage, already scaled from the API's 0–1 ratio. */
 		conversionRate: number
-		/** Seconds. */
-		averageResponseTime: number
-		/**
-		 * Both arms pooled, on the campaign rows' denominator — these three share a
-		 * basis with each other, not with `notifiedCount` above.
-		 */
-		eligibleReached: number
-		campaignNotifiedCount: number
 		/** Percentage, already scaled. */
 		targetingPrecision: number
-		/** Percent change against the previous window. */
-		deltas: {
-			notifiedCount: number
-			confirmationsCount: number
-			averageResponseTime: number
-		}
+		/** Seconds. */
+		averageResponseTime: number
 	}
+	/** One bucket per day of the window, gaps included. */
 	series: IMetricsBucketVM[]
 	confirmationsByBloodType: {
 		bloodType: BloodTypeEnum
@@ -86,8 +75,6 @@ export interface IMetricsVM {
 		segmented: IMetricsKindSummaryVM
 		/** How many times better the segmented conversion rate is. */
 		conversionLift: number | null
-		/** Percentage points of wasted messages the segmentation removed. */
-		wastedMessageRateReduction: number | null
 		/** Percentage points of targeting precision the segmentation added. */
 		targetingPrecisionGain: number | null
 	}

@@ -24,25 +24,11 @@ describe("GET /api/metrics", () => {
 		expect(response.statusCode).toBe(401)
 	})
 
-	it("rejects an unknown period", async () => {
+	/** The window is fixed, so a stray query string must not change the response. */
+	it("takes no period and ignores one that is passed", async () => {
 		const response = await app.inject({
 			method: "GET",
 			url: "/api/metrics?period=decade",
-			cookies: await authCookie(app),
-		})
-
-		expect(response.statusCode).toBe(400)
-		expect(response.json().message).toBeTruthy()
-	})
-
-	it.each([
-		"week",
-		"month",
-		"year",
-	])("accepts the %s period", async (period) => {
-		const response = await app.inject({
-			method: "GET",
-			url: `/api/metrics?period=${period}`,
 			cookies: await authCookie(app),
 		})
 

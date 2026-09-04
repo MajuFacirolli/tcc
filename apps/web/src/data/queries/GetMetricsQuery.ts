@@ -1,9 +1,6 @@
 import { left, right, type TEither } from "@/core/Either"
 import type { TApplicationError } from "@/core/errors/ApplicationError"
-import type {
-	IGetMetricsQuery,
-	IGetMetricsQueryExecuteParams,
-} from "@/domain/queries/IGetMetricsQuery"
+import type { IGetMetricsQuery } from "@/domain/queries/IGetMetricsQuery"
 import type {
 	IMetricsKindSummaryVM,
 	IMetricsVM,
@@ -15,7 +12,6 @@ import type {
 	IMetricsResponse,
 } from "../models/responses/MetricsResponse"
 import { parseError } from "@/utils/parseError"
-import { stringifyQuery } from "@/utils/stringifyQuery"
 
 /**
  * Mapped by hand rather than through `mapper`: the payload is several levels deep
@@ -30,15 +26,13 @@ function toKindSummaryVM(
 		...kind,
 		conversionRate: kind.conversionRate * 100,
 		eligibleConversionRate: kind.eligibleConversionRate * 100,
-		wastedMessageRate: kind.wastedMessageRate * 100,
 		targetingPrecision: kind.targetingPrecision * 100,
 	}
 }
 
 function toMetricsVM(response: IMetricsResponse): IMetricsVM {
 	return {
-		period: response.period,
-		granularity: response.granularity,
+		windowDays: response.windowDays,
 		range: {
 			from: new Date(response.range.from),
 			to: new Date(response.range.to),
@@ -52,18 +46,13 @@ function toMetricsVM(response: IMetricsResponse): IMetricsVM {
 			bucketStart: new Date(bucket.bucketStart),
 			notifiedCount: bucket.notifiedCount,
 			confirmationsCount: bucket.confirmationsCount,
-			averageResponseTime: bucket.averageResponseTime,
 		})),
 		confirmationsByBloodType: response.confirmationsByBloodType,
 		comparison: {
 			generic: toKindSummaryVM(response.comparison.generic),
 			segmented: toKindSummaryVM(response.comparison.segmented),
-			conversionLift: response.comparison.conversionLift,
 			// A ratio of rates stays a ratio; a difference of rates becomes points.
-			wastedMessageRateReduction:
-				response.comparison.wastedMessageRateReduction === null
-					? null
-					: response.comparison.wastedMessageRateReduction * 100,
+			conversionLift: response.comparison.conversionLift,
 			targetingPrecisionGain:
 				response.comparison.targetingPrecisionGain === null
 					? null
@@ -73,13 +62,9 @@ function toMetricsVM(response: IMetricsResponse): IMetricsVM {
 }
 
 export class GetMetricsQuery implements IGetMetricsQuery {
-	async execute(
-		params: IGetMetricsQueryExecuteParams,
-	): Promise<TEither<TApplicationError, IMetricsVM>> {
+	async execute(): Promise<TEither<TApplicationError, IMetricsVM>> {
 		try {
-			const { data } = await client<IApiResponse<IMetricsResponse>>(
-				`/metrics?${stringifyQuery(params, { skipNulls: true })}`,
-			)
+			const { data } = await client<IApiResponse<IMetricsResponse>>("/metrics")
 
 			return right(toMetricsVM(data.data))
 		} catch (error) {

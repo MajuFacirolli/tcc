@@ -10,6 +10,7 @@ import {
 	formatInteger,
 	formatMultiplier,
 	formatPercent,
+	formatPoints,
 } from "@/presentation/utils/formatMetrics"
 
 interface ISegmentationVerdictProps {
@@ -28,7 +29,8 @@ export const SegmentationVerdict = ({
 	metrics,
 	className,
 }: ISegmentationVerdictProps) => {
-	const { generic, segmented, conversionLift } = metrics.comparison
+	const { generic, segmented, conversionLift, targetingPrecisionGain } =
+		metrics.comparison
 
 	const isComparable = conversionLift !== null
 
@@ -93,10 +95,12 @@ export const SegmentationVerdict = ({
 				<div className="flex items-center justify-between gap-3">
 					<dt className="flex items-center gap-2 text-zinc-500">
 						<Target className="size-3.5 shrink-0" aria-hidden="true" />
-						Precisão do direcionamento
+						Ganho de precisão do direcionamento
 					</dt>
 					<dd className="font-semibold tabular-nums text-zinc-900">
-						{formatPercent(metrics.summary.targetingPrecision)}
+						{targetingPrecisionGain === null
+							? "—"
+							: formatPoints(targetingPrecisionGain)}
 					</dd>
 				</div>
 				<div className="flex items-center justify-between gap-3">

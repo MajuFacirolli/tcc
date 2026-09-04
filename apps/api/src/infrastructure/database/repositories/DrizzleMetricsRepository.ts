@@ -1,4 +1,4 @@
-import { eq, sql } from "drizzle-orm"
+import { and, eq, sql } from "drizzle-orm"
 import { db } from "@infrastructure/database/drizzle/client"
 import {
 	campaigns,
@@ -6,7 +6,6 @@ import {
 	donors,
 } from "@infrastructure/database/drizzle/schema/index"
 import { donorEligibilitySql } from "@infrastructure/database/drizzle/donorEligibility"
-import type { MetricsGranularity } from "@domain/utils/metricsWindow"
 import type {
 	DailyMetricsRow,
 	IMetricsRepository,
@@ -14,17 +13,9 @@ import type {
 	MetricsBloodTypeRow,
 	MetricsBucketRow,
 	MetricsKindRow,
-	MetricsWindowTotals,
 } from "@application/interfaces/IMetricsRepository"
+import type { CampaignKind } from "@domain/value_objects/CampaignKind"
 import { parseUtcTimestamp } from "@/domain/utils/dateUtils"
-
-const GRANULARITY_SQL: Record<
-	MetricsGranularity,
-	{ unit: string; interval: string }
-> = {
-	day: { unit: "day", interval: "1 day" },
-	month: { unit: "month", interval: "1 month" },
-}
 
 const responseTimeSeconds = sql`extract(epoch from (${confirmations.confirmedAt} - ${confirmations.createdAt}))`
 
@@ -43,11 +34,22 @@ function toNullableNumber(value: unknown): number | null {
  * the query builder sends a Date as an ISO string, but `db.execute` hands the Date
  * straight to node-pg, which serializes it in *Node's* local zone — and `::timestamp`
  * then drops the offset, shifting the boundary by the local UTC offset. Formatting the
- * value explicitly removes both the ambiguity and the shift, and keeps the year spine
- * anchored to a real month start so `generate_series` can't step off it.
+ * value explicitly removes both the ambiguity and the shift, and keeps the day spine
+ * anchored to a real midnight so `generate_series` can't step off it.
  */
 function utcLiteral(date: Date) {
 	return sql`${date.toISOString().slice(0, 19).replace("T", " ")}::timestamp`
+}
+
+/**
+ * The one scoping rule the whole metrics page is built on: a campaign belongs whole to
+ * the window it was created in, and so does every notification and confirmation it
+ * produced. Because a confirmation is always issued after its campaign and answered
+ * before now, every timestamp involved falls inside the window too — which is what lets
+ * the daily series and the blood-type breakdown add up to the totals exactly.
+ */
+function campaignCreatedIn({ from, to }: IMetricsRepositoryWindow) {
+	return sql`${campaigns.createdAt} >= ${utcLiteral(from)} and ${campaigns.createdAt} < ${utcLiteral(to)}`
 }
 
 export class DrizzleMetricsRepository implements IMetricsRepository {
@@ -61,85 +63,99 @@ export class DrizzleMetricsRepository implements IMetricsRepository {
 		return toNumber(row?.total)
 	}
 
-	async getWindowTotals(
-		current: IMetricsRepositoryWindow,
-		previous: IMetricsRepositoryWindow,
-	): Promise<{ current: MetricsWindowTotals; previous: MetricsWindowTotals }> {
-		// Both windows in one round trip: `filter` scopes each aggregate independently,
-		// so the scan happens once.
-		const notifiedIn = ({ from, to }: IMetricsRepositoryWindow) =>
-			sql`count(*) filter (where ${confirmations.createdAt} >= ${utcLiteral(from)} and ${confirmations.createdAt} < ${utcLiteral(to)})`
+	/**
+	 * Two aggregates, merged by kind: volumes counted off the notification rows, and
+	 * `eligibleReached` off the campaign rows, which is the only place the audience's
+	 * eligibility at send time was recorded.
+	 */
+	async getComparisonByKind(
+		window: IMetricsRepositoryWindow,
+	): Promise<MetricsKindRow[]> {
+		const createdInWindow = campaignCreatedIn(window)
 
-		const confirmedIn = ({ from, to }: IMetricsRepositoryWindow) =>
-			sql`count(*) filter (where ${confirmations.confirmedAt} >= ${utcLiteral(from)} and ${confirmations.confirmedAt} < ${utcLiteral(to)})`
+		const [campaignTotals, notificationTotals] = await Promise.all([
+			db
+				.select({
+					kind: campaigns.kind,
+					campaignsCount: sql<number>`count(*)`,
+					eligibleReached: sql<number>`coalesce(sum(${campaigns.totalEligibleDonors}), 0)`,
+				})
+				.from(campaigns)
+				.where(createdInWindow)
+				.groupBy(campaigns.kind),
+			db
+				.select({
+					kind: campaigns.kind,
+					notifiedCount: sql<number>`count(*)`,
+					confirmationsCount: sql<number>`count(${confirmations.confirmedAt})`,
+					averageResponseTime: sql<
+						number | null
+					>`avg(${responseTimeSeconds}) filter (where ${confirmations.confirmedAt} is not null)`,
+				})
+				.from(confirmations)
+				.innerJoin(campaigns, eq(campaigns.id, confirmations.campaignId))
+				.where(createdInWindow)
+				.groupBy(campaigns.kind),
+		])
 
-		const avgResponseIn = ({ from, to }: IMetricsRepositoryWindow) =>
-			sql`avg(${responseTimeSeconds}) filter (where ${confirmations.confirmedAt} >= ${utcLiteral(from)} and ${confirmations.confirmedAt} < ${utcLiteral(to)})`
+		const notificationsByKind = new Map(
+			notificationTotals.map((row) => [row.kind, row]),
+		)
 
-		const [row] = await db
-			.select({
-				currentNotified: sql<number>`${notifiedIn(current)}`,
-				currentConfirmed: sql<number>`${confirmedIn(current)}`,
-				currentAverage: sql<number | null>`${avgResponseIn(current)}`,
-				previousNotified: sql<number>`${notifiedIn(previous)}`,
-				previousConfirmed: sql<number>`${confirmedIn(previous)}`,
-				previousAverage: sql<number | null>`${avgResponseIn(previous)}`,
-			})
-			.from(confirmations)
+		return campaignTotals.map((row) => {
+			const notifications = notificationsByKind.get(row.kind as CampaignKind)
 
-		return {
-			current: {
-				notifiedCount: toNumber(row?.currentNotified),
-				confirmationsCount: toNumber(row?.currentConfirmed),
-				averageResponseTime: toNullableNumber(row?.currentAverage),
-			},
-			previous: {
-				notifiedCount: toNumber(row?.previousNotified),
-				confirmationsCount: toNumber(row?.previousConfirmed),
-				averageResponseTime: toNullableNumber(row?.previousAverage),
-			},
-		}
+			return {
+				kind: row.kind,
+				campaignsCount: toNumber(row.campaignsCount),
+				eligibleReached: toNumber(row.eligibleReached),
+				notifiedCount: toNumber(notifications?.notifiedCount),
+				confirmationsCount: toNumber(notifications?.confirmationsCount),
+				averageResponseTime: toNullableNumber(
+					notifications?.averageResponseTime,
+				),
+			}
+		})
 	}
 
 	async getBuckets(
-		{ from, to }: IMetricsRepositoryWindow,
-		granularity: MetricsGranularity,
+		window: IMetricsRepositoryWindow,
 	): Promise<MetricsBucketRow[]> {
-		const { unit, interval } = GRANULARITY_SQL[granularity]
+		const { from, to } = window
+		const createdInWindow = campaignCreatedIn(window)
 
 		// The generate_series spine is what guarantees a continuous x-axis: a plain
-		// GROUP BY would omit empty buckets and the chart would silently skip days.
-		// Each side is pre-aggregated to one row per bucket, so the joins can't fan out.
+		// GROUP BY would omit empty days and the chart would silently skip them.
+		// Each side is pre-aggregated to one row per day, so the joins can't fan out.
 		const result = await db.execute(sql`
 			with spine as (
 				select generate_series(
 					${utcLiteral(from)},
-					${utcLiteral(to)} - interval ${sql.raw(`'${interval}'`)},
-					interval ${sql.raw(`'${interval}'`)}
+					${utcLiteral(to)} - interval '1 day',
+					interval '1 day'
 				) as bucket_start
 			),
 			notified as (
-				select date_trunc(${unit}, ${confirmations.createdAt}) as bucket_start,
+				select date_trunc('day', ${confirmations.createdAt}) as bucket_start,
 					count(*) as total
 				from ${confirmations}
-				where ${confirmations.createdAt} >= ${utcLiteral(from)}
-					and ${confirmations.createdAt} < ${utcLiteral(to)}
+				inner join ${campaigns} on ${campaigns.id} = ${confirmations.campaignId}
+				where ${createdInWindow}
 				group by 1
 			),
 			confirmed as (
-				select date_trunc(${unit}, ${confirmations.confirmedAt}) as bucket_start,
-					count(*) as total,
-					avg(${responseTimeSeconds}) as average_response_time
+				select date_trunc('day', ${confirmations.confirmedAt}) as bucket_start,
+					count(*) as total
 				from ${confirmations}
-				where ${confirmations.confirmedAt} >= ${utcLiteral(from)}
-					and ${confirmations.confirmedAt} < ${utcLiteral(to)}
+				inner join ${campaigns} on ${campaigns.id} = ${confirmations.campaignId}
+				where ${createdInWindow}
+					and ${confirmations.confirmedAt} is not null
 				group by 1
 			)
 			select
 				spine.bucket_start,
 				coalesce(notified.total, 0) as notified_count,
-				coalesce(confirmed.total, 0) as confirmations_count,
-				confirmed.average_response_time
+				coalesce(confirmed.total, 0) as confirmations_count
 			from spine
 			left join notified on notified.bucket_start = spine.bucket_start
 			left join confirmed on confirmed.bucket_start = spine.bucket_start
@@ -152,81 +168,33 @@ export class DrizzleMetricsRepository implements IMetricsRepository {
 				bucketStart: parseUtcTimestamp(bucket.bucket_start),
 				notifiedCount: toNumber(bucket.notified_count),
 				confirmationsCount: toNumber(bucket.confirmations_count),
-				averageResponseTime: toNullableNumber(bucket.average_response_time),
 			}
 		})
 	}
 
 	/** By the donor's blood type: a generic campaign names none of its own. */
-	async getConfirmationsByBloodType({
-		from,
-		to,
-	}: IMetricsRepositoryWindow): Promise<MetricsBloodTypeRow[]> {
+	async getConfirmationsByBloodType(
+		window: IMetricsRepositoryWindow,
+	): Promise<MetricsBloodTypeRow[]> {
 		const rows = await db
 			.select({
 				bloodType: donors.bloodType,
 				confirmations: sql<number>`count(*)`,
 			})
 			.from(confirmations)
+			.innerJoin(campaigns, eq(campaigns.id, confirmations.campaignId))
 			.innerJoin(donors, eq(donors.id, confirmations.donorId))
 			.where(
-				sql`${confirmations.confirmedAt} >= ${utcLiteral(from)} and ${confirmations.confirmedAt} < ${utcLiteral(to)}`,
+				and(
+					campaignCreatedIn(window),
+					sql`${confirmations.confirmedAt} is not null`,
+				),
 			)
 			.groupBy(donors.bloodType)
 
 		return rows.map((row) => ({
 			bloodType: row.bloodType,
 			confirmations: toNumber(row.confirmations),
-		}))
-	}
-
-	/**
-	 * Scoped by `campaigns.createdAt`, so a campaign belongs whole to one window. The
-	 * response-time average has to come from the confirmations themselves, since
-	 * `campaigns.averageResponseTime` is a per-campaign mean that cannot be re-averaged.
-	 */
-	async getComparisonByKind({
-		from,
-		to,
-	}: IMetricsRepositoryWindow): Promise<MetricsKindRow[]> {
-		const createdInWindow = sql`${campaigns.createdAt} >= ${utcLiteral(from)} and ${campaigns.createdAt} < ${utcLiteral(to)}`
-
-		const [totals, responseTimes] = await Promise.all([
-			db
-				.select({
-					kind: campaigns.kind,
-					campaignsCount: sql<number>`count(*)`,
-					notifiedCount: sql<number>`coalesce(sum(${campaigns.notifiedCount}), 0)`,
-					eligibleReached: sql<number>`coalesce(sum(${campaigns.totalEligibleDonors}), 0)`,
-					confirmationsCount: sql<number>`coalesce(sum(${campaigns.intentionConfirmationsCount}), 0)`,
-				})
-				.from(campaigns)
-				.where(createdInWindow)
-				.groupBy(campaigns.kind),
-			db
-				.select({
-					kind: campaigns.kind,
-					averageResponseTime: sql<number | null>`avg(${responseTimeSeconds})`,
-				})
-				.from(confirmations)
-				.innerJoin(campaigns, eq(campaigns.id, confirmations.campaignId))
-				.where(
-					sql`${createdInWindow} and ${confirmations.confirmedAt} is not null`,
-				)
-				.groupBy(campaigns.kind),
-		])
-
-		const averageByKind = new Map(
-			responseTimes.map((row) => [row.kind, row.averageResponseTime]),
-		)
-
-		return totals.map((row) => ({
-			kind: row.kind,
-			campaignsCount: toNumber(row.campaignsCount),
-			notifiedCount: toNumber(row.notifiedCount),
-			eligibleReached: toNumber(row.eligibleReached),
-			confirmationsCount: toNumber(row.confirmationsCount),
-			averageResponseTime: toNullableNumber(averageByKind.get(row.kind)),
 		}))
 	}
 

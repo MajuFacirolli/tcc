@@ -1,61 +1,26 @@
-import type { MetricsPeriod } from "@domain/value_objects/MetricsPeriod"
-import {
-	addDays,
-	addMonths,
-	startOfDay,
-	startOfMonth,
-	YEAR_MONTHS,
-} from "./dateUtils"
+import { addDays, startOfDay } from "./dateUtils"
 
-export type MetricsGranularity = "day" | "month"
+/**
+ * The page reports on one fixed rolling window, so every number on it shares a
+ * period by construction and there is no filter that could put two panels on
+ * different ranges.
+ */
+export const METRICS_WINDOW_DAYS = 30
 
 export interface MetricsWindow {
 	from: Date
+	/** Exclusive, and sitting at the next midnight, so today is included whole. */
 	to: Date
-	previousFrom: Date
-	previousTo: Date
-	granularity: MetricsGranularity
+	/** One bucket per day of the window. */
 	bucketCount: number
 }
 
-const WINDOW_DAYS: Record<Exclude<MetricsPeriod, "year">, number> = {
-	week: 7,
-	month: 30,
-}
-
-export function resolveMetricsWindow(
-	period: MetricsPeriod,
-	now: Date = new Date(),
-): MetricsWindow {
-	if (period === "year") {
-		const to = startOfMonth(addMonths(now, 1))
-		const from = addMonths(to, -YEAR_MONTHS)
-
-		return {
-			from,
-			to,
-			previousFrom: addMonths(from, -YEAR_MONTHS),
-			previousTo: from,
-			granularity: "month",
-			bucketCount: YEAR_MONTHS,
-		}
-	}
-
-	const days = WINDOW_DAYS[period]
+export function resolveMetricsWindow(now: Date = new Date()): MetricsWindow {
 	const to = startOfDay(addDays(now, 1))
-	const from = addDays(to, -days)
 
 	return {
-		from,
+		from: addDays(to, -METRICS_WINDOW_DAYS),
 		to,
-		previousFrom: addDays(from, -days),
-		previousTo: from,
-		granularity: "day",
-		bucketCount: days,
+		bucketCount: METRICS_WINDOW_DAYS,
 	}
-}
-
-export function percentDelta(current: number, previous: number): number {
-	if (previous === 0) return 0
-	return ((current - previous) / previous) * 100
 }
