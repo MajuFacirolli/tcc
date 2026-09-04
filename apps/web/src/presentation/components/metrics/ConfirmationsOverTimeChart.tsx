@@ -8,7 +8,6 @@ import {
 	YAxis,
 } from "recharts"
 import type { IMetricsVM } from "@/domain/viewmodels/MetricsVM"
-import { MetricsPeriodEnum } from "@/presentation/enums/MetricsPeriodEnum"
 import { Card } from "@/presentation/components/ui/Card"
 import {
 	formatBucketLabel,
@@ -27,19 +26,16 @@ export const ConfirmationsOverTimeChart = ({
 	className,
 }: IConfirmationsOverTimeChartProps) => {
 	const data = metrics.series.map((bucket) => ({
-		label: formatBucketLabel(bucket.bucketStart, metrics.period),
+		label: formatBucketLabel(bucket.bucketStart),
 		confirmations: bucket.confirmationsCount,
 	}))
-
-	// 30 daily ticks collide; show every third one and let the tooltip carry the rest.
-	const tickInterval = metrics.period === MetricsPeriodEnum.MONTH ? 2 : 0
 
 	return (
 		<Card className={className}>
 			<div className="flex flex-col gap-1">
 				<Card.Title>Confirmações ao longo do tempo</Card.Title>
 				<Card.Description>
-					Intenções de doação confirmadas por período.
+					Intenções de doação confirmadas por dia.
 				</Card.Description>
 			</div>
 
@@ -79,7 +75,8 @@ export const ConfirmationsOverTimeChart = ({
 							dataKey="label"
 							tickLine={false}
 							axisLine={false}
-							interval={tickInterval}
+							/* 30 daily ticks collide; show every third and let the tooltip carry the rest. */
+							interval={2}
 							tick={{ fill: "var(--chart-axis)", fontSize: 12 }}
 						/>
 						<YAxis
@@ -114,7 +111,7 @@ export const ConfirmationsOverTimeChart = ({
 
 				<ChartDataTable
 					caption="Confirmações ao longo do tempo"
-					columns={["Período", "Confirmações"]}
+					columns={["Dia", "Confirmações"]}
 					rows={data.map((point) => ({
 						label: point.label,
 						value: formatInteger(point.confirmations),

@@ -1,22 +1,11 @@
-import { METRICS_PERIODS } from "@/domain/value_objects/MetricsPeriod"
 import { z } from "zod"
 import { bloodTypeSchema } from "./bloodType"
 import { campaignKindSchema } from "./campaigns"
-
-export const metricsPeriodSchema = z.enum(
-	METRICS_PERIODS,
-	"Informe um período válido",
-)
-
-export const metricsQuerySchema = z.object({
-	period: metricsPeriodSchema.default("week"),
-})
 
 const metricsBucketSchema = z.object({
 	bucketStart: z.iso.datetime(),
 	notifiedCount: z.number(),
 	confirmationsCount: z.number(),
-	averageResponseTime: z.number().nullable(),
 })
 
 const metricsKindSummarySchema = z.object({
@@ -27,33 +16,25 @@ const metricsKindSummarySchema = z.object({
 	confirmationsCount: z.number(),
 	conversionRate: z.number(),
 	eligibleConversionRate: z.number(),
-	wastedMessages: z.number(),
-	wastedMessageRate: z.number(),
 	targetingPrecision: z.number(),
 	averageResponseTime: z.number(),
 })
 
 export const metricsSchema = z.object({
-	period: metricsPeriodSchema,
-	granularity: z.enum(["day", "month"]),
+	windowDays: z.number(),
 	range: z.object({
 		from: z.iso.datetime(),
 		to: z.iso.datetime(),
 	}),
 	summary: z.object({
 		eligibleDonorsPool: z.number(),
+		campaignsCount: z.number(),
 		notifiedCount: z.number(),
+		eligibleReached: z.number(),
 		confirmationsCount: z.number(),
 		conversionRate: z.number(),
-		averageResponseTime: z.number(),
-		eligibleReached: z.number(),
-		campaignNotifiedCount: z.number(),
 		targetingPrecision: z.number(),
-		deltas: z.object({
-			notifiedCount: z.number(),
-			confirmationsCount: z.number(),
-			averageResponseTime: z.number(),
-		}),
+		averageResponseTime: z.number(),
 	}),
 	series: z.array(metricsBucketSchema),
 	confirmationsByBloodType: z.array(
@@ -66,7 +47,6 @@ export const metricsSchema = z.object({
 		generic: metricsKindSummarySchema,
 		segmented: metricsKindSummarySchema,
 		conversionLift: z.number().nullable(),
-		wastedMessageRateReduction: z.number().nullable(),
 		targetingPrecisionGain: z.number().nullable(),
 	}),
 })

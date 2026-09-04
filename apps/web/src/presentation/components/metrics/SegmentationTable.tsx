@@ -67,11 +67,6 @@ const ROWS: Row[] = [
 		pick: (arm) => arm.confirmationsCount,
 	},
 	{
-		label: "Mensagens desperdiçadas",
-		format: (value) => formatPercent(value),
-		pick: (arm) => arm.wastedMessageRate,
-	},
-	{
 		label: "Conversão entre aptos",
 		hint: "confirmações ÷ envios a elegíveis",
 		format: (value) => formatPercent(value),
@@ -103,7 +98,7 @@ export const SegmentationTable = ({
 			</div>
 
 			<div className="overflow-x-auto">
-				<table className="w-full max-w-3xl min-w-lg text-sm">
+				<table className="w-full min-w-lg text-sm">
 					<thead>
 						<tr>
 							<th className="w-3/5" />
