@@ -8,7 +8,6 @@ import {
 	YAxis,
 } from "recharts"
 import type { IMetricsVM } from "@/domain/viewmodels/MetricsVM"
-import { MetricsPeriodEnum } from "@/presentation/enums/MetricsPeriodEnum"
 import { Card } from "@/presentation/components/ui/Card"
 import {
 	formatBucketLabel,
@@ -17,29 +16,32 @@ import {
 import { ChartDataTable } from "../ui/ChartDataTable"
 import { ChartTooltip } from "../ui/ChartTooltip"
 
-interface IConfirmationsOverTimeChartProps {
+interface IIntentionsOverTimeChartProps {
 	metrics: IMetricsVM
 	className?: string
 }
 
-export const ConfirmationsOverTimeChart = ({
+/**
+ * Intentions on the day the notification went out, not the day the answer arrived, so
+ * a spike names the send that caused it. Notification volume is deliberately left off
+ * — it runs an order of magnitude higher and would need a second scale to share this
+ * axis; the campaign table carries it instead.
+ */
+export const IntentionsOverTimeChart = ({
 	metrics,
 	className,
-}: IConfirmationsOverTimeChartProps) => {
+}: IIntentionsOverTimeChartProps) => {
 	const data = metrics.series.map((bucket) => ({
-		label: formatBucketLabel(bucket.bucketStart, metrics.period),
-		confirmations: bucket.confirmationsCount,
+		label: formatBucketLabel(bucket.bucketStart),
+		value: bucket.intentions,
 	}))
-
-	// 30 daily ticks collide; show every third one and let the tooltip carry the rest.
-	const tickInterval = metrics.period === MetricsPeriodEnum.MONTH ? 2 : 0
 
 	return (
 		<Card className={className}>
 			<div className="flex flex-col gap-1">
-				<Card.Title>Confirmações ao longo do tempo</Card.Title>
+				<Card.Title>Intenções por dia</Card.Title>
 				<Card.Description>
-					Intenções de doação confirmadas por período.
+					Atribuídas ao dia do envio que as gerou.
 				</Card.Description>
 			</div>
 
@@ -50,13 +52,7 @@ export const ConfirmationsOverTimeChart = ({
 						margin={{ top: 12, right: 20, bottom: 0, left: 8 }}
 					>
 						<defs>
-							<linearGradient
-								id="confirmationsFill"
-								x1="0"
-								y1="0"
-								x2="0"
-								y2="1"
-							>
+							<linearGradient id="intentionsFill" x1="0" y1="0" x2="0" y2="1">
 								<stop
 									offset="0%"
 									stopColor="var(--chart-primary)"
@@ -79,7 +75,8 @@ export const ConfirmationsOverTimeChart = ({
 							dataKey="label"
 							tickLine={false}
 							axisLine={false}
-							interval={tickInterval}
+							/* 30 daily ticks collide; show every third and let the tooltip carry the rest. */
+							interval={2}
 							tick={{ fill: "var(--chart-axis)", fontSize: 12 }}
 						/>
 						<YAxis
@@ -92,14 +89,14 @@ export const ConfirmationsOverTimeChart = ({
 						/>
 						<Tooltip
 							cursor={{ stroke: "var(--chart-axis)", strokeWidth: 1 }}
-							content={<ChartTooltip unit="confirmações" />}
+							content={<ChartTooltip unit="intenções" />}
 						/>
 						<Area
 							type="monotone"
-							dataKey="confirmations"
+							dataKey="value"
 							stroke="var(--chart-primary)"
 							strokeWidth={2}
-							fill="url(#confirmationsFill)"
+							fill="url(#intentionsFill)"
 							dot={false}
 							isAnimationActive={false}
 							activeDot={{
@@ -113,11 +110,11 @@ export const ConfirmationsOverTimeChart = ({
 				</ResponsiveContainer>
 
 				<ChartDataTable
-					caption="Confirmações ao longo do tempo"
-					columns={["Período", "Confirmações"]}
+					caption="Intenções por dia de envio"
+					columns={["Dia", "Intenções"]}
 					rows={data.map((point) => ({
 						label: point.label,
-						value: formatInteger(point.confirmations),
+						value: formatInteger(point.value),
 					}))}
 				/>
 			</div>
