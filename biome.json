@@ -1,5 +1,15 @@
 {
 	"$schema": "https://biomejs.dev/schemas/2.4.15/schema.json",
+	"files": {
+		"includes": [
+			"**",
+			"!**/dist/**",
+			"!**/playwright-report/**",
+			"!**/test-results/**",
+			"!**/routeTree.gen.ts",
+			"!**/.auth/**"
+		]
+	},
 	"linter": {
 		"enabled": true,
 		"rules": {
@@ -23,5 +33,11 @@
 			"tailwindDirectives": true
 		}
 	},
-	"assist": { "actions": { "source": { "organizeImports": "off" } } }
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": "off"
+			}
+		}
+	}
 }
