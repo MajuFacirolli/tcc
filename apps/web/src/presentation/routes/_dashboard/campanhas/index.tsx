@@ -12,19 +12,19 @@ export const Route = createFileRoute("/_dashboard/campanhas/")({
 function RouteComponent() {
 	return (
 		<div className="max-w-7xl mx-auto px-6 py-8 flex flex-col gap-10">
-			<Heading>
-				<Heading.Title>Campanhas</Heading.Title>
-				<div className="flex items-center justify-between gap-2">
+			<Heading className="w-full flex md:flex-row md:items-center justify-between">
+				<div>
+					<Heading.Title>Campanhas</Heading.Title>
 					<Heading.Description>
 						Histórico de comunicações ativas e enviadas
 					</Heading.Description>
-					<Button size="default" asChild>
-						<Link to={PagesEnum.NEW_CAMPAIGN} className="relative group">
-							<Plus className="size-4.5" />
-							Nova campanha
-						</Link>
-					</Button>
 				</div>
+				<Button size="default" asChild>
+					<Link to={PagesEnum.NEW_CAMPAIGN} className="relative group">
+						<Plus className="size-4.5" />
+						Nova campanha
+					</Link>
+				</Button>
 			</Heading>
 
 			<CampaignsList />
