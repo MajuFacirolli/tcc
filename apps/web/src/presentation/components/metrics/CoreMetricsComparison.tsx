@@ -21,6 +21,12 @@ import {
 /** Baseline first, so the comparison reads left to right, top to bottom. */
 const ARMS = [CampaignKindEnum.GENERIC, CampaignKindEnum.SEGMENTED] as const
 
+/**
+ * A measure states a gap between the arms only when the two sides are commensurable.
+ * The pair is all-or-nothing: a gap cannot be judged good or bad without knowing which
+ * direction is the better one, so `gap` and `higherIsBetter` travel together or not
+ * at all.
+ */
 type Measure = {
 	key: string
 	label: string
@@ -29,11 +35,15 @@ type Measure = {
 	Icon: React.ForwardRefExoticComponent<LucideProps>
 	pick: (arm: IMetricsKindSummaryVM) => number
 	format: (value: number) => string
-	/** Whether a larger value is the better outcome — false for response time. */
-	higherIsBetter: boolean
-	/** How the gap between the arms is stated. */
-	gap: "points" | "ratio" | "duration"
-}
+} & (
+	| {
+			/** How the gap between the arms is stated. */
+			gap: "points" | "duration"
+			/** Whether a larger value is the better outcome — false for response time. */
+			higherIsBetter: boolean
+	  }
+	| { gap?: never; higherIsBetter?: never }
+)
 
 /**
  * The four metrics the comparison is built on. Each is shown per arm rather than
@@ -62,14 +72,15 @@ const MEASURES: Measure[] = [
 		gap: "duration",
 	},
 	{
+		// No gap: the arms send to audiences of different sizes on purpose, so the
+		// distance between two raw counts describes the audiences rather than the
+		// strategies. What that reach was worth is the next card's question.
 		key: "eligibleReached",
 		label: "Envios a doadores elegíveis",
 		hint: "e-mails que chegaram a quem podia doar",
 		Icon: Users,
 		pick: (arm) => arm.eligibleReached,
 		format: formatInteger,
-		higherIsBetter: true,
-		gap: "ratio",
 	},
 	{
 		key: "targetingPrecision",
@@ -83,18 +94,17 @@ const MEASURES: Measure[] = [
 	},
 ]
 
-function describeGap(measure: Measure, generic: number, segmented: number) {
-	if (measure.gap === "points") return formatPoints(segmented - generic)
+function describeGap(
+	gap: "points" | "duration",
+	generic: number,
+	segmented: number,
+) {
+	if (gap === "points") return formatPoints(segmented - generic)
 
-	if (measure.gap === "duration") {
-		const difference = Math.abs(segmented - generic)
-		if (difference === 0) return null
-		return `${segmented < generic ? "−" : "+"}${formatResponseTime(difference)}`
-	}
+	const difference = Math.abs(segmented - generic)
+	if (difference === 0) return null
 
-	// A count comparison only means something as a share of the larger side.
-	if (generic === 0) return null
-	return formatPercent(((segmented - generic) / generic) * 100)
+	return `${segmented < generic ? "−" : "+"}${formatResponseTime(difference)}`
 }
 
 interface IMeasureCardProps {
@@ -108,7 +118,8 @@ const MeasureCard = ({ measure, byKind }: IMeasureCardProps) => {
 
 	// Bars are scaled against the larger arm so the two are directly comparable.
 	const largest = Math.max(generic, segmented)
-	const gap = describeGap(measure, generic, segmented)
+
+	const gap = measure.gap ? describeGap(measure.gap, generic, segmented) : null
 
 	const isImprovement = measure.higherIsBetter
 		? segmented > generic
