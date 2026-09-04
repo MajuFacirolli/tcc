@@ -1,12 +1,10 @@
 import { describe, expect, it, vi } from "vitest"
 import { CreateCampaignUseCase } from "@application/use_cases/campaigns/CreateCampaign"
-import type { IBloodBankRepository } from "@application/interfaces/IBloodBankRepository"
 import type { ICampaignsRepository } from "@application/interfaces/ICampaignsRepository"
 import type { IDonorsRepository } from "@application/interfaces/IDonorsRepository"
 import type { IJobQueue } from "@application/interfaces/IJobQueue"
 import type { CreateCampaignsInput } from "@/application/dtos/campaigns/CreateCampaignInput"
 import type { SendCampaignEmailInput } from "@/application/dtos/campaigns/SendCampaignEmailInput"
-import { BloodBank } from "@domain/entities/BloodBank"
 import { Donor } from "@domain/entities/Donor"
 import { ELIGIBILITY_DAYS } from "@domain/rules/donorEligibility"
 import { MS_PER_DAY } from "@domain/utils/dateUtils"
@@ -78,22 +76,14 @@ function buildUseCase() {
 	} satisfies IDonorsRepository
 
 	const jobQueue = {
-		enqueue: vi.fn().mockResolvedValue(undefined),
 		enqueueBulk: vi.fn().mockResolvedValue(undefined),
 	} as unknown as IJobQueue
-
-	const bloodBankRepository = {
-		list: vi
-			.fn()
-			.mockResolvedValue([new BloodBank("O+", 100, 1000, new Date())]),
-	} satisfies IBloodBankRepository
 
 	return {
 		useCase: new CreateCampaignUseCase(
 			campaignsRepository,
 			donorsRepository,
 			jobQueue,
-			bloodBankRepository,
 		),
 		campaignsRepository,
 		donorsRepository,
@@ -169,34 +159,14 @@ describe("CreateCampaignUseCase", () => {
 			)
 		})
 
-		it("stores no blood type and carries the bank's worst urgency", async () => {
-			const { useCase, campaignsRepository, jobQueue } = buildUseCase()
+		it("stores no blood type", async () => {
+			const { useCase, campaignsRepository } = buildUseCase()
 
 			await useCase.execute({ ...BASE, kind: "generic" })
 
 			expect(campaignsRepository.create).toHaveBeenCalledWith(
 				expect.objectContaining({ bloodType: null }),
 			)
-			expect(enqueuedJobs(jobQueue)[0].data.campaignBloodType).toBeNull()
-			expect(enqueuedJobs(jobQueue)[0].data.stockStatus).toBe("critical")
-		})
-
-		it("tells the worker each donor's real eligibility", async () => {
-			const { useCase, jobQueue } = buildUseCase()
-
-			await useCase.execute({ ...BASE, kind: "generic" })
-
-			expect(
-				enqueuedJobs(jobQueue).map((job) => [
-					job.data.donorId,
-					job.data.donorIsEligible,
-				]),
-			).toEqual([
-				[MATCHING_ELIGIBLE.id, true],
-				[MATCHING_WAITING.id, false],
-				[OTHER_ELIGIBLE.id, true],
-				[OTHER_WAITING.id, false],
-			])
 		})
 	})
 
