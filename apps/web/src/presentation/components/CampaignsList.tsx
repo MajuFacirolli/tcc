@@ -3,7 +3,7 @@ import { formatDate } from "@/utils/formatDate"
 import { useCampaigns } from "../hooks/useCampaigns"
 import { useCampaignsFilters } from "../hooks/useCampaignsFilters"
 import { CAMPAIGN_STATUS_LABELS } from "../data/campaignStatusLabels"
-import { CampaignDetailsDialog } from "./CampaignDetailsDialog"
+import { CampaignDetailsDrawer } from "./CampaignDetailsDrawer"
 import { CampaignKindBadge } from "./CampaignKindBadge"
 import { CampaignsFilters } from "./CampaignsFilters"
 import { Button } from "./ui/Button"
@@ -107,7 +107,7 @@ export const CampaignsList = () => {
 										bloodType={campaign.bloodType}
 										showIcon={false}
 									/>
-									<CampaignDetailsDialog campaign={campaign}>
+									<CampaignDetailsDrawer campaign={campaign}>
 										<button
 											type="button"
 											aria-label={`Ver detalhes da campanha ${campaign.title}`}
@@ -115,7 +115,7 @@ export const CampaignsList = () => {
 										>
 											<ArrowUpRight className="size-7" />
 										</button>
-									</CampaignDetailsDialog>
+									</CampaignDetailsDrawer>
 								</span>
 							</div>
 
