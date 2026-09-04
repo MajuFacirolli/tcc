@@ -40,6 +40,7 @@ export const SignOut = () => {
 	return (
 		<Dialog>
 			<DialogTrigger
+				aria-label="Sair"
 				className={twMerge(
 					"group flex items-center justify-center gap-3 p-2.5 rounded-lg text-sm font-medium text-zinc-500 cursor-pointer",
 					"hover:text-red-800 hover:bg-red-50 transition-colors duration-150",

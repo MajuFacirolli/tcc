@@ -26,6 +26,10 @@ export const Sidebar = ({ profile }: ISidebarProps) => {
 					<Link
 						key={item.path}
 						to={item.path}
+						/* The tooltip is `invisible` until hover, so it sits outside the
+						   accessibility tree and names nothing. Without this the link
+						   reads as a bare destination to a screen reader. */
+						aria-label={item.label}
 						className={twMerge(
 							"group flex items-center justify-center gap-3 p-2.5 rounded-lg text-sm font-medium text-zinc-500",
 							"hover:text-red-800 hover:bg-red-50 transition-colors duration-150",
@@ -40,6 +44,7 @@ export const Sidebar = ({ profile }: ISidebarProps) => {
 			<div className="border-l border-zinc-200 ml-3 pl-3 flex flex-row items-center gap-1 lg:border-l-0 lg:border-t lg:ml-0 lg:pl-0 lg:mt-3 lg:pt-3 lg:flex-col lg:gap-2">
 				<Link
 					to={PagesEnum.HELP}
+					aria-label="Ajuda"
 					className={twMerge(
 						"group flex items-center justify-center gap-3 p-2.5 rounded-lg text-sm font-medium text-zinc-500",
 						"hover:text-red-800 hover:bg-red-50 transition-colors duration-150",
