@@ -65,9 +65,7 @@ export class DrizzleMetricsRepository implements IMetricsRepository {
 		return toNumber(row?.total)
 	}
 
-	async getTotals(
-		window: IMetricsRepositoryWindow,
-	): Promise<MetricsTotalsRow> {
+	async getTotals(window: IMetricsRepositoryWindow): Promise<MetricsTotalsRow> {
 		const [row] = await db
 			.select({
 				notifications: sql<number>`count(*)`,
