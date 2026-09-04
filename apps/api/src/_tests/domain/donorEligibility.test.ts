@@ -38,6 +38,37 @@ describe("isDonorEligible", () => {
 		expect(isDonorEligible("female", sixtyDaysAgo, NOW)).toBe(false)
 		expect(ELIGIBILITY_DAYS.female).toBeGreaterThan(ELIGIBILITY_DAYS.male)
 	})
+
+	/**
+	 * The intervals are the rule the whole system is judged on, so they are pinned to
+	 * their literal values. A silent change to either would otherwise only surface as a
+	 * shifted boundary somewhere else.
+	 */
+	it("holds the regulated intervals at 60 days for men and 90 for women", () => {
+		expect(ELIGIBILITY_DAYS.male).toBe(60)
+		expect(ELIGIBILITY_DAYS.female).toBe(90)
+	})
+
+	it("counts whole days only, so a partial day never completes the interval", () => {
+		const almostSixty = new Date(NOW.getTime() - (60 * MS_PER_DAY - 1))
+		const justOverSixty = new Date(NOW.getTime() - (60 * MS_PER_DAY + 1))
+
+		expect(isDonorEligible("male", almostSixty, NOW)).toBe(false)
+		expect(isDonorEligible("male", justOverSixty, NOW)).toBe(true)
+	})
+
+	it("keeps a donor who donated today inside the interval", () => {
+		expect(isDonorEligible("male", NOW, NOW)).toBe(false)
+		expect(isDonorEligible("female", NOW, NOW)).toBe(false)
+	})
+
+	/** A donation dated ahead of the clock cannot have completed any interval. */
+	it("rejects a donation dated in the future", () => {
+		const tomorrow = new Date(NOW.getTime() + MS_PER_DAY)
+
+		expect(isDonorEligible("male", tomorrow, NOW)).toBe(false)
+		expect(isDonorEligible("female", tomorrow, NOW)).toBe(false)
+	})
 })
 
 describe("Donor.isEligible", () => {
