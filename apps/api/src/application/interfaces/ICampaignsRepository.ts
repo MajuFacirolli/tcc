@@ -1,21 +1,12 @@
-import type { BloodType } from "@domain/value_objects/BloodType"
-import type { CampaignStatus } from "@domain/value_objects/CampaignStatus"
-import type { Campaign, CampaignSummary } from "@domain/entities/Campaign"
-
-export type IGetCampaignsParams = {
-	status?: CampaignStatus
-	bloodType?: BloodType
-}
-
-export type ICreateCampaignParams = {
-	title: string
-	message: string
-	bloodType: BloodType
-}
+import type { CampaignSummary } from "@domain/entities/Campaign"
+import type { ListCampaignsInput } from "@/application/dtos/campaigns/ListCampaignsInput"
+import type { ListCampaignsOutput } from "../dtos/campaigns/ListCampaignsOutput"
+import type { CreateCampaignsInput } from "../dtos/campaigns/CreateCampaignInput"
 
 export interface ICampaignsRepository {
-	list(params?: IGetCampaignsParams): Promise<Array<Campaign>>
+	list(params: ListCampaignsInput): Promise<ListCampaignsOutput>
 	listSummary(): Promise<Array<CampaignSummary>>
-	get(id: string): Promise<Campaign>
-	create(data: ICreateCampaignParams): Promise<string>
+	create(data: CreateCampaignsInput): Promise<string>
+	incrementNotifiedCount(campaignId: string): Promise<void>
+	closeCampaign(campaignId: string): Promise<void>
 }

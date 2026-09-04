@@ -1,4 +1,5 @@
 import type { FastifyInstance } from "fastify"
+import { hasZodFastifySchemaValidationErrors } from "fastify-type-provider-zod"
 import { ForbiddenError } from "@/core/errors/ForbiddenError"
 import { LockedError } from "@/core/errors/LockedError"
 import { NotAcceptableError } from "@/core/errors/NotAcceptable"
@@ -6,10 +7,28 @@ import { NotFoundError } from "@/core/errors/NotFoundError"
 import { UnauthorizedError } from "@/core/errors/UnauthorizedError"
 import { ValidationError } from "@/core/errors/ValidationError"
 import HttpStatusCode from "@/core/StatusCodesEnum"
+import { ManyRequestsError } from "@/core/errors/ManyRequestsError"
+import { ConflictError } from "@/core/errors/ConflictError"
 
-export async function errorHandler(app: FastifyInstance) {
+export function errorHandler(app: FastifyInstance) {
 	app.setErrorHandler(async (error: Error, _request, reply) => {
 		const fastifyError = error as Error & { validation?: unknown[] }
+
+		if (hasZodFastifySchemaValidationErrors(error)) {
+			const errors = Object.fromEntries(
+				error.validation.map((issue) => [
+					issue.instancePath.replace(/^\//, ""),
+					issue.message,
+				]),
+			)
+
+			return reply.status(HttpStatusCode.BAD_REQUEST).send({
+				data: null,
+				status: HttpStatusCode.BAD_REQUEST,
+				message: error.message,
+				errors,
+			})
+		}
 
 		if (fastifyError.validation) {
 			return reply.status(HttpStatusCode.BAD_REQUEST).send({
@@ -44,10 +63,15 @@ export async function errorHandler(app: FastifyInstance) {
 		}
 
 		if (error instanceof ValidationError) {
+			const errors = Object.fromEntries(
+				error.errors.map(({ parameter, error }) => [parameter, error]),
+			)
+
 			return reply.status(HttpStatusCode.UNPROCESSABLE_ENTITY).send({
 				data: null,
 				status: HttpStatusCode.UNPROCESSABLE_ENTITY,
 				message: error.message,
+				errors,
 			})
 		}
 
@@ -67,13 +91,27 @@ export async function errorHandler(app: FastifyInstance) {
 			})
 		}
 
-		app.log.error(error)
-		return reply
-			.status(HttpStatusCode.INTERNAL_SERVER_ERROR)
-			.send({
+		if (error instanceof ManyRequestsError) {
+			return reply.status(HttpStatusCode.TOO_MANY_REQUESTS).send({
 				data: null,
-				status: HttpStatusCode.INTERNAL_SERVER_ERROR,
-				message: "Internal Server Error",
+				status: HttpStatusCode.TOO_MANY_REQUESTS,
+				message: error.message,
 			})
+		}
+
+		if (error instanceof ConflictError) {
+			return reply.status(HttpStatusCode.CONFLICT).send({
+				data: null,
+				status: HttpStatusCode.CONFLICT,
+				message: error.message,
+			})
+		}
+
+		app.log.error(error)
+		return reply.status(HttpStatusCode.INTERNAL_SERVER_ERROR).send({
+			data: null,
+			status: HttpStatusCode.INTERNAL_SERVER_ERROR,
+			message: "Internal Server Error",
+		})
 	})
 }

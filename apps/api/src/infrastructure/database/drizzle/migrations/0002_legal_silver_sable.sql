@@ -1,0 +1,1 @@
+ALTER TABLE "campaigns" ALTER COLUMN "blood_type" DROP NOT NULL;

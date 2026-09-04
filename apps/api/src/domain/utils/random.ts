@@ -1,0 +1,26 @@
+/**
+ * Deterministic pseudo-randomness.
+ *
+ * The donor seed needs draws that are *generated* without being *random*: it must
+ * produce the same thousand rows on every run, so the same seed has to yield the same
+ * sequence.
+ *
+ * Nothing here guards a secret. `randomBytes` is what issues confirmation tokens;
+ * this is only for reproducible data.
+ */
+
+/**
+ * mulberry32: a small, fast PRNG that is fully determined by its seed. The point is
+ * reproducibility, not cryptographic quality.
+ */
+export function createRandom(seed: number): () => number {
+	let state = seed >>> 0
+
+	return () => {
+		state = (state + 0x6d2b79f5) >>> 0
+		let t = state
+		t = Math.imul(t ^ (t >>> 15), t | 1)
+		t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
+		return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+	}
+}

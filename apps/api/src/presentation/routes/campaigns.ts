@@ -5,19 +5,24 @@ import { TYPES } from "@/container/types"
 import {
 	apiErrorSchema,
 	apiResponseSchema,
+	pagedListSchema,
 } from "@presentation/schemas/apiResponse"
-import type { GetCampaignsController } from "@presentation/controllers/GetCampaignsController"
-import type { GetCampaignsSummaryController } from "@presentation/controllers/GetCampaignsSummaryController"
-import type { GetCampaignController } from "@presentation/controllers/GetCampaignController"
-import type { CreateCampaignController } from "@presentation/controllers/CreateCampaignController"
+import { paginationQuerySchema } from "@presentation/schemas/pagination"
+import type { GetCampaignsController } from "@/presentation/controllers/campaigns/GetCampaigns"
+import type { GetCampaignsSummaryController } from "@/presentation/controllers/campaigns/GetCampaignsSummary"
+import type { CreateCampaignController } from "@/presentation/controllers/campaigns/CreateCampaign"
 import {
+	campaignKindSchema,
 	campaignSchema,
 	campaignStatusSchema,
 	campaignSummarySchema,
+	createCampaignBodySchema,
 } from "../schemas/campaigns"
 import { bloodTypeSchema } from "../schemas/bloodType"
 
 export const campaigns: FastifyPluginAsyncZod = async (app) => {
+	app.addHook("onRequest", app.authenticate)
+
 	const getCampaignsController = container.get<GetCampaignsController>(
 		TYPES.GetCampaignsController,
 	)
@@ -25,9 +30,6 @@ export const campaigns: FastifyPluginAsyncZod = async (app) => {
 		container.get<GetCampaignsSummaryController>(
 			TYPES.GetCampaignsSummaryController,
 		)
-	const getCampaignController = container.get<GetCampaignController>(
-		TYPES.GetCampaignController,
-	)
 	const createCampaignController = container.get<CreateCampaignController>(
 		TYPES.CreateCampaignController,
 	)
@@ -38,12 +40,16 @@ export const campaigns: FastifyPluginAsyncZod = async (app) => {
 			schema: {
 				summary: "List campaigns",
 				tags: ["Campaigns"],
-				querystring: z.object({
+				security: [{ cookieAuth: [] }],
+				querystring: paginationQuerySchema.extend({
 					status: campaignStatusSchema.optional(),
 					bloodType: bloodTypeSchema.optional(),
+					kind: campaignKindSchema.optional(),
 				}),
 				response: {
-					200: apiResponseSchema(z.array(campaignSchema)),
+					200: apiResponseSchema(pagedListSchema(campaignSchema)),
+					400: apiErrorSchema,
+					401: apiErrorSchema,
 					404: apiErrorSchema,
 				},
 			},
@@ -57,29 +63,15 @@ export const campaigns: FastifyPluginAsyncZod = async (app) => {
 			schema: {
 				summary: "List recent campaigns",
 				tags: ["Campaigns"],
+				security: [{ cookieAuth: [] }],
 				response: {
 					200: apiResponseSchema(z.array(campaignSummarySchema)),
+					401: apiErrorSchema,
 					404: apiErrorSchema,
 				},
 			},
 		},
 		(req, rep) => getCampaignsSummaryController.handle(req, rep),
-	)
-
-	app.get(
-		"/api/campaigns/:id",
-		{
-			schema: {
-				summary: "Get campaign",
-				tags: ["Campaigns"],
-				params: z.object({ id: z.string() }),
-				response: {
-					200: apiResponseSchema(campaignSchema),
-					404: apiErrorSchema,
-				},
-			},
-		},
-		(req, rep) => getCampaignController.handle(req, rep),
 	)
 
 	app.post(
@@ -88,13 +80,12 @@ export const campaigns: FastifyPluginAsyncZod = async (app) => {
 			schema: {
 				summary: "Create campaign",
 				tags: ["Campaigns"],
-				body: z.object({
-					title: z.string(),
-					message: z.string(),
-					bloodType: bloodTypeSchema,
-				}),
+				security: [{ cookieAuth: [] }],
+				body: createCampaignBodySchema,
 				response: {
 					201: apiResponseSchema(z.string()),
+					400: apiErrorSchema,
+					401: apiErrorSchema,
 					404: apiErrorSchema,
 				},
 			},

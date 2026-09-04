@@ -7,10 +7,13 @@
 		"dev": "turbo dev",
 		"build": "turbo build",
 		"lint": "turbo lint",
-		"format": "biome format --write ."
+		"format": "biome format --write .",
+		"test": "pnpm --filter api test",
+		"test:integration": "pnpm --filter api test:integration",
+		"test:e2e": "pnpm --filter e2e test"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.4.15",
+		"@biomejs/biome": "^2.4.15",
 		"turbo": "latest"
 	}
 }
