@@ -49,23 +49,19 @@ function RouteComponent() {
 				<div className="flex flex-col gap-10">
 					<MetricsHeadline metrics={metrics} />
 
-					<div className="grid grid-cols-1 gap-4 md:grid-cols-12">
-						<StockDemandPanel
-							metrics={metrics}
-							className="col-span-12 min-w-0 lg:col-span-7"
-						/>
-						<RetentionPanel
-							metrics={metrics}
-							className="col-span-12 min-w-0 lg:col-span-5"
-						/>
-						<IntentionsOverTimeChart
-							metrics={metrics}
-							className="col-span-12 min-w-0 lg:col-span-7"
-						/>
-						<ResponseSpeedChart
-							metrics={metrics}
-							className="col-span-12 min-w-0 lg:col-span-5"
-						/>
+					{/* Two stacked columns rather than a 2x2: the retention card is
+					    short, so the speed chart rides directly under it instead of
+					    waiting for the next grid row to start. */}
+					<div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
+						<div className="flex min-w-0 flex-col gap-4 lg:col-span-7">
+							<StockDemandPanel metrics={metrics} />
+							<IntentionsOverTimeChart metrics={metrics} />
+						</div>
+
+						<div className="flex min-w-0 flex-col gap-4 lg:col-span-5">
+							<RetentionPanel metrics={metrics} className="h-fit" />
+							<ResponseSpeedChart metrics={metrics} />
+						</div>
 					</div>
 
 					<section className="flex flex-col gap-6">
