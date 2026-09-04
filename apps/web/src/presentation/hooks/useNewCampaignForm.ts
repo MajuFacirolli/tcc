@@ -53,12 +53,6 @@ export const useNewCampaignForm = ({ bloodType }: IUseNewCampaignFormProps) => {
 
 	const navigate = useNavigate()
 
-	/**
-	 * Arriving with a blood type in the URL — from the blood bank shortcuts — is a
-	 * request to target that type, so the campaign is segmented by definition. The form
-	 * control outlives the route, so the kind is forced rather than merely defaulted:
-	 * a "generic" left over from a previous visit would otherwise drop the blood type.
-	 */
 	useEffect(() => {
 		if (!bloodType) return
 
