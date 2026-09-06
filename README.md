@@ -421,31 +421,6 @@ pnpm test:integration   # exige postgres e redis de pé
 pnpm test:e2e           # Playwright: sobe api + web + worker próprios
 ```
 
-| Camada | Onde | Banco | Redis |
-| --- | --- | --- | --- |
-| unitários / rotas | `apps/api/src/_tests/{domain,application,routes,infrastructure}` | nenhum (a URL aponta para um host inexistente, de propósito) | — |
-| integração | `apps/api/src/_tests/integration` | `hemoconnect_test` | db 15 |
-| e2e | `apps/e2e/tests` | `hemoconnect_e2e` | db 14 |
-| desenvolvimento | — | `hemoconnect` | db 0 |
-
-Decisões que valem saber antes de mexer:
-
-- Os dois *projects* do Vitest têm `setupFiles` próprios. O setup unitário aponta
-  `DATABASE_URL` para um host que não existe — vazar isso para a integração quebraria a
-  suíte de um jeito confuso.
-- A integração roda um arquivo por vez (`fileParallelism: false`, `pool: "forks"`):
-  compartilha um banco e um índice do Redis, e o pool de forks permite reapear um
-  processo com handle aberto em vez de travar a run.
-- O `isolate` padrão do Vitest é o que dá a cada arquivo um grafo de módulos novo — é
-  assim que os singletons `db`, `redisConnection`, `queues` e `container` são
-  reconstruídos por arquivo, e rebinds do container não vazam entre arquivos.
-- O e2e usa portas próprias (API 3401, web 5273) para não atrapalhar um `pnpm dev`
-  rodando, e `EMAIL_TRANSPORT=noop`: **nenhuma mensagem sai da máquina durante a suíte**.
-- `retries: 0` — um teste que só passa na segunda tentativa não é um resultado que se
-  cite num trabalho.
-- O worker de disparo é iniciado pelo `globalSetup` do Playwright, e não pelo
-  `webServer`, porque não serve HTTP e portanto não tem URL para o Playwright sondar.
-
 Cobertura do e2e: login, criação de campanha e disparo ponta a ponta; confirmação pelo
 link, clique repetido no mesmo link (não conta duas vezes) e link inválido.
 
